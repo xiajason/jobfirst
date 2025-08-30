@@ -1,0 +1,32 @@
+name: Simple Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Test connection
+      run: |
+        echo "✅ CI/CD 连接测试成功"
+        echo "当前分支: ${{ github.ref }}"
+        echo "提交信息: ${{ github.event.head_commit.message }}"
+        
+    - name: List files
+      run: |
+        echo "📁 项目文件结构:"
+        find . -type f -name "*.go" | head -10
+        echo "..."
+        
+    - name: Test success
+      run: |
+        echo "🎉 基础CI/CD测试通过！"
+        echo "时间: $(date)"
+        echo "运行器: ${{ runner.os }}"

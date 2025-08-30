@@ -1,0 +1,56 @@
+name: Go Build & Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+        
+    - name: Build
+      run: go build -v ./...
+      
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: go-binaries
+        path: |
+          *.exe
+          *.bin
+          
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: go-binaries
+        
+    - name: Deploy to Tencent Cloud
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.TENCENT_HOST }}
+        username: ${{ secrets.TENCENT_USER }}
+        key: ${{ secrets.TENCENT_SSH_KEY }}
+        port: 22
+        source: "*.exe,*.bin"
+        target: "/home/ubuntu/app"
+        
+    - name: Restart Service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TENCENT_HOST }}
+        username: ${{ secrets.TENCENT_USER }}
+        key: ${{ secrets.TENCENT_SSH_KEY }}
+        port: 22
+        script: |
+          sudo systemctl restart your-service

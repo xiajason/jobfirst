@@ -1,0 +1,61 @@
+
+  __    _   ___  
+ / /\  | | | |_) 
+/_/--\ |_| |_| \_ v1.62.0, built with Go go1.25.0
+
+watching .
+!exclude tmp
+building...
+running...
+2025/08/30 20:48:06 Failed to read config file: Config File "config" Not Found in "[/Users/szjason72/jobfirst/backend/open/config /Users/szjason72/jobfirst/backend/config /Users/szjason72/jobfirst/config]"
+2025/08/30 20:48:06 Successfully connected to database
+2025/08/30 20:48:06 Successfully connected to Consul
+2025/08/30 20:48:06 Service registered to Consul
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.setupRouter.func1 (4 handlers)
+[GIN-debug] GET    /metrics                  --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func33 (4 handlers)
+[GIN-debug] GET    /v1/.well-known/metrics   --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func34 (4 handlers)
+[GIN-debug] GET    /v2/api-docs              --> main.setupRouter.func2 (4 handlers)
+[GIN-debug] GET    /open/version             --> main.setupRouter.func3 (4 handlers)
+[GIN-debug] GET    /open/docs/swagger        --> main.setupRouter.func4 (4 handlers)
+[GIN-debug] GET    /open/docs/api-list       --> main.setupRouter.func5 (4 handlers)
+[GIN-debug] GET    /open/job/search          --> main.setupRouter.func6 (4 handlers)
+[GIN-debug] GET    /open/job/detail/:jobId   --> main.setupRouter.func7 (4 handlers)
+[GIN-debug] GET    /open/job/recommend       --> main.setupRouter.func8 (4 handlers)
+[GIN-debug] POST   /open/resume/upload       --> main.setupRouter.func9 (4 handlers)
+[GIN-debug] GET    /open/resume/templates    --> main.setupRouter.func10 (4 handlers)
+[GIN-debug] GET    /open/resume/banners      --> main.setupRouter.func11 (4 handlers)
+[GIN-debug] POST   /open/user/register       --> main.setupRouter.func12 (4 handlers)
+[GIN-debug] GET    /open/user/profile/:userId --> main.setupRouter.func13 (4 handlers)
+[GIN-debug] GET    /open/api/statistics/resume --> main.setupRouter.func14 (4 handlers)
+[GIN-debug] GET    /open/api/statistics/personal --> main.setupRouter.func15 (4 handlers)
+[GIN-debug] GET    /open/api/statistics/enterprise --> main.setupRouter.func16 (4 handlers)
+[GIN-debug] GET    /open/api/resume/list     --> main.setupRouter.func17 (4 handlers)
+[GIN-debug] GET    /open/api/resume/detail/:id --> main.setupRouter.func18 (4 handlers)
+[GIN-debug] GET    /open/api/transaction/history --> main.setupRouter.func19 (4 handlers)
+[GIN-debug] GET    /open/api/personal/users  --> main.setupRouter.func20 (4 handlers)
+[GIN-debug] GET    /open/api/enterprises     --> main.setupRouter.func21 (4 handlers)
+[GIN-debug] GET    /open/api/enterprise/users --> main.setupRouter.func22 (4 handlers)
+[GIN-debug] GET    /open/stats/job-count     --> main.setupRouter.func23 (4 handlers)
+[GIN-debug] GET    /open/stats/user-count    --> main.setupRouter.func24 (4 handlers)
+[GIN-debug] GET    /open/stats/company-count --> main.setupRouter.func25 (4 handlers)
+[GIN-debug] GET    /open/tools/salary-calculator --> main.setupRouter.func26 (4 handlers)
+[GIN-debug] GET    /open/tools/skill-analysis --> main.setupRouter.func27 (4 handlers)
+[GIN-debug] POST   /open/tools/resume-parse  --> main.setupRouter.func28 (4 handlers)
+[GIN-debug] POST   /open/notification/subscribe --> main.setupRouter.func29 (4 handlers)
+[GIN-debug] POST   /open/notification/unsubscribe --> main.setupRouter.func30 (4 handlers)
+[GIN-debug] GET    /open/notification/status/:subscriptionId --> main.setupRouter.func31 (4 handlers)
+2025/08/30 20:48:06 Starting open service on port 9006
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :9006
+[GIN] 2025/08/30 - 20:48:07 | 200 |     1.85125ms |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 20:48:30 | 200 |      51.541µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:15:11 | 200 |    3.446334ms |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:16:02 | 200 |     274.583µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:17:09 | 200 |     346.459µs |             ::1 | GET      "/health"

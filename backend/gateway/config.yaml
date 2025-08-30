@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+consul:
+  address: "localhost:8202"
+  datacenter: "dc1"
+
+redis:
+  address: "localhost:8201"
+  password: ""
+  db: 0
+
+jwt:
+  secret: "your-secret-key"
+  expire_hours: 24
+
+rate_limit:
+  requests_per_second: 100
+
+logging:
+  level: "info"
+  format: "json"

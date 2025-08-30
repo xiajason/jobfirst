@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # 基础设施服务
+  mysql:
+    image: mysql:8.0
+    container_name: jobfirst-mysql-dev
+    ports:
+      - "8200:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: jobfirst123
+      MYSQL_DATABASE: jobfirst
+      MYSQL_USER: jobfirst
+      MYSQL_PASSWORD: jobfirst123
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - jobfirst-dev-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: jobfirst-redis-dev
+    ports:
+      - "8201:6379"
+    volumes:
+      - redis_dev_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - jobfirst-dev-network
+
+  consul:
+    image: consul:1.15
+    container_name: jobfirst-consul-dev
+    ports:
+      - "8202:8500"
+      - "8206:8600/udp"
+    volumes:
+      - consul_dev_data:/consul/data
+    command: consul agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -data-dir=/consul/data
+    networks:
+      - jobfirst-dev-network
+
+  neo4j:
+    image: neo4j:5.15-community
+    container_name: jobfirst-neo4j-dev
+    ports:
+      - "8203:7474"
+      - "8204:7687"
+    environment:
+      NEO4J_AUTH: neo4j/jobfirst123
+      NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
+    volumes:
+      - neo4j_dev_data:/data
+      - neo4j_dev_logs:/logs
+      - neo4j_dev_import:/var/lib/neo4j/import
+      - neo4j_dev_plugins:/plugins
+    networks:
+      - jobfirst-dev-network
+
+volumes:
+  mysql_dev_data:
+  redis_dev_data:
+  consul_dev_data:
+  neo4j_dev_data:
+  neo4j_dev_logs:
+  neo4j_dev_import:
+  neo4j_dev_plugins:
+
+networks:
+  jobfirst-dev-network:
+    driver: bridge

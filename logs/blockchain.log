@@ -1,0 +1,171 @@
+
+  __    _   ___  
+ / /\  | | | |_) 
+/_/--\ |_| |_| \_ v1.62.0, built with Go go1.25.0
+
+mkdir /Users/szjason72/jobfirst/backend/blockchain/tmp
+watching .
+!exclude tmp
+building...
+running...
+{"level":"info","msg":"Database initialized successfully","time":"2025-08-30T07:19:07+08:00"}
+{"level":"info","msg":"Consul client initialized successfully","time":"2025-08-30T07:19:07+08:00"}
+{"level":"info","msg":"Redis client initialized successfully","time":"2025-08-30T07:19:07+08:00"}
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.healthCheck (6 handlers)
+[GIN-debug] POST   /blockchain/certificates/ --> main.createCertificate (6 handlers)
+[GIN-debug] GET    /blockchain/certificates/ --> main.listCertificates (6 handlers)
+[GIN-debug] GET    /blockchain/certificates/:id --> main.getCertificate (6 handlers)
+[GIN-debug] PUT    /blockchain/certificates/:id --> main.updateCertificate (6 handlers)
+[GIN-debug] DELETE /blockchain/certificates/:id --> main.deleteCertificate (6 handlers)
+[GIN-debug] GET    /blockchain/certificates/:id/verify --> main.verifyCertificate (6 handlers)
+[GIN-debug] GET    /blockchain/transactions/ --> main.listTransactions (6 handlers)
+[GIN-debug] GET    /blockchain/transactions/:id --> main.getTransaction (6 handlers)
+[GIN-debug] POST   /blockchain/transactions/ --> main.createTransaction (6 handlers)
+[GIN-debug] POST   /blockchain/wallets/      --> main.createWallet (6 handlers)
+[GIN-debug] GET    /blockchain/wallets/      --> main.listWallets (6 handlers)
+[GIN-debug] GET    /blockchain/wallets/:id   --> main.getWallet (6 handlers)
+[GIN-debug] GET    /blockchain/wallets/:id/balance --> main.getWalletBalance (6 handlers)
+[GIN-debug] POST   /blockchain/contracts/    --> main.deployContract (6 handlers)
+[GIN-debug] GET    /blockchain/contracts/    --> main.listContracts (6 handlers)
+[GIN-debug] GET    /blockchain/contracts/:id --> main.getContract (6 handlers)
+[GIN-debug] POST   /blockchain/contracts/:id/invoke --> main.invokeContract (6 handlers)
+[GIN-debug] POST   /blockchain/contracts/:id/query --> main.queryContract (6 handlers)
+[GIN-debug] POST   /blockchain/points/tx     --> main.savePointsTransaction (6 handlers)
+[GIN-debug] GET    /blockchain/points/tx/:id --> main.getPointsTransaction (6 handlers)
+[GIN-debug] GET    /blockchain/points/balance/:userId --> main.getPointsBalance (6 handlers)
+[GIN-debug] POST   /blockchain/points/transfer --> main.transferPoints (6 handlers)
+[GIN-debug] POST   /blockchain/resume/       --> main.createResumeOnBlockchain (6 handlers)
+[GIN-debug] GET    /blockchain/resume/:id    --> main.getResumeFromBlockchain (6 handlers)
+[GIN-debug] DELETE /blockchain/resume/:id    --> main.deleteResumeFromBlockchain (6 handlers)
+[GIN-debug] POST   /api/v1/certificates/     --> main.createCertificate (6 handlers)
+[GIN-debug] GET    /api/v1/certificates/     --> main.listCertificates (6 handlers)
+[GIN-debug] GET    /api/v1/certificates/:id  --> main.getCertificate (6 handlers)
+[GIN-debug] PUT    /api/v1/certificates/:id  --> main.updateCertificate (6 handlers)
+[GIN-debug] DELETE /api/v1/certificates/:id  --> main.deleteCertificate (6 handlers)
+[GIN-debug] GET    /api/v1/certificates/:id/verify --> main.verifyCertificate (6 handlers)
+[GIN-debug] GET    /api/v1/transactions/     --> main.listTransactions (6 handlers)
+[GIN-debug] GET    /api/v1/transactions/:id  --> main.getTransaction (6 handlers)
+[GIN-debug] POST   /api/v1/transactions/     --> main.createTransaction (6 handlers)
+[GIN-debug] POST   /api/v1/wallets/          --> main.createWallet (6 handlers)
+[GIN-debug] GET    /api/v1/wallets/          --> main.listWallets (6 handlers)
+[GIN-debug] GET    /api/v1/wallets/:id       --> main.getWallet (6 handlers)
+[GIN-debug] GET    /api/v1/wallets/:id/balance --> main.getWalletBalance (6 handlers)
+[GIN-debug] POST   /api/v1/contracts/        --> main.deployContract (6 handlers)
+[GIN-debug] GET    /api/v1/contracts/        --> main.listContracts (6 handlers)
+[GIN-debug] GET    /api/v1/contracts/:id     --> main.getContract (6 handlers)
+[GIN-debug] POST   /api/v1/contracts/:id/invoke --> main.invokeContract (6 handlers)
+[GIN-debug] POST   /api/v1/contracts/:id/query --> main.queryContract (6 handlers)
+[GIN-debug] POST   /api/v1/points/tx         --> main.savePointsTransaction (6 handlers)
+[GIN-debug] GET    /api/v1/points/tx/:id     --> main.getPointsTransaction (6 handlers)
+[GIN-debug] GET    /api/v1/points/balance/:userId --> main.getPointsBalance (6 handlers)
+[GIN-debug] POST   /api/v1/points/transfer   --> main.transferPoints (6 handlers)
+[GIN-debug] POST   /api/v1/resume/           --> main.createResumeOnBlockchain (6 handlers)
+[GIN-debug] GET    /api/v1/resume/:id        --> main.getResumeFromBlockchain (6 handlers)
+[GIN-debug] DELETE /api/v1/resume/:id        --> main.deleteResumeFromBlockchain (6 handlers)
+{"level":"info","msg":"Starting blockchain service on port 9009","time":"2025-08-30T07:19:07+08:00"}
+[GIN-debug] redirecting request 301: /blockchain/certificates/ --> /blockchain/certificates/
+[GIN-debug] redirecting request 301: /blockchain/certificates/ --> /blockchain/certificates/
+[GIN] 2025/08/30 - 07:19:58 | 200 |      46.625µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 07:19:58 | 200 |      80.333µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 07:20:05 | 401 |      18.125µs |             ::1 | GET      "/blockchain/certificates/"
+[GIN] 2025/08/30 - 07:20:05 | 401 |      48.625µs |             ::1 | GET      "/blockchain/certificates/"
+
+2025/08/30 07:20:13 [31;1m/Users/szjason72/jobfirst/backend/blockchain/handlers.go:606 [35;1mrecord not found
+[0m[33m[2.973ms] [34;1m[rows:0][0m SELECT * FROM `points_transaction_histories` WHERE transaction_history_id = '123' ORDER BY `points_transaction_histories`.`transaction_history_id` LIMIT 1
+[GIN] 2025/08/30 - 07:20:13 | 404 |    3.051083ms |             ::1 | GET      "/api/v1/points/tx/123"
+[GIN] 2025/08/30 - 07:20:13 | 404 |    3.063166ms |             ::1 | GET      "/api/v1/points/tx/123"
+[GIN] 2025/08/30 - 07:21:00 | 404 |      19.125µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:21:00 | 404 |     101.625µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:22:06 | 404 |      21.916µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:22:06 | 404 |      81.792µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:22:28 | 200 |      25.042µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 07:22:28 | 200 |       54.75µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 07:22:28 | 401 |      18.208µs |             ::1 | GET      "/blockchain/certificates/"
+[GIN] 2025/08/30 - 07:22:28 | 401 |      39.292µs |             ::1 | GET      "/blockchain/certificates/"
+[GIN] 2025/08/30 - 07:24:08 | 404 |      11.042µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:24:08 | 404 |      90.583µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:24:24 | 200 |       22.25µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 07:24:24 | 200 |      49.375µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 07:24:24 | 401 |      12.416µs |             ::1 | GET      "/blockchain/certificates/"
+[GIN] 2025/08/30 - 07:24:24 | 401 |      35.458µs |             ::1 | GET      "/blockchain/certificates/"
+[GIN] 2025/08/30 - 07:24:32 | 404 |       8.042µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:24:32 | 404 |      49.208µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:25:22 | 404 |       7.833µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:25:22 | 404 |     263.375µs |             ::1 | GET      "/blockchain/health"
+[GIN] 2025/08/30 - 07:25:41 | 404 |       1.417µs |             ::1 | GET      "/blockchain/"
+[GIN] 2025/08/30 - 07:25:41 | 404 |       42.25µs |             ::1 | GET      "/blockchain/"
+main.go has changed
+building...
+running...
+{"level":"info","msg":"Database initialized successfully","time":"2025-08-30T07:25:56+08:00"}
+{"level":"info","msg":"Consul client initialized successfully","time":"2025-08-30T07:25:56+08:00"}
+{"level":"info","msg":"Redis client initialized successfully","time":"2025-08-30T07:25:56+08:00"}
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.healthCheck (6 handlers)
+[GIN-debug] POST   /blockchain/certificates/ --> main.createCertificate (6 handlers)
+[GIN-debug] GET    /blockchain/certificates/ --> main.listCertificates (6 handlers)
+[GIN-debug] GET    /blockchain/certificates/:id --> main.getCertificate (6 handlers)
+[GIN-debug] PUT    /blockchain/certificates/:id --> main.updateCertificate (6 handlers)
+[GIN-debug] DELETE /blockchain/certificates/:id --> main.deleteCertificate (6 handlers)
+[GIN-debug] GET    /blockchain/certificates/:id/verify --> main.verifyCertificate (6 handlers)
+[GIN-debug] GET    /blockchain/transactions/ --> main.listTransactions (6 handlers)
+[GIN-debug] GET    /blockchain/transactions/:id --> main.getTransaction (6 handlers)
+[GIN-debug] POST   /blockchain/transactions/ --> main.createTransaction (6 handlers)
+[GIN-debug] POST   /blockchain/wallets/      --> main.createWallet (6 handlers)
+[GIN-debug] GET    /blockchain/wallets/      --> main.listWallets (6 handlers)
+[GIN-debug] GET    /blockchain/wallets/:id   --> main.getWallet (6 handlers)
+[GIN-debug] GET    /blockchain/wallets/:id/balance --> main.getWalletBalance (6 handlers)
+[GIN-debug] POST   /blockchain/contracts/    --> main.deployContract (6 handlers)
+[GIN-debug] GET    /blockchain/contracts/    --> main.listContracts (6 handlers)
+[GIN-debug] GET    /blockchain/contracts/:id --> main.getContract (6 handlers)
+[GIN-debug] POST   /blockchain/contracts/:id/invoke --> main.invokeContract (6 handlers)
+[GIN-debug] POST   /blockchain/contracts/:id/query --> main.queryContract (6 handlers)
+[GIN-debug] POST   /blockchain/points/tx     --> main.savePointsTransaction (6 handlers)
+[GIN-debug] GET    /blockchain/points/tx/:id --> main.getPointsTransaction (6 handlers)
+[GIN-debug] GET    /blockchain/points/balance/:userId --> main.getPointsBalance (6 handlers)
+[GIN-debug] POST   /blockchain/points/transfer --> main.transferPoints (6 handlers)
+[GIN-debug] POST   /blockchain/resume/       --> main.createResumeOnBlockchain (6 handlers)
+[GIN-debug] GET    /blockchain/resume/:id    --> main.getResumeFromBlockchain (6 handlers)
+[GIN-debug] DELETE /blockchain/resume/:id    --> main.deleteResumeFromBlockchain (6 handlers)
+[GIN-debug] POST   /api/v1/certificates/     --> main.createCertificate (6 handlers)
+[GIN-debug] GET    /api/v1/certificates/     --> main.listCertificates (6 handlers)
+[GIN-debug] GET    /api/v1/certificates/:id  --> main.getCertificate (6 handlers)
+[GIN-debug] PUT    /api/v1/certificates/:id  --> main.updateCertificate (6 handlers)
+[GIN-debug] DELETE /api/v1/certificates/:id  --> main.deleteCertificate (6 handlers)
+[GIN-debug] GET    /api/v1/certificates/:id/verify --> main.verifyCertificate (6 handlers)
+[GIN-debug] GET    /api/v1/transactions/     --> main.listTransactions (6 handlers)
+[GIN-debug] GET    /api/v1/transactions/:id  --> main.getTransaction (6 handlers)
+[GIN-debug] POST   /api/v1/transactions/     --> main.createTransaction (6 handlers)
+[GIN-debug] POST   /api/v1/wallets/          --> main.createWallet (6 handlers)
+[GIN-debug] GET    /api/v1/wallets/          --> main.listWallets (6 handlers)
+[GIN-debug] GET    /api/v1/wallets/:id       --> main.getWallet (6 handlers)
+[GIN-debug] GET    /api/v1/wallets/:id/balance --> main.getWalletBalance (6 handlers)
+[GIN-debug] POST   /api/v1/contracts/        --> main.deployContract (6 handlers)
+[GIN-debug] GET    /api/v1/contracts/        --> main.listContracts (6 handlers)
+[GIN-debug] GET    /api/v1/contracts/:id     --> main.getContract (6 handlers)
+[GIN-debug] POST   /api/v1/contracts/:id/invoke --> main.invokeContract (6 handlers)
+[GIN-debug] POST   /api/v1/contracts/:id/query --> main.queryContract (6 handlers)
+[GIN-debug] POST   /api/v1/points/tx         --> main.savePointsTransaction (6 handlers)
+[GIN-debug] GET    /api/v1/points/tx/:id     --> main.getPointsTransaction (6 handlers)
+[GIN-debug] GET    /api/v1/points/balance/:userId --> main.getPointsBalance (6 handlers)
+[GIN-debug] POST   /api/v1/points/transfer   --> main.transferPoints (6 handlers)
+[GIN-debug] POST   /api/v1/resume/           --> main.createResumeOnBlockchain (6 handlers)
+[GIN-debug] GET    /api/v1/resume/:id        --> main.getResumeFromBlockchain (6 handlers)
+[GIN-debug] DELETE /api/v1/resume/:id        --> main.deleteResumeFromBlockchain (6 handlers)
+{"level":"info","msg":"Starting blockchain service on port 9009","time":"2025-08-30T07:25:56+08:00"}
+{"level":"info","msg":"Shutting down server...","time":"2025-08-30T07:28:03+08:00"}
+{"level":"info","msg":"Server exited","time":"2025-08-30T07:28:03+08:00"}
+Process Exit with Code 0
+cleaning...
+see you again~

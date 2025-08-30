@@ -1,0 +1,40 @@
+server:
+  port: "9009"
+  host: "0.0.0.0"
+
+database:
+  host: "localhost"
+  port: "8200"
+  name: "jobfirst"
+  user: "jobfirst"
+  password: "jobfirst123"
+
+consul:
+  address: "localhost:8202"
+
+redis:
+  address: "localhost:8201"
+  password: ""
+  db: 0
+
+# 腾讯云区块链配置
+tencent:
+  secret_id: ""  # 腾讯云API密钥ID
+  secret_key: "" # 腾讯云API密钥Key
+  region: "ap-guangzhou"  # 地域
+  blockchain:
+    cluster_id: ""    # 区块链集群ID
+    channel_id: ""    # 通道ID
+    chaincode_id: ""  # 智能合约ID
+
+# 日志配置
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+# 区块链配置
+blockchain:
+  default_type: "tencent"  # 默认区块链类型
+  gas_limit: 21000
+  gas_price: 20000000000  # 20 Gwei

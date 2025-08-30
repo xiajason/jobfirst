@@ -1,0 +1,49 @@
+server:
+  host: "localhost"
+  port: 8087
+
+consul:
+  address: "localhost:8500"
+  datacenter: "dc1"
+
+redis:
+  address: "localhost:6379"
+  password: ""
+  db: 0
+
+database:
+  host: "localhost"
+  port: 3306
+  name: "resume_centre"
+  user: "root"
+  password: ""
+
+jwt:
+  secret: "your-secret-key"
+  expire_hours: 24
+
+logging:
+  level: "info"
+  format: "json"
+
+# 文档处理配置
+processing:
+  max_file_size: 104857600  # 100MB
+  supported_formats:
+    - pdf
+    - doc
+    - docx
+    - txt
+    - rtf
+    - html
+    - md
+  ocr:
+    languages:
+      - en
+      - zh
+      - ja
+      - ko
+    confidence_threshold: 0.8
+  conversion:
+    timeout: 300  # 5分钟
+    max_concurrent: 10

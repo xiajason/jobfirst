@@ -1,0 +1,27 @@
+server:
+  host: "localhost"
+  port: 8097
+
+consul:
+  address: "localhost:8202"
+  datacenter: "dc1"
+
+redis:
+  address: "localhost:8201"
+  password: ""
+  db: 0
+
+database:
+  host: "localhost"
+  port: 8200
+  name: "jobfirst"
+  user: "jobfirst"
+  password: "jobfirst123"
+
+jwt:
+  secret: "your-secret-key"
+  expire_hours: 24
+
+logging:
+  level: "info"
+  format: "json"

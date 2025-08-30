@@ -1,0 +1,62 @@
+
+  __    _   ___  
+ / /\  | | | |_) 
+/_/--\ |_| |_| \_ v1.62.0, built with Go go1.25.0
+
+watching .
+!exclude tmp
+building...
+running...
+2025/08/30 20:48:02 Failed to read config file: Config File "config" Not Found in "[/Users/szjason72/jobfirst/backend/enterprise/config /Users/szjason72/jobfirst/backend/config /Users/szjason72/jobfirst/config]"
+2025/08/30 20:48:02 Successfully connected to database
+2025/08/30 20:48:02 Successfully connected to Consul
+2025/08/30 20:48:02 Service registered to Consul
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.setupRouter.func1 (4 handlers)
+[GIN-debug] GET    /metrics                  --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func34 (4 handlers)
+[GIN-debug] GET    /v1/.well-known/metrics   --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func35 (4 handlers)
+[GIN-debug] GET    /v2/api-docs              --> main.setupRouter.func2 (4 handlers)
+[GIN-debug] GET    /enterprise/version       --> main.setupRouter.func3 (4 handlers)
+[GIN-debug] POST   /enterprise/authentication/login --> main.setupRouter.func4 (4 handlers)
+[GIN-debug] POST   /enterprise/authentication/validate --> main.setupRouter.func5 (4 handlers)
+[GIN-debug] GET    /enterprise/authentication/check --> main.setupRouter.func6 (4 handlers)
+[GIN-debug] POST   /enterprise/authentication/register --> main.setupRouter.func7 (4 handlers)
+[GIN-debug] POST   /enterprise/authentication/logout --> main.setupRouter.func8 (4 handlers)
+[GIN-debug] GET    /enterprise/company/info  --> main.setupRouter.func9 (4 handlers)
+[GIN-debug] PUT    /enterprise/company/info  --> main.setupRouter.func10 (4 handlers)
+[GIN-debug] GET    /enterprise/company/statistics --> main.setupRouter.func11 (4 handlers)
+[GIN-debug] POST   /enterprise/user/personal/register --> main.setupRouter.func12 (4 handlers)
+[GIN-debug] GET    /enterprise/user/personal/register/code --> main.setupRouter.func13 (4 handlers)
+[GIN-debug] GET    /enterprise/user/personal/password/change/code --> main.setupRouter.func14 (4 handlers)
+[GIN-debug] POST   /enterprise/user/personal/password/reset --> main.setupRouter.func15 (4 handlers)
+[GIN-debug] GET    /enterprise/captcha       --> main.setupRouter.func16 (4 handlers)
+[GIN-debug] GET    /enterprise/job/list      --> main.setupRouter.func17 (4 handlers)
+[GIN-debug] POST   /enterprise/job/create    --> main.setupRouter.func18 (4 handlers)
+[GIN-debug] PUT    /enterprise/job/update/:jobId --> main.setupRouter.func19 (4 handlers)
+[GIN-debug] DELETE /enterprise/job/delete/:jobId --> main.setupRouter.func20 (4 handlers)
+[GIN-debug] GET    /enterprise/job/detail/:jobId --> main.setupRouter.func21 (4 handlers)
+[GIN-debug] POST   /enterprise/job/publish/:jobId --> main.setupRouter.func22 (4 handlers)
+[GIN-debug] POST   /enterprise/job/pause/:jobId --> main.setupRouter.func23 (4 handlers)
+[GIN-debug] GET    /enterprise/resume/list   --> main.setupRouter.func24 (4 handlers)
+[GIN-debug] GET    /enterprise/resume/detail/:resumeId --> main.setupRouter.func25 (4 handlers)
+[GIN-debug] POST   /enterprise/resume/approve/:resumeId --> main.setupRouter.func26 (4 handlers)
+[GIN-debug] POST   /enterprise/resume/reject/:resumeId --> main.setupRouter.func27 (4 handlers)
+[GIN-debug] POST   /enterprise/resume/interview/:resumeId --> main.setupRouter.func28 (4 handlers)
+[GIN-debug] GET    /enterprise/application/list --> main.setupRouter.func29 (4 handlers)
+[GIN-debug] GET    /enterprise/application/statistics --> main.setupRouter.func30 (4 handlers)
+[GIN-debug] GET    /enterprise/message/list  --> main.setupRouter.func31 (4 handlers)
+[GIN-debug] POST   /enterprise/message/read/:messageId --> main.setupRouter.func32 (4 handlers)
+2025/08/30 20:48:02 Starting enterprise service on port 8002
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8002
+[GIN] 2025/08/30 - 20:48:02 | 200 |    3.709708ms |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 20:48:30 | 200 |      67.583µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:15:11 | 200 |    3.723334ms |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:16:02 | 200 |     661.958µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:17:09 | 200 |         105µs |             ::1 | GET      "/health"

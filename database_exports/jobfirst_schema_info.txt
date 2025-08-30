@@ -1,0 +1,218 @@
+TABLE_NAME	COLUMN_NAME	DATA_TYPE	IS_NULLABLE	COLUMN_DEFAULT	COLUMN_KEY	EXTRA
+file_access_logs	id	varchar	NO	NULL	PRI	
+file_access_logs	file_id	varchar	NO	NULL	MUL	
+file_access_logs	user_id	bigint	YES	NULL	MUL	
+file_access_logs	action	varchar	NO	NULL		
+file_access_logs	ip	varchar	YES	NULL		
+file_access_logs	user_agent	text	YES	NULL		
+file_access_logs	referer	varchar	YES	NULL		
+file_access_logs	created_at	datetime	YES	NULL		
+file_process_tasks	id	varchar	NO	NULL	PRI	
+file_process_tasks	file_id	varchar	NO	NULL	MUL	
+file_process_tasks	task_type	varchar	NO	NULL		
+file_process_tasks	status	varchar	YES	pending		
+file_process_tasks	progress	bigint	YES	0		
+file_process_tasks	result	json	YES	NULL		
+file_process_tasks	error	text	YES	NULL		
+file_process_tasks	started_at	datetime	YES	NULL		
+file_process_tasks	completed_at	datetime	YES	NULL		
+file_process_tasks	created_at	datetime	YES	NULL		
+file_process_tasks	updated_at	datetime	YES	NULL		
+file_records	id	varchar	NO	NULL	PRI	
+file_records	user_id	bigint	NO	NULL	MUL	
+file_records	file_name	longtext	NO	NULL		
+file_records	original_name	longtext	NO	NULL		
+file_records	file_type	varchar	NO	NULL		
+file_records	mime_type	varchar	NO	NULL		
+file_records	size	bigint	NO	NULL		
+file_records	extension	varchar	YES	NULL		
+file_records	storage_type	varchar	NO	NULL		
+file_records	storage_path	varchar	NO	NULL		
+file_records	storage_url	varchar	YES	NULL		
+file_records	md5_hash	varchar	YES	NULL	UNI	
+file_records	sha256_hash	varchar	YES	NULL		
+file_records	status	varchar	YES	uploading		
+file_records	is_public	tinyint	YES	0		
+file_records	download_count	bigint	YES	0		
+file_records	view_count	bigint	YES	0		
+file_records	metadata	json	YES	NULL		
+file_records	expires_at	datetime	YES	NULL		
+file_records	created_at	datetime	YES	NULL		
+file_records	updated_at	datetime	YES	NULL		
+file_shares	id	varchar	NO	NULL	PRI	
+file_shares	file_id	varchar	NO	NULL	MUL	
+file_shares	user_id	bigint	NO	NULL	MUL	
+file_shares	share_token	varchar	YES	NULL	UNI	
+file_shares	password	varchar	YES	NULL		
+file_shares	is_public	tinyint	YES	0		
+file_shares	max_downloads	bigint	YES	0		
+file_shares	download_count	bigint	YES	0		
+file_shares	expires_at	datetime	YES	NULL		
+file_shares	created_at	datetime	YES	NULL		
+file_shares	updated_at	datetime	YES	NULL		
+file_tags	id	varchar	NO	NULL	PRI	
+file_tags	file_id	varchar	NO	NULL	MUL	
+file_tags	tag_name	varchar	NO	NULL		
+file_tags	tag_value	varchar	YES	NULL		
+file_tags	created_at	datetime	YES	NULL		
+file_versions	id	varchar	NO	NULL	PRI	
+file_versions	file_id	varchar	NO	NULL	MUL	
+file_versions	version	bigint	NO	NULL		
+file_versions	file_name	longtext	NO	NULL		
+file_versions	size	bigint	NO	NULL		
+file_versions	storage_path	varchar	NO	NULL		
+file_versions	md5_hash	varchar	YES	NULL		
+file_versions	status	varchar	YES	uploaded		
+file_versions	created_at	datetime	YES	NULL		
+files	id	bigint	NO	NULL	PRI	auto_increment
+files	user_id	bigint	NO	NULL	MUL	
+files	filename	varchar	NO	NULL		
+files	original_name	varchar	NO	NULL		
+files	file_path	varchar	NO	NULL		
+files	file_size	bigint	NO	NULL		
+files	mime_type	varchar	YES	NULL		
+files	file_type	enum	NO	NULL		
+files	status	enum	YES	uploading	MUL	
+files	created_at	timestamp	YES	CURRENT_TIMESTAMP		DEFAULT_GENERATED
+files	updated_at	timestamp	YES	CURRENT_TIMESTAMP		DEFAULT_GENERATED on update CURRENT_TIMESTAMP
+files	deleted_at	timestamp	YES	NULL		
+point_records	id	bigint	NO	NULL	PRI	auto_increment
+point_records	user_id	bigint	NO	NULL	MUL	
+point_records	points	int	NO	NULL		
+point_records	type	enum	NO	NULL		
+point_records	reason	varchar	NO	NULL		
+point_records	description	text	YES	NULL		
+point_records	created_at	timestamp	YES	CURRENT_TIMESTAMP		DEFAULT_GENERATED
+points	id	bigint	NO	NULL	PRI	auto_increment
+points	user_id	bigint	NO	NULL	MUL	
+points	points	int	YES	0		
+points	earned_points	int	YES	0		
+points	spent_points	int	YES	0		
+points	created_at	timestamp	YES	CURRENT_TIMESTAMP		DEFAULT_GENERATED
+points	updated_at	timestamp	YES	CURRENT_TIMESTAMP		DEFAULT_GENERATED on update CURRENT_TIMESTAMP
+points_records	id	varchar	NO	NULL	PRI	
+points_records	user_id	bigint	NO	NULL	MUL	
+points_records	type	varchar	NO	NULL		
+points_records	source	varchar	NO	NULL		
+points_records	points	bigint	NO	NULL		
+points_records	description	text	YES	NULL		
+points_records	reference_id	varchar	YES	NULL		
+points_records	created_at	datetime	YES	NULL		
+points_rules	id	varchar	NO	NULL	PRI	
+points_rules	name	longtext	NO	NULL		
+points_rules	source	varchar	NO	NULL	UNI	
+points_rules	points	bigint	NO	NULL		
+points_rules	description	text	YES	NULL		
+points_rules	is_active	tinyint	YES	1		
+points_rules	daily_limit	bigint	YES	0		
+points_rules	created_at	datetime	YES	NULL		
+points_rules	updated_at	datetime	YES	NULL		
+real_time_stats	id	varchar	NO	NULL	PRI	
+real_time_stats	type	varchar	NO	NULL	UNI	
+real_time_stats	value	bigint	YES	0		
+real_time_stats	last_updated	datetime	YES	NULL		
+real_time_stats	created_at	datetime	YES	NULL		
+real_time_stats	updated_at	datetime	YES	NULL		
+resume_banners	id	varchar	NO	NULL	PRI	
+resume_banners	title	longtext	NO	NULL		
+resume_banners	content	text	YES	NULL		
+resume_banners	image_url	longtext	YES	NULL		
+resume_banners	link_url	longtext	YES	NULL		
+resume_banners	order	bigint	YES	0		
+resume_banners	is_active	tinyint	YES	1		
+resume_banners	start_time	datetime	YES	NULL		
+resume_banners	end_time	datetime	YES	NULL		
+resume_banners	created_at	datetime	YES	NULL		
+resume_banners	updated_at	datetime	YES	NULL		
+resume_templates	id	varchar	NO	NULL	PRI	
+resume_templates	name	longtext	NO	NULL		
+resume_templates	description	text	YES	NULL		
+resume_templates	template_data	json	NO	NULL		
+resume_templates	preview_image	varchar	YES	NULL		
+resume_templates	category	varchar	YES	NULL		
+resume_templates	is_free	tinyint	YES	1		
+resume_templates	price	double	YES	0		
+resume_templates	status	enum	YES	active		
+resume_templates	created_at	datetime	YES	NULL		
+resume_templates	updated_at	datetime	YES	NULL		
+resume_templates	preview_url	longtext	YES	NULL		
+resume_templates	is_active	tinyint	YES	1		
+resumes	id	bigint	NO	NULL	PRI	auto_increment
+resumes	user_id	bigint	NO	NULL	MUL	
+resumes	title	longtext	NO	NULL		
+resumes	content	text	YES	NULL		
+resumes	template_id	varchar	YES	NULL	MUL	
+resumes	status	varchar	YES	draft	MUL	
+resumes	view_count	bigint	YES	0		
+resumes	download_count	bigint	YES	0		
+resumes	share_count	int	YES	0		
+resumes	created_at	datetime	YES	NULL		
+resumes	updated_at	datetime	YES	NULL		
+resumes	deleted_at	timestamp	YES	NULL		
+statistics	id	varchar	NO	NULL	PRI	
+statistics	type	varchar	NO	NULL	MUL	
+statistics	period	varchar	NO	NULL		
+statistics	date	datetime	NO	NULL	MUL	
+statistics	value	bigint	YES	0		
+statistics	user_id	bigint	YES	NULL	MUL	
+statistics	reference_id	varchar	YES	NULL		
+statistics	metadata	text	YES	NULL		
+statistics	created_at	datetime	YES	NULL		
+statistics	updated_at	datetime	YES	NULL		
+statistics_events	id	bigint	NO	NULL	PRI	auto_increment
+statistics_events	event_type	varchar	NO	NULL	MUL	
+statistics_events	user_id	bigint	YES	NULL	MUL	
+statistics_events	event_data	json	YES	NULL		
+statistics_events	ip_address	varchar	YES	NULL		
+statistics_events	user_agent	text	YES	NULL		
+statistics_events	created_at	timestamp	YES	CURRENT_TIMESTAMP	MUL	DEFAULT_GENERATED
+statistics_reports	id	varchar	NO	NULL	PRI	
+statistics_reports	name	longtext	NO	NULL		
+statistics_reports	type	varchar	NO	NULL		
+statistics_reports	period	varchar	NO	NULL		
+statistics_reports	start_date	datetime	NO	NULL		
+statistics_reports	end_date	datetime	NO	NULL		
+statistics_reports	data	text	YES	NULL		
+statistics_reports	is_generated	tinyint	YES	0		
+statistics_reports	created_at	datetime	YES	NULL		
+statistics_reports	updated_at	datetime	YES	NULL		
+storage_configs	id	varchar	NO	NULL	PRI	
+storage_configs	storage_type	varchar	NO	NULL	UNI	
+storage_configs	config_name	longtext	NO	NULL		
+storage_configs	config_data	json	YES	NULL		
+storage_configs	is_active	tinyint	YES	1		
+storage_configs	is_default	tinyint	YES	0		
+storage_configs	created_at	datetime	YES	NULL		
+storage_configs	updated_at	datetime	YES	NULL		
+storage_quota	id	varchar	NO	NULL	PRI	
+storage_quota	user_id	bigint	NO	NULL	UNI	
+storage_quota	total_quota	bigint	NO	NULL		
+storage_quota	used_quota	bigint	YES	0		
+storage_quota	file_count	bigint	YES	0		
+storage_quota	last_reset_at	datetime	YES	NULL		
+storage_quota	created_at	datetime	YES	NULL		
+storage_quota	updated_at	datetime	YES	NULL		
+user_behaviors	id	varchar	NO	NULL	PRI	
+user_behaviors	user_id	bigint	NO	NULL	MUL	
+user_behaviors	type	varchar	NO	NULL		
+user_behaviors	reference_id	varchar	YES	NULL		
+user_behaviors	ip	varchar	YES	NULL		
+user_behaviors	user_agent	text	YES	NULL		
+user_behaviors	metadata	text	YES	NULL		
+user_behaviors	created_at	datetime	YES	NULL		
+user_points	id	bigint	NO	NULL	PRI	auto_increment
+user_points	user_id	bigint	NO	NULL	UNI	
+user_points	points	bigint	YES	0		
+user_points	level	bigint	YES	1		
+user_points	created_at	datetime	YES	NULL		
+user_points	updated_at	datetime	YES	NULL		
+users	id	bigint	NO	NULL	PRI	auto_increment
+users	username	varchar	NO	NULL	UNI	
+users	email	varchar	NO	NULL	UNI	
+users	password_hash	varchar	NO	NULL		
+users	phone	varchar	YES	NULL		
+users	avatar_url	varchar	YES	NULL		
+users	status	enum	YES	active		
+users	created_at	datetime	YES	NULL		
+users	updated_at	datetime	YES	NULL		
+users	deleted_at	datetime	YES	NULL	MUL	

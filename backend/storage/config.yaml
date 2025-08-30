@@ -1,0 +1,98 @@
+server:
+  host: "localhost"
+  port: 8088
+
+consul:
+  address: "localhost:8202"
+  datacenter: "dc1"
+
+redis:
+  address: "localhost:8201"
+  password: ""
+  db: 0
+
+database:
+  host: "localhost"
+  port: 8200
+  name: "jobfirst"
+  user: "jobfirst"
+  password: "jobfirst123"
+
+jwt:
+  secret: "your-secret-key"
+  expire_hours: 24
+
+logging:
+  level: "info"
+  format: "json"
+
+# 存储配置
+storage:
+  default_type: "local"
+  max_file_size: 104857600  # 100MB
+  allowed_types:
+    - image/jpeg
+    - image/png
+    - image/gif
+    - image/webp
+    - application/pdf
+    - application/msword
+    - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    - text/plain
+    - text/html
+    - application/zip
+    - application/x-rar-compressed
+  
+  # 本地存储配置
+  local:
+    base_path: "/data/files"
+    temp_path: "/tmp/uploads"
+    
+  # S3配置
+  s3:
+    endpoint: "s3.amazonaws.com"
+    region: "us-east-1"
+    bucket: "resume-centre-files"
+    access_key: ""
+    secret_key: ""
+    
+  # MinIO配置
+  minio:
+    endpoint: "localhost:9000"
+    access_key: "minioadmin"
+    secret_key: "minioadmin"
+    bucket: "resume-centre"
+    use_ssl: false
+    
+  # 华为云OBS配置
+  obs:
+    endpoint: "https://obs.cn-north-1.myhuaweicloud.com"
+    bucket: "resume-centre-files"
+    access_key: ""
+    secret_key: ""
+
+# 文件处理配置
+processing:
+  image:
+    max_width: 4096
+    max_height: 4096
+    quality: 85
+    formats:
+      - jpeg
+      - png
+      - webp
+  compression:
+    enabled: true
+    quality: 80
+  thumbnail:
+    enabled: true
+    sizes:
+      - 150x150
+      - 300x300
+      - 800x600
+
+# 配额配置
+quota:
+  default_total: 10737418240  # 10GB
+  max_file_count: 10000
+  reset_period: "monthly"

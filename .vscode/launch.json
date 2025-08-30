@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Gateway",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/backend/gateway/main.go",
+      "env": {
+        "CONSUL_ADDRESS": "localhost:8500",
+        "REDIS_ADDRESS": "localhost:6379"
+      }
+    },
+    {
+      "name": "Debug User Service",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/backend/user/main.go",
+      "env": {
+        "CONSUL_ADDRESS": "localhost:8500",
+        "REDIS_ADDRESS": "localhost:6379",
+        "MYSQL_ADDRESS": "localhost:3306"
+      }
+    },
+    {
+      "name": "Debug Resume Service",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/backend/resume/main.go",
+      "env": {
+        "CONSUL_ADDRESS": "localhost:8500",
+        "REDIS_ADDRESS": "localhost:6379",
+        "MYSQL_ADDRESS": "localhost:3306"
+      }
+    }
+  ]
+}

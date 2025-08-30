@@ -1,0 +1,67 @@
+
+  __    _   ___  
+ / /\  | | | |_) 
+/_/--\ |_| |_| \_ v1.62.0, built with Go go1.25.0
+
+watching .
+watching handlers
+!exclude tmp
+building...
+running...
+
+2025/08/30 20:48:12 [32m/Users/szjason72/jobfirst/backend/points/main.go:169 [33mSLOW SQL >= 200ms
+[0m[31;1m[645.846ms] [33m[rows:1][35m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'jobfirst%' ORDER BY SCHEMA_NAME='jobfirst' DESC,SCHEMA_NAME limit 1[0m
+{"level":"info","msg":"Successfully connected to database","time":"2025-08-30T20:48:12+08:00"}
+{"level":"info","msg":"Successfully connected to Consul","time":"2025-08-30T20:48:12+08:00"}
+{"level":"info","msg":"Successfully connected to Redis","time":"2025-08-30T20:48:12+08:00"}
+{"level":"info","msg":"Service registered to Consul","time":"2025-08-30T20:48:12+08:00"}
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.setupRouter.func1 (4 handlers)
+[GIN-debug] GET    /metrics                  --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func6 (4 handlers)
+[GIN-debug] GET    /v1/.well-known/metrics   --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func7 (4 handlers)
+[GIN-debug] GET    /v2/api-docs              --> main.setupRouter.func2 (4 handlers)
+[GIN-debug] GET    /points/rules             --> main.getPointsRules (4 handlers)
+[GIN-debug] GET    /points/levels            --> main.getPointsLevels (4 handlers)
+[GIN-debug] GET    /points/rewards           --> main.getPointsRewards (4 handlers)
+[GIN-debug] GET    /points/balance           --> main.getPointsBalance (5 handlers)
+[GIN-debug] GET    /points/history           --> main.getPointsHistory (5 handlers)
+[GIN-debug] GET    /points/transactions      --> main.getTransactions (5 handlers)
+[GIN-debug] GET    /points/summary           --> main.getPointsSummary (5 handlers)
+[GIN-debug] POST   /points/earn              --> main.earnPoints (5 handlers)
+[GIN-debug] POST   /points/spend             --> main.spendPoints (5 handlers)
+[GIN-debug] POST   /points/transfer          --> main.transferPoints (5 handlers)
+[GIN-debug] POST   /points/exchange          --> main.exchangePoints (5 handlers)
+[GIN-debug] GET    /points/tasks             --> main.getPointsTasks (5 handlers)
+[GIN-debug] POST   /points/tasks/complete    --> main.completePointsTask (5 handlers)
+[GIN-debug] GET    /points/tasks/progress    --> main.getTaskProgress (5 handlers)
+[GIN-debug] GET    /points/mall/items        --> main.getMallItems (5 handlers)
+[GIN-debug] POST   /points/mall/purchase     --> main.purchaseMallItem (5 handlers)
+[GIN-debug] GET    /points/mall/orders       --> main.getMallOrders (5 handlers)
+[GIN-debug] GET    /api/v1/points/rules      --> main.getPointsRules (4 handlers)
+[GIN-debug] GET    /api/v1/points/levels     --> main.getPointsLevels (4 handlers)
+[GIN-debug] GET    /api/v1/points/rewards    --> main.getPointsRewards (4 handlers)
+[GIN-debug] GET    /api/v1/points/balance    --> main.getPointsBalance (5 handlers)
+[GIN-debug] GET    /api/v1/points/history    --> main.getPointsHistory (5 handlers)
+[GIN-debug] GET    /api/v1/points/transactions --> main.getTransactions (5 handlers)
+[GIN-debug] GET    /api/v1/points/summary    --> main.getPointsSummary (5 handlers)
+[GIN-debug] POST   /api/v1/points/earn       --> main.earnPoints (5 handlers)
+[GIN-debug] POST   /api/v1/points/spend      --> main.spendPoints (5 handlers)
+[GIN-debug] POST   /api/v1/points/transfer   --> main.transferPoints (5 handlers)
+[GIN-debug] POST   /api/v1/points/exchange   --> main.exchangePoints (5 handlers)
+[GIN-debug] GET    /api/v1/points/tasks      --> main.getPointsTasks (5 handlers)
+[GIN-debug] POST   /api/v1/points/tasks/complete --> main.completePointsTask (5 handlers)
+[GIN-debug] GET    /api/v1/points/tasks/progress --> main.getTaskProgress (5 handlers)
+[GIN-debug] GET    /api/v1/points/mall/items --> main.getMallItems (5 handlers)
+[GIN-debug] POST   /api/v1/points/mall/purchase --> main.purchaseMallItem (5 handlers)
+[GIN-debug] GET    /api/v1/points/mall/orders --> main.getMallOrders (5 handlers)
+{"level":"info","msg":"Starting points service on port 8086","time":"2025-08-30T20:48:12+08:00"}
+[GIN] 2025/08/30 - 20:48:13 | 200 |       240.5µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 20:48:30 | 200 |      70.875µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:15:11 | 200 |     3.87475ms |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:16:02 | 200 |     133.417µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:17:09 | 200 |     148.083µs |             ::1 | GET      "/health"

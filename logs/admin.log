@@ -1,0 +1,39 @@
+
+  __    _   ___  
+ / /\  | | | |_) 
+/_/--\ |_| |_| \_ v1.62.0, built with Go go1.25.0
+
+watching .
+!exclude tmp
+building...
+running...
+2025/08/30 20:47:43 Failed to read config file: Config File "config" Not Found in "[/Users/szjason72/jobfirst/backend/admin/config /Users/szjason72/jobfirst/backend/config /Users/szjason72/jobfirst/config]"
+2025/08/30 20:47:43 Successfully connected to database
+2025/08/30 20:47:43 Successfully connected to Consul
+2025/08/30 20:47:43 Service registered to Consul
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.setupRouter.func1 (4 handlers)
+[GIN-debug] GET    /metrics                  --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func12 (4 handlers)
+[GIN-debug] GET    /v1/.well-known/metrics   --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func13 (4 handlers)
+[GIN-debug] GET    /v2/api-docs              --> main.setupRouter.func2 (4 handlers)
+[GIN-debug] GET    /admin/version            --> main.setupRouter.func3 (4 handlers)
+[GIN-debug] POST   /admin/authentication/login --> main.setupRouter.func4 (4 handlers)
+[GIN-debug] GET    /admin/user/code          --> main.setupRouter.func5 (4 handlers)
+[GIN-debug] POST   /admin/user/forget        --> main.setupRouter.func6 (4 handlers)
+[GIN-debug] GET    /admin/users              --> main.setupRouter.func7 (5 handlers)
+[GIN-debug] GET    /admin/config             --> main.setupRouter.func8 (5 handlers)
+[GIN-debug] GET    /admin/statistics         --> main.setupRouter.func9 (5 handlers)
+2025/08/30 20:47:43 Starting admin service on port 8003
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8003
+[GIN] 2025/08/30 - 20:47:44 | 200 |     237.458µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 20:48:30 | 200 |     228.833µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:15:11 | 200 |      2.6745ms |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:16:02 | 200 |     187.667µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:17:09 | 200 |     138.791µs |             ::1 | GET      "/health"

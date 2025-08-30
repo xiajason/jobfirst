@@ -1,0 +1,175 @@
+<!--profile.wxml-->
+<view class="container">
+  <!-- 用户信息区域 -->
+  <view class="user-section">
+    <view class="user-info" bindtap="navigateToUserInfo">
+      <view class="user-avatar">
+        <image 
+          class="avatar" 
+          src="{{userInfo.avatar || '/images/default-avatar.png'}}" 
+          mode="aspectFill"
+        />
+      </view>
+      <view class="user-details">
+        <view class="user-name">{{userInfo.name || '未登录'}}</view>
+        <view class="user-desc">{{userInfo.title || '点击登录账号'}}</view>
+      </view>
+      <view class="user-arrow">
+        <icon type="arrow" size="16" color="#999"></icon>
+      </view>
+    </view>
+    
+    <!-- 数据统计 -->
+    <view class="user-stats">
+      <view class="stat-item" bindtap="navigateToApply">
+        <view class="stat-number">{{stats.applyCount || 0}}</view>
+        <view class="stat-label">投递记录</view>
+      </view>
+      <view class="stat-item" bindtap="navigateToInterview">
+        <view class="stat-number">{{stats.interviewCount || 0}}</view>
+        <view class="stat-label">面试邀请</view>
+      </view>
+      <view class="stat-item" bindtap="navigateToFavorite">
+        <view class="stat-number">{{stats.favoriteCount || 0}}</view>
+        <view class="stat-label">收藏职位</view>
+      </view>
+      <view class="stat-item" bindtap="navigateToResume">
+        <view class="stat-number">{{stats.resumeCount || 0}}</view>
+        <view class="stat-label">简历数量</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <!-- 求职相关 -->
+    <view class="menu-group">
+      <view class="menu-title">求职管理</view>
+      <view class="menu-list">
+        <view class="menu-item" bindtap="navigateToResume">
+          <view class="menu-icon">📝</view>
+          <view class="menu-content">
+            <view class="menu-name">我的简历</view>
+            <view class="menu-desc">管理个人简历信息</view>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+        
+        <view class="menu-item" bindtap="navigateToApply">
+          <view class="menu-icon">📋</view>
+          <view class="menu-content">
+            <view class="menu-name">投递记录</view>
+            <view class="menu-desc">查看投递历史</view>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+        
+        <view class="menu-item" bindtap="navigateToInterview">
+          <view class="menu-icon">🎯</view>
+          <view class="menu-content">
+            <view class="menu-name">面试邀请</view>
+            <view class="menu-desc">查看面试通知</view>
+          </view>
+          <view class="menu-badge" wx:if="{{stats.unreadInterview > 0}}">
+            <text class="badge">{{stats.unreadInterview}}</text>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+        
+        <view class="menu-item" bindtap="navigateToFavorite">
+          <view class="menu-icon">❤️</view>
+          <view class="menu-content">
+            <view class="menu-name">收藏职位</view>
+            <view class="menu-desc">查看收藏的职位</view>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 设置相关 -->
+    <view class="menu-group">
+      <view class="menu-title">设置</view>
+      <view class="menu-list">
+        <view class="menu-item" bindtap="navigateToSettings">
+          <view class="menu-icon">⚙️</view>
+          <view class="menu-content">
+            <view class="menu-name">应用设置</view>
+            <view class="menu-desc">通知、隐私等设置</view>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+        
+        <view class="menu-item" bindtap="navigateToFeedback">
+          <view class="menu-icon">💬</view>
+          <view class="menu-content">
+            <view class="menu-name">意见反馈</view>
+            <view class="menu-desc">帮助我们改进产品</view>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+        
+        <view class="menu-item" bindtap="navigateToAbout">
+          <view class="menu-icon">ℹ️</view>
+          <view class="menu-content">
+            <view class="menu-name">关于我们</view>
+            <view class="menu-desc">版本信息、联系方式</view>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 其他功能 -->
+    <view class="menu-group">
+      <view class="menu-title">其他</view>
+      <view class="menu-list">
+        <view class="menu-item" bindtap="shareApp">
+          <view class="menu-icon">📤</view>
+          <view class="menu-content">
+            <view class="menu-name">分享应用</view>
+            <view class="menu-desc">推荐给朋友</view>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+        
+        <view class="menu-item" bindtap="clearCache">
+          <view class="menu-icon">🗑️</view>
+          <view class="menu-content">
+            <view class="menu-name">清除缓存</view>
+            <view class="menu-desc">释放存储空间</view>
+          </view>
+          <view class="menu-arrow">
+            <icon type="arrow" size="16" color="#999"></icon>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section" wx:if="{{userInfo.id}}">
+    <button class="btn btn-danger logout-btn" bindtap="logout">退出登录</button>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text class="version-text">版本 {{version}}</text>
+  </view>
+</view>

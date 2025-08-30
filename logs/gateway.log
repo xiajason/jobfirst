@@ -1,0 +1,263 @@
+
+  __    _   ___  
+ / /\  | | | |_) 
+/_/--\ |_| |_| \_ v1.62.0, built with Go go1.25.0
+
+watching .
+!exclude tmp
+building...
+running...
+{"level":"info","msg":"Successfully connected to Consul","time":"2025-08-30T21:15:51+08:00"}
+{"level":"info","msg":"Successfully connected to Redis","time":"2025-08-30T21:15:51+08:00"}
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.setupRouter.func1 (6 handlers)
+[GIN-debug] GET    /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] POST   /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] PUT    /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] PATCH  /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] HEAD   /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] OPTIONS /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] DELETE /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] CONNECT /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] TRACE  /resource/*path           --> main.setupRouter.proxyToService.func4 (6 handlers)
+[GIN-debug] GET    /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] POST   /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] PUT    /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] PATCH  /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] HEAD   /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] OPTIONS /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] DELETE /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] CONNECT /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] TRACE  /admin/*path              --> main.setupRouter.proxyToService.func5 (6 handlers)
+[GIN-debug] GET    /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] POST   /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] PUT    /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] PATCH  /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] HEAD   /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] OPTIONS /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] DELETE /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] CONNECT /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] TRACE  /personal/*path           --> main.setupRouter.proxyToService.func6 (6 handlers)
+[GIN-debug] GET    /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] POST   /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] PUT    /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] PATCH  /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] HEAD   /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] OPTIONS /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] DELETE /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] CONNECT /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] TRACE  /enterprise/*path         --> main.setupRouter.proxyToService.func7 (6 handlers)
+[GIN-debug] GET    /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] POST   /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] PUT    /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] PATCH  /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] HEAD   /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] OPTIONS /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] DELETE /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] CONNECT /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] TRACE  /open/*path               --> main.setupRouter.proxyToService.func8 (6 handlers)
+[GIN-debug] GET    /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] POST   /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] PUT    /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] PATCH  /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] HEAD   /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] OPTIONS /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] DELETE /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] CONNECT /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] TRACE  /resume/*path             --> main.setupRouter.proxyToService.func9 (6 handlers)
+[GIN-debug] GET    /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] POST   /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] PUT    /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] PATCH  /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] HEAD   /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] OPTIONS /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] DELETE /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] CONNECT /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] TRACE  /statistics/*path         --> main.setupRouter.proxyToService.func10 (6 handlers)
+[GIN-debug] GET    /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] POST   /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] PUT    /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] PATCH  /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] HEAD   /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] OPTIONS /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] DELETE /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] CONNECT /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] TRACE  /points/*path             --> main.setupRouter.proxyToService.func11 (6 handlers)
+[GIN-debug] GET    /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] POST   /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] PUT    /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] PATCH  /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] HEAD   /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] OPTIONS /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] DELETE /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] CONNECT /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] TRACE  /api/user/*path           --> main.setupRouter.proxyToService.func12 (6 handlers)
+[GIN-debug] GET    /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] POST   /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] PUT    /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] PATCH  /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] HEAD   /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] OPTIONS /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] DELETE /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] CONNECT /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] TRACE  /api/resume/*path         --> main.setupRouter.proxyToService.func13 (6 handlers)
+[GIN-debug] GET    /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] POST   /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] PUT    /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] PATCH  /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] HEAD   /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] OPTIONS /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] DELETE /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] CONNECT /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] TRACE  /api/points/*path         --> main.setupRouter.proxyToService.func14 (6 handlers)
+[GIN-debug] GET    /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] POST   /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] PUT    /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] PATCH  /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] HEAD   /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] OPTIONS /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] DELETE /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] CONNECT /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] TRACE  /api/statistics/*path     --> main.setupRouter.proxyToService.func15 (6 handlers)
+[GIN-debug] GET    /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] POST   /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] PUT    /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] PATCH  /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] HEAD   /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] OPTIONS /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] DELETE /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] CONNECT /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] TRACE  /api/storage/*path        --> main.setupRouter.proxyToService.func16 (6 handlers)
+[GIN-debug] GET    /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] POST   /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] PUT    /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] PATCH  /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] HEAD   /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] OPTIONS /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] DELETE /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] CONNECT /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] TRACE  /api/v2/jobs/*path        --> main.setupRouter.proxyToService.func17 (6 handlers)
+[GIN-debug] GET    /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] POST   /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] PUT    /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] PATCH  /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] HEAD   /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] OPTIONS /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] DELETE /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] CONNECT /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] TRACE  /api/v2/companies/*path   --> main.setupRouter.proxyToService.func18 (6 handlers)
+[GIN-debug] GET    /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] POST   /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] PUT    /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] PATCH  /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] HEAD   /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] OPTIONS /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] DELETE /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] CONNECT /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] TRACE  /api/v2/banners/*path     --> main.setupRouter.proxyToService.func19 (6 handlers)
+[GIN-debug] GET    /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] POST   /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] PUT    /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] PATCH  /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] HEAD   /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] OPTIONS /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] DELETE /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] CONNECT /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] TRACE  /api/v1/personal/*path    --> main.setupRouter.proxyToService.func20 (6 handlers)
+[GIN-debug] GET    /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] POST   /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] PUT    /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] PATCH  /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] HEAD   /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] OPTIONS /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] DELETE /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] CONNECT /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] TRACE  /api/v1/user/*path        --> main.setupRouter.proxyToService.func21 (6 handlers)
+[GIN-debug] GET    /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] POST   /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] PUT    /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] PATCH  /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] HEAD   /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] OPTIONS /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] DELETE /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] CONNECT /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] TRACE  /api/v1/resume/*path      --> main.setupRouter.proxyToService.func22 (6 handlers)
+[GIN-debug] GET    /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] POST   /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] PUT    /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] PATCH  /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] HEAD   /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] OPTIONS /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] DELETE /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] CONNECT /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] TRACE  /api/v1/points/*path      --> main.setupRouter.proxyToService.func23 (6 handlers)
+[GIN-debug] GET    /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] POST   /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] PUT    /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] PATCH  /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] HEAD   /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] OPTIONS /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] DELETE /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] CONNECT /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] TRACE  /api/v1/statistics/*path  --> main.setupRouter.proxyToService.func24 (6 handlers)
+[GIN-debug] GET    /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+[GIN-debug] POST   /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+[GIN-debug] PUT    /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+[GIN-debug] PATCH  /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+[GIN-debug] HEAD   /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+[GIN-debug] OPTIONS /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+[GIN-debug] DELETE /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+[GIN-debug] CONNECT /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+[GIN-debug] TRACE  /api/v1/resources/*path   --> main.setupRouter.proxyToService.func25 (6 handlers)
+{"level":"info","msg":"Starting gateway server on port 8080","time":"2025-08-30T21:15:51+08:00"}
+::1 - [Sat, 30 Aug 2025 21:15:52 CST] "GET /health HTTP/1.1 200 55.625µs "curl/8.7.1" "
+[GIN] 2025/08/30 - 21:15:52 | 200 |     110.542µs |             ::1 | GET      "/health"
+::1 - [Sat, 30 Aug 2025 21:16:02 CST] "GET /health HTTP/1.1 200 29.833µs "curl/8.7.1" "
+[GIN] 2025/08/30 - 21:16:02 | 200 |          71µs |             ::1 | GET      "/health"
+::1 - [Sat, 30 Aug 2025 21:16:29 CST] "GET /health HTTP/1.1 200 25.584µs "curl/8.7.1" "
+[GIN] 2025/08/30 - 21:16:29 | 200 |      72.875µs |             ::1 | GET      "/health"
+{"level":"info","msg":"Proxy request: user-service -\u003e localhost:8081, original path: /api/v2/jobs/","time":"2025-08-30T21:16:36+08:00"}
+{"level":"info","msg":"Rewritten path: /api/v2/jobs/","time":"2025-08-30T21:16:36+08:00"}
+::1 - [Sat, 30 Aug 2025 21:16:36 CST] "GET /api/v2/jobs/ HTTP/1.1 200 11.981167ms "curl/8.7.1" "
+[GIN] 2025/08/30 - 21:16:36 | 200 |   12.021458ms |             ::1 | GET      "/api/v2/jobs/"
+{"level":"info","msg":"Proxy request: user-service -\u003e localhost:8081, original path: /api/v2/banners/","time":"2025-08-30T21:16:42+08:00"}
+{"level":"info","msg":"Rewritten path: /api/v2/banners/","time":"2025-08-30T21:16:42+08:00"}
+::1 - [Sat, 30 Aug 2025 21:16:42 CST] "GET /api/v2/banners/ HTTP/1.1 200 1.783542ms "curl/8.7.1" "
+[GIN] 2025/08/30 - 21:16:42 | 200 |    1.800875ms |             ::1 | GET      "/api/v2/banners/"
+{"level":"info","msg":"Proxy request: user-service -\u003e localhost:8081, original path: /api/v2/companies/","time":"2025-08-30T21:16:51+08:00"}
+{"level":"info","msg":"Rewritten path: /api/v2/companies/","time":"2025-08-30T21:16:51+08:00"}
+::1 - [Sat, 30 Aug 2025 21:16:51 CST] "GET /api/v2/companies/ HTTP/1.1 200 3.249792ms "curl/8.7.1" "
+[GIN] 2025/08/30 - 21:16:51 | 200 |    3.288458ms |             ::1 | GET      "/api/v2/companies/"
+::1 - [Sat, 30 Aug 2025 21:17:10 CST] "GET /health HTTP/1.1 200 62.084µs "curl/8.7.1" "
+[GIN] 2025/08/30 - 21:17:10 | 200 |     133.041µs |             ::1 | GET      "/health"
+::1 - [Sat, 30 Aug 2025 21:49:10 CST] "GET /api/v1/banners/ HTTP/1.1 404 1.504792ms "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1 wechatdevtools/1.06.2504020 MicroMessenger/8.0.5 Language/zh_CN webview/ sessionid/68" "
+::1 - [Sat, 30 Aug 2025 21:49:10 CST] "GET /api/v1/jobs/?limit=6 HTTP/1.1 404 541.167µs "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1 wechatdevtools/1.06.2504020 MicroMessenger/8.0.5 Language/zh_CN webview/ sessionid/68" "
+[GIN] 2025/08/30 - 21:49:10 | 404 |    1.869542ms |             ::1 | GET      "/api/v1/jobs/?limit=6"
+[GIN] 2025/08/30 - 21:49:10 | 404 |    2.676125ms |             ::1 | GET      "/api/v1/banners/"
+::1 - [Sat, 30 Aug 2025 21:49:10 CST] "GET /api/v1/companies/ HTTP/1.1 404 4.708µs "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1 wechatdevtools/1.06.2504020 MicroMessenger/8.0.5 Language/zh_CN webview/ sessionid/68" "
+[GIN] 2025/08/30 - 21:49:10 | 404 |      47.458µs |             ::1 | GET      "/api/v1/companies/"
+::1 - [Sat, 30 Aug 2025 21:49:11 CST] "GET /api/v1/banners/ HTTP/1.1 404 5.166µs "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1 wechatdevtools/1.06.2504020 MicroMessenger/8.0.5 Language/zh_CN webview/ sessionid/68" "
+[GIN] 2025/08/30 - 21:49:11 | 404 |      63.958µs |             ::1 | GET      "/api/v1/banners/"
+::1 - [Sat, 30 Aug 2025 21:49:11 CST] "GET /api/v1/jobs/?limit=6 HTTP/1.1 404 3.083µs "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1 wechatdevtools/1.06.2504020 MicroMessenger/8.0.5 Language/zh_CN webview/ sessionid/68" "
+[GIN] 2025/08/30 - 21:49:11 | 404 |      60.334µs |             ::1 | GET      "/api/v1/jobs/?limit=6"
+::1 - [Sat, 30 Aug 2025 21:49:11 CST] "GET /api/v1/companies/ HTTP/1.1 404 391.541µs "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1 wechatdevtools/1.06.2504020 MicroMessenger/8.0.5 Language/zh_CN webview/ sessionid/68" "
+[GIN] 2025/08/30 - 21:49:11 | 404 |      430.75µs |             ::1 | GET      "/api/v1/companies/"
+{"level":"info","msg":"Proxy request: user-service -\u003e localhost:8081, original path: /api/v2/jobs/","time":"2025-08-30T22:01:50+08:00"}
+{"level":"info","msg":"Rewritten path: /api/v2/jobs/","time":"2025-08-30T22:01:50+08:00"}
+::1 - [Sat, 30 Aug 2025 22:01:50 CST] "GET /api/v2/jobs/ HTTP/1.1 200 23.602ms "curl/8.7.1" "
+[GIN] 2025/08/30 - 22:01:50 | 200 |    23.67575ms |             ::1 | GET      "/api/v2/jobs/"
+::1 - [Sat, 30 Aug 2025 22:01:50 CST] "GET /api/v2/user/profile HTTP/1.1 404 27.334µs "curl/8.7.1" "
+[GIN] 2025/08/30 - 22:01:50 | 404 |      78.375µs |             ::1 | GET      "/api/v2/user/profile"
+::1 - [Sat, 30 Aug 2025 22:01:50 CST] "GET /api/v2/user/profile HTTP/1.1 404 15.25µs "curl/8.7.1" "
+[GIN] 2025/08/30 - 22:01:50 | 404 |      57.667µs |             ::1 | GET      "/api/v2/user/profile"
+{"level":"info","msg":"Proxy request: user-service -\u003e localhost:8081, original path: /api/v2/jobs/","time":"2025-08-30T22:01:55+08:00"}
+{"level":"info","msg":"Rewritten path: /api/v2/jobs/","time":"2025-08-30T22:01:55+08:00"}
+::1 - [Sat, 30 Aug 2025 22:01:55 CST] "GET /api/v2/jobs/ HTTP/1.1 200 7.85525ms "curl/8.7.1" "
+[GIN] 2025/08/30 - 22:01:55 | 200 |    7.891125ms |             ::1 | GET      "/api/v2/jobs/"
+::1 - [Sat, 30 Aug 2025 22:02:06 CST] "GET /api/v2/user/profile HTTP/1.1 404 15.708µs "curl/8.7.1" "
+[GIN] 2025/08/30 - 22:02:06 | 404 |     271.959µs |             ::1 | GET      "/api/v2/user/profile"

@@ -1,0 +1,42 @@
+
+  __    _   ___  
+ / /\  | | | |_) 
+/_/--\ |_| |_| \_ v1.62.0, built with Go go1.25.0
+
+watching .
+!exclude tmp
+building...
+running...
+{"level":"info","msg":"Successfully connected to database","time":"2025-08-30T20:48:23+08:00"}
+{"level":"info","msg":"Successfully connected to Consul","time":"2025-08-30T20:48:23+08:00"}
+{"level":"info","msg":"Successfully connected to Redis","time":"2025-08-30T20:48:23+08:00"}
+{"level":"info","msg":"Service registered to Consul","time":"2025-08-30T20:48:23+08:00"}
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.setupRouter.func1 (4 handlers)
+[GIN-debug] GET    /metrics                  --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func5 (4 handlers)
+[GIN-debug] GET    /v1/.well-known/metrics   --> main.setupRouter.GetMetricsHandler.SecureMetricsHandler.func6 (4 handlers)
+[GIN-debug] POST   /api/v1/auth/register     --> main.registerUser (4 handlers)
+[GIN-debug] POST   /api/v1/auth/login        --> main.loginUser (4 handlers)
+[GIN-debug] POST   /api/v1/auth/logout       --> main.logoutUser (4 handlers)
+[GIN-debug] GET    /api/v1/users/profile     --> main.getUserProfile (5 handlers)
+[GIN-debug] PUT    /api/v1/users/profile     --> main.updateUserProfile (5 handlers)
+[GIN-debug] DELETE /api/v1/users/:id         --> main.deleteUser (5 handlers)
+[GIN-debug] GET    /api/v1/resources/urls    --> main.getResourceUrls (5 handlers)
+[GIN-debug] GET    /api/v1/resources/urls/:id --> main.getResourceUrl (5 handlers)
+[GIN-debug] GET    /api/v1/resources/dict/types --> main.getDictTypeList (5 handlers)
+[GIN-debug] GET    /api/v1/resources/dict/data --> main.getDictData (5 handlers)
+[GIN-debug] GET    /api/v1/resources/schools --> main.searchSchool (5 handlers)
+[GIN-debug] POST   /api/v1/resources/upload  --> main.uploadResource (5 handlers)
+[GIN-debug] DELETE /api/v1/resources/:id     --> main.deleteResource (5 handlers)
+[GIN-debug] PUT    /api/v1/resources/:id     --> main.updateResource (5 handlers)
+{"level":"info","msg":"Starting storage service on port 8088","time":"2025-08-30T20:48:23+08:00"}
+[GIN] 2025/08/30 - 20:48:24 | 200 |     313.584µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 20:48:30 | 200 |      81.917µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:15:11 | 200 |    4.605584ms |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:16:02 | 200 |     164.458µs |             ::1 | GET      "/health"
+[GIN] 2025/08/30 - 21:17:10 | 200 |     259.084µs |             ::1 | GET      "/health"

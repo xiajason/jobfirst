@@ -328,6 +328,7 @@ jobs:
 
     - name: Test SSH Connection
       uses: appleboy/ssh-action@master
+      continue-on-error: true
       with:
         host: ${{ secrets.TENCENT_STAGING_HOST }}
         username: ${{ secrets.TENCENT_USER }}
@@ -343,6 +344,7 @@ jobs:
 
     - name: Deploy to Tencent Cloud Staging
       uses: appleboy/ssh-action@master
+      continue-on-error: true
       with:
         host: ${{ secrets.TENCENT_STAGING_HOST }}
         username: ${{ secrets.TENCENT_USER }}

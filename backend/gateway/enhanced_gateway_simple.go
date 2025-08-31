@@ -465,7 +465,10 @@ func (g *EnhancedGateway) Run() error {
 // generateSecretKey 生成随机密钥
 func generateSecretKey() string {
 	bytes := make([]byte, 32)
-	rand.Read(bytes)
+	if _, err := rand.Read(bytes); err != nil {
+		// 如果随机数生成失败，使用时间戳作为备选
+		return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%d", time.Now().UnixNano())))
+	}
 	return base64.StdEncoding.EncodeToString(bytes)
 }
 

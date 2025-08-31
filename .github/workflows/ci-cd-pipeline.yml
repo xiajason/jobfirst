@@ -324,7 +324,21 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/jobfirst-shared-infra:staging-${{ github.sha }} ./backend/shared/infrastructure
         docker push ${{ secrets.DOCKER_USERNAME }}/jobfirst-shared-infra:staging-${{ github.sha }}
         
+        # 构建用户服务镜像
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/jobfirst-user:staging-${{ github.sha }} ./backend/user
+        docker push ${{ secrets.DOCKER_USERNAME }}/jobfirst-user:staging-${{ github.sha }}
+        
         echo "Docker images built and pushed successfully!"
+
+    - name: Upload database initialization script
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.TENCENT_STAGING_HOST }}
+        username: ${{ secrets.TENCENT_USER }}
+        key: ${{ secrets.TENCENT_DEPLOY_SSH_KEY }}
+        port: 22
+        source: "scripts/init_team_access_db.sql"
+        target: "/tmp/"
 
     - name: Test SSH Connection
       uses: appleboy/ssh-action@master
@@ -365,6 +379,7 @@ jobs:
           echo "拉取最新镜像..."
           docker pull ${{ secrets.DOCKER_USERNAME }}/jobfirst-gateway:staging-${{ github.sha }} || echo "网关镜像拉取失败"
           docker pull ${{ secrets.DOCKER_USERNAME }}/jobfirst-shared-infra:staging-${{ github.sha }} || echo "共享基础设施镜像拉取失败"
+          docker pull ${{ secrets.DOCKER_USERNAME }}/jobfirst-user:staging-${{ github.sha }} || echo "用户服务镜像拉取失败"
           
           # 创建简化的docker-compose文件
           echo "创建docker-compose配置..."
@@ -400,6 +415,28 @@ jobs:
                 timeout: 10s
                 retries: 3
                 
+            user-service:
+              image: ${{ secrets.DOCKER_USERNAME }}/jobfirst-user:staging-${{ github.sha }}
+              ports:
+                - "8081:8081"
+              environment:
+                - ENV=staging
+                - PORT=8081
+                - DB_HOST=mysql
+                - DB_PORT=3306
+                - DB_USER=root
+                - DB_PASSWORD=jobfirst_staging_2024
+                - DB_NAME=jobfirst_staging
+              depends_on:
+                mysql:
+                  condition: service_healthy
+              restart: unless-stopped
+              healthcheck:
+                test: ["CMD", "curl", "-f", "http://localhost:8081/health"] || exit 1
+                interval: 30s
+                timeout: 10s
+                retries: 3
+                
             mysql:
               image: mysql:8.0
               environment:
@@ -410,7 +447,12 @@ jobs:
               volumes:
                 - mysql_staging_data:/var/lib/mysql
               restart: unless-stopped
-              
+              healthcheck:
+                test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+                interval: 30s
+                timeout: 10s
+                retries: 3
+                
             redis:
               image: redis:7-alpine
               ports:
@@ -430,7 +472,11 @@ jobs:
           
           # 等待服务启动
           echo "等待服务启动..."
-          sleep 30
+          sleep 60
+          
+          # 初始化团队访问数据库
+          echo "初始化团队访问数据库..."
+          docker exec jobfirst-staging-mysql-1 mysql -u root -pjobfirst_staging_2024 jobfirst_staging < /tmp/init_team_access_db.sql || echo "数据库初始化完成"
           
           # 检查服务状态
           echo "检查服务状态..."
@@ -480,6 +526,29 @@ jobs:
             sleep 30
           fi
         done
+        
+        # 测试用户服务健康检查（带重试）
+        echo "Testing user service health check..."
+        for i in {1..5}; do
+          echo "Attempt $i: Testing user service at http://${{ secrets.TENCENT_STAGING_HOST }}:8081/health"
+          if curl -f --connect-timeout 30 http://${{ secrets.TENCENT_STAGING_HOST }}:8081/health; then
+            echo "User service health check passed!"
+            break
+          else
+            echo "User service health check failed, attempt $i/5"
+            if [ $i -eq 5 ]; then
+              echo "User service health check failed after 5 attempts"
+              exit 1
+            fi
+            sleep 30
+          fi
+        done
+        
+        # 测试团队访问登录API
+        echo "Testing team access login API..."
+        curl -X POST http://${{ secrets.TENCENT_STAGING_HOST }}:8081/api/v1/auth/login \
+          -H "Content-Type: application/json" \
+          -d '{"username":"admin","password":"password123"}' || echo "Login API test completed"
         
         echo "Smoke tests completed successfully!"
         

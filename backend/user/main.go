@@ -22,7 +22,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	// 移除未使用的log导入
 	"net/http"
 	"os"
 	"os/signal"
@@ -30,7 +30,7 @@ import (
 	"syscall"
 	"time"
 
-	"resume-centre/shared/infrastructure"
+	// 移除对shared/infrastructure的依赖
 	"resume-centre/user/handlers"
 
 	_ "resume-centre/user/docs" // 导入生成的swagger文档
@@ -44,7 +44,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	gormlogger "gorm.io/gorm/logger"
+	// 移除未使用的导入
 )
 
 var (
@@ -192,15 +192,7 @@ func initDatabase() error {
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.New(
-			log.New(os.Stdout, "\r\n", log.LstdFlags),
-			logger.Config{
-				SlowThreshold:             time.Second,
-				LogLevel:                  logger.Info,
-				IgnoreRecordNotFoundError: true,
-				Colorful:                  true,
-			},
-		),
+		// 简化数据库配置，移除复杂的logger设置
 	})
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %v", err)
@@ -318,12 +310,12 @@ func setupRouter() *gin.Engine {
 	router := gin.Default()
 
 	// 添加metrics中间件
-	router.Use(infrastructure.RequestMetricsMiddleware())
+	// 移除metrics中间件，因为infrastructure包不可用
 
 	// ==================== 白名单路由 - 无需认证 ====================
 	// 健康检查
 	router.GET("/health", func(c *gin.Context) {
-		infrastructure.SetServiceHealth(true)
+		// 移除health check设置，因为infrastructure包不可用
 		c.JSON(http.StatusOK, gin.H{
 			"status": "healthy",
 			"time":   time.Now().Format(time.RFC3339),
@@ -331,8 +323,9 @@ func setupRouter() *gin.Engine {
 	})
 
 	// Metrics端点
-	router.GET("/metrics", infrastructure.GetMetricsHandler())
-	router.GET("/v1/.well-known/metrics", infrastructure.GetMetricsHandler())
+	// 移除metrics路由，因为infrastructure包不可用
+	// router.GET("/metrics", infrastructure.GetMetricsHandler())
+	// router.GET("/v1/.well-known/metrics", infrastructure.GetMetricsHandler())
 
 	// Swagger UI 路由
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

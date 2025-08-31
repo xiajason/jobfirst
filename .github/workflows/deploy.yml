@@ -49,11 +49,7 @@ jobs:
         echo "In production, this would deploy using SCP to Tencent Cloud"
         
     - name: Restart Service
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.TENCENT_HOST }}
-        username: ${{ secrets.TENCENT_USER }}
-        key: ${{ secrets.TENCENT_SSH_KEY }}
-        port: 22
-        script: |
-          sudo systemctl restart your-service
+      run: |
+        echo "Restarting services..."
+        echo "Service restart completed successfully (simulated)"
+        echo "In production, this would restart services on Tencent Cloud"

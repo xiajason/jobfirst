@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 
 # 构建应用
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o gateway simple_gateway.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o gateway enhanced_gateway_simple.go
 
 # 运行阶段
 FROM alpine:latest

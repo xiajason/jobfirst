@@ -50,9 +50,9 @@ jobs:
       run: |
         scp -i ~/.ssh/tencent_deploy_key -o StrictHostKeyChecking=no \
           gateway shared-infrastructure \
-          tencent_user@your_server_ip:/opt/your_app/
+          ${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_STAGING_HOST }}:/opt/jobfirst/
         
     - name: Restart Service
       run: |
         ssh -i ~/.ssh/tencent_deploy_key -o StrictHostKeyChecking=no \
-          tencent_user@your_server_ip "sudo systemctl restart your_service"
+          ${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_STAGING_HOST }} "sudo systemctl restart jobfirst"

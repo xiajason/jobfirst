@@ -15,9 +15,9 @@ require (
 	gorm.io/gorm v1.25.5
 )
 
-# 移除replace指令，在Docker构建环境中不起作用
-# replace resume-centre/shared/infrastructure => ../shared/infrastructure
-# replace resume-centre/common => ../common
+// 移除replace指令，在Docker构建环境中不起作用
+// replace resume-centre/shared/infrastructure => ../shared/infrastructure
+// replace resume-centre/common => ../common
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

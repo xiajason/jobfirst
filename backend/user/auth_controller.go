@@ -93,7 +93,7 @@ func (ac *AuthController) generateToken(user *User) (string, time.Time, error) {
 	claims := jwt.MapClaims{
 		"user_id":  user.ID,
 		"username": user.Username,
-		"role":     user.Role,
+		"role":     "user", // 默认角色
 		"exp":      expiresAt.Unix(),
 	}
 	
@@ -137,11 +137,10 @@ func (ac *AuthController) CreateUser(c *gin.Context) {
 
 	// 插入用户
 	user := User{
-		Username: req.Username,
-		Email:    req.Email,
-		Password: string(hashedPassword),
-		Role:     req.Role,
-		Status:   "active",
+		Username:     req.Username,
+		Email:        req.Email,
+		PasswordHash: string(hashedPassword),
+		Status:       "active",
 	}
 	
 	err = ac.db.Create(&user).Error

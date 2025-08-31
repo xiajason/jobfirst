@@ -332,7 +332,7 @@ jobs:
       with:
         host: ${{ secrets.TENCENT_STAGING_HOST }}
         username: ${{ secrets.TENCENT_USER }}
-        key: ${{ secrets.TENCENT_SSH_KEY }}
+        key: ${{ secrets.TENCENT_DEPLOY_SSH_KEY }}
         port: 22
         script: |
           echo "=== SSH连接测试成功 ==="
@@ -348,7 +348,7 @@ jobs:
       with:
         host: ${{ secrets.TENCENT_STAGING_HOST }}
         username: ${{ secrets.TENCENT_USER }}
-        key: ${{ secrets.TENCENT_SSH_KEY }}
+        key: ${{ secrets.TENCENT_DEPLOY_SSH_KEY }}
         port: 22
         script: |
           echo "=== 开始部署到腾讯云测试环境 ==="

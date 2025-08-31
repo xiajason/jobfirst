@@ -5,9 +5,6 @@ WORKDIR /app
 # 复制go mod文件
 COPY go.mod go.sum ./
 
-# 复制shared目录（从父目录）
-COPY ../shared/infrastructure ./shared/infrastructure
-
 # 下载依赖
 RUN go mod download
 

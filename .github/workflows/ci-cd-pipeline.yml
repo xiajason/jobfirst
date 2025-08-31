@@ -233,7 +233,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: frontend-build
-        path: .next
+        path: frontend/web/.next
         retention-days: 7
 
   # ==================== 前端端到端测试 ====================
@@ -325,8 +325,22 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/jobfirst-shared-infra:staging-${{ github.sha }}
         
         echo "Docker images built and pushed successfully!"
-      continue-on-error: true
-        
+
+    - name: Test SSH Connection
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TENCENT_STAGING_HOST }}
+        username: ${{ secrets.TENCENT_USER }}
+        key: ${{ secrets.TENCENT_SSH_KEY }}
+        port: 22
+        script: |
+          echo "=== SSH连接测试成功 ==="
+          echo "主机: $(hostname)"
+          echo "用户: $(whoami)"
+          echo "Docker版本: $(docker --version)"
+          echo "Docker Compose版本: $(docker-compose --version)"
+          echo "=== 环境检查完成 ==="
+
     - name: Deploy to Tencent Cloud Staging
       uses: appleboy/ssh-action@master
       with:
@@ -335,18 +349,23 @@ jobs:
         key: ${{ secrets.TENCENT_SSH_KEY }}
         port: 22
         script: |
+          echo "=== 开始部署到腾讯云测试环境 ==="
+          
           # 创建部署目录
           mkdir -p /home/ubuntu/jobfirst-staging
           cd /home/ubuntu/jobfirst-staging
           
           # 停止现有服务
+          echo "停止现有服务..."
           docker-compose down || true
           
-                     # 拉取最新镜像
-           docker pull ${{ secrets.DOCKER_USERNAME }}/jobfirst-gateway:staging-${{ github.sha }}
-           docker pull ${{ secrets.DOCKER_USERNAME }}/jobfirst-shared-infra:staging-${{ github.sha }}
+          # 拉取最新镜像
+          echo "拉取最新镜像..."
+          docker pull ${{ secrets.DOCKER_USERNAME }}/jobfirst-gateway:staging-${{ github.sha }} || echo "网关镜像拉取失败"
+          docker pull ${{ secrets.DOCKER_USERNAME }}/jobfirst-shared-infra:staging-${{ github.sha }} || echo "共享基础设施镜像拉取失败"
           
-          # 创建docker-compose文件
+          # 创建简化的docker-compose文件
+          echo "创建docker-compose配置..."
           cat > docker-compose.staging.yml << 'EOF'
           version: '3.8'
           
@@ -360,7 +379,7 @@ jobs:
                 - PORT=8000
               restart: unless-stopped
               healthcheck:
-                test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+                test: ["CMD", "curl", "-f", "http://localhost:8000/health"] || exit 1
                 interval: 30s
                 timeout: 10s
                 retries: 3
@@ -374,22 +393,10 @@ jobs:
                 - PORT=8210
               restart: unless-stopped
               healthcheck:
-                test: ["CMD", "curl", "-f", "http://localhost:8210/health"]
+                test: ["CMD", "curl", "-f", "http://localhost:8210/health"] || exit 1
                 interval: 30s
                 timeout: 10s
                 retries: 3
-                
-                         # 前端服务暂时注释，使用静态文件部署
-             # frontend:
-             #   image: ${{ secrets.DOCKER_USERNAME }}/jobfirst-frontend:staging-${{ github.sha }}
-             #   ports:
-             #     - "3000:3000"
-             #   environment:
-             #     - NODE_ENV=production
-             #     - NEXT_PUBLIC_API_URL=http://localhost:8000
-             #   restart: unless-stopped
-             #   depends_on:
-             #     - gateway
                 
             mysql:
               image: mysql:8.0
@@ -410,38 +417,24 @@ jobs:
                 - redis_staging_data:/data
               restart: unless-stopped
               
-            prometheus:
-              image: prom/prometheus:latest
-              ports:
-                - "9090:9090"
-              volumes:
-                - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-              restart: unless-stopped
-              
-            grafana:
-              image: grafana/grafana:latest
-              ports:
-                - "3001:3000"
-              environment:
-                - GF_SECURITY_ADMIN_PASSWORD=jobfirst_staging_2024
-              volumes:
-                - grafana_staging_data:/var/lib/grafana
-              restart: unless-stopped
-              
           volumes:
             mysql_staging_data:
             redis_staging_data:
-            grafana_staging_data:
           EOF
           
           # 启动服务
+          echo "启动服务..."
           docker-compose -f docker-compose.staging.yml up -d
           
           # 等待服务启动
+          echo "等待服务启动..."
           sleep 30
           
           # 检查服务状态
+          echo "检查服务状态..."
           docker-compose -f docker-compose.staging.yml ps
+          
+          echo "=== 部署完成 ==="
           
     - name: Run staging smoke tests
       run: |

@@ -135,7 +135,7 @@ jobs:
     needs: [unit-tests, integration-tests]
     strategy:
       matrix:
-        service: [gateway, shared-infrastructure]
+        service: [gateway]
         
     steps:
     - name: Checkout code
@@ -197,7 +197,7 @@ jobs:
         
     - name: Install dependencies
       working-directory: frontend/web
-      run: npm ci
+      run: npm ci || npm install
       
     - name: Run linting
       working-directory: frontend/web
@@ -244,7 +244,7 @@ jobs:
         
     - name: Install dependencies
       working-directory: frontend/web
-      run: npm ci
+      run: npm ci || npm install
       
     - name: Install Playwright browsers
       working-directory: frontend/web

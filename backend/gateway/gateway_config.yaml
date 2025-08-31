@@ -1,0 +1,186 @@
+# JobFirst API Gateway 配置
+
+# 服务器配置
+server:
+  port: "8000"
+  host: "0.0.0.0"
+  timeout: "30s"
+
+# 服务配置
+services:
+  user-service:
+    name: "user-service"
+    path: "user"
+    version: "v1"
+    port: 8001
+    host: "localhost"
+    timeout: "10s"
+    retry: 3
+    auth: true
+    strip_prefix: true
+    headers:
+      X-Service-Name: "user-service"
+      X-Service-Version: "v1"
+
+  resume-service:
+    name: "resume-service"
+    path: "resume"
+    version: "v1"
+    port: 8002
+    host: "localhost"
+    timeout: "15s"
+    retry: 3
+    auth: true
+    strip_prefix: true
+    headers:
+      X-Service-Name: "resume-service"
+      X-Service-Version: "v1"
+
+  personal-service:
+    name: "personal-service"
+    path: "personal"
+    version: "v1"
+    port: 8003
+    host: "localhost"
+    timeout: "10s"
+    retry: 3
+    auth: true
+    strip_prefix: true
+    headers:
+      X-Service-Name: "personal-service"
+      X-Service-Version: "v1"
+
+  points-service:
+    name: "points-service"
+    path: "points"
+    version: "v1"
+    port: 8005
+    host: "localhost"
+    timeout: "10s"
+    retry: 3
+    auth: true
+    strip_prefix: true
+    headers:
+      X-Service-Name: "points-service"
+      X-Service-Version: "v1"
+
+  statistics-service:
+    name: "statistics-service"
+    path: "statistics"
+    version: "v1"
+    port: 8003
+    host: "localhost"
+    timeout: "10s"
+    retry: 3
+    auth: true
+    strip_prefix: true
+    headers:
+      X-Service-Name: "statistics-service"
+      X-Service-Version: "v1"
+
+  storage-service:
+    name: "storage-service"
+    path: "storage"
+    version: "v1"
+    port: 8004
+    host: "localhost"
+    timeout: "20s"
+    retry: 3
+    auth: true
+    strip_prefix: true
+    headers:
+      X-Service-Name: "storage-service"
+      X-Service-Version: "v1"
+
+  ai-service:
+    name: "ai-service"
+    path: "ai"
+    version: "v1"
+    port: 8206
+    host: "localhost"
+    timeout: "30s"
+    retry: 3
+    auth: true
+    strip_prefix: true
+    headers:
+      X-Service-Name: "ai-service"
+      X-Service-Version: "v1"
+
+  admin-service:
+    name: "admin-service"
+    path: "admin"
+    version: "v1"
+    port: 8006
+    host: "localhost"
+    timeout: "10s"
+    retry: 3
+    auth: true
+    strip_prefix: true
+    headers:
+      X-Service-Name: "admin-service"
+      X-Service-Version: "v1"
+
+# 负载均衡配置
+load_balancer:
+  strategy: "round-robin"  # round-robin, least-connections, random
+  health_check:
+    enabled: true
+    path: "/health"
+    timeout: "5s"
+
+# 熔断器配置
+circuit_breaker:
+  enabled: true
+  failure_threshold: 5
+  recovery_timeout: "30s"
+  success_threshold: 3
+  error_rate: 0.5
+
+# 限流配置
+rate_limit:
+  enabled: true
+  global:
+    requests_per_second: 1000
+    burst: 200
+  per_service:
+    user-service:
+      requests_per_second: 200
+      burst: 50
+    resume-service:
+      requests_per_second: 100
+      burst: 20
+    ai-service:
+      requests_per_second: 50
+      burst: 10
+    storage-service:
+      requests_per_second: 100
+      burst: 20
+    admin-service:
+      requests_per_second: 50
+      burst: 10
+
+# 日志配置
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+# 监控配置
+monitoring:
+  metrics:
+    enabled: true
+    path: "/metrics"
+  tracing:
+    enabled: true
+    service_name: "jobfirst-gateway"
+
+# 安全配置
+security:
+  jwt:
+    secret: "your-jwt-secret-key"
+    expiration: "24h"
+  cors:
+    allowed_origins: ["*"]
+    allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allowed_headers: ["*"]
+    allow_credentials: true

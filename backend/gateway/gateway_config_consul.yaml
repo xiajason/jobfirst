@@ -1,0 +1,259 @@
+# JobFirst API网关配置 - Consul服务发现版本
+# 支持动态服务发现和路由管理
+
+server:
+  port: "8000"
+  host: "0.0.0.0"
+  timeout: "30s"
+  read_timeout: "10s"
+  write_timeout: "10s"
+
+# Consul服务发现配置
+consul:
+  address: "http://consul:8500"
+  datacenter: "dc1"
+  token: ""
+  service_prefix: "jobfirst-"
+  health_check_interval: "10s"
+  deregister_after: "30s"
+
+# 服务路由配置
+services:
+  # 公开API (无需认证)
+  public:
+    - name: "auth"
+      path: "/api/auth"
+      service: "user-service"
+      strip_prefix: true
+      auth: false
+      cors: true
+    - name: "jobs"
+      path: "/api/jobs"
+      service: "user-service"
+      strip_prefix: true
+      auth: false
+      cors: true
+    - name: "companies"
+      path: "/api/companies"
+      service: "user-service"
+      strip_prefix: true
+      auth: false
+      cors: true
+
+  # V1 API (需要认证)
+  v1:
+    - name: "user"
+      path: "/api/v1/user"
+      service: "user-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "resume"
+      path: "/api/v1/resume"
+      service: "resume-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "personal"
+      path: "/api/v1/personal"
+      service: "personal-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "points"
+      path: "/api/v1/points"
+      service: "points-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "statistics"
+      path: "/api/v1/statistics"
+      service: "statistics-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "storage"
+      path: "/api/v1/storage"
+      service: "storage-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "resource"
+      path: "/api/v1/resource"
+      service: "resource-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "enterprise"
+      path: "/api/v1/enterprise"
+      service: "enterprise-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "open"
+      path: "/api/v1/open"
+      service: "open-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "ai"
+      path: "/api/v1/ai"
+      service: "ai-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+
+  # V2 API (新版本，需要认证)
+  v2:
+    - name: "user"
+      path: "/api/v2/user"
+      service: "user-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "jobs"
+      path: "/api/v2/jobs"
+      service: "user-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "companies"
+      path: "/api/v2/companies"
+      service: "user-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+
+  # 管理API (需要管理员权限)
+  admin:
+    - name: "admin"
+      path: "/admin"
+      service: "admin-service"
+      strip_prefix: true
+      auth: true
+      admin_auth: true
+      cors: true
+
+# 负载均衡配置
+load_balancer:
+  strategy: "round-robin"  # round-robin, least-connections, random
+  health_check:
+    enabled: true
+    interval: "10s"
+    timeout: "5s"
+    path: "/health"
+    expected_status: 200
+
+# 熔断器配置
+circuit_breaker:
+  enabled: true
+  failure_threshold: 5
+  success_threshold: 3
+  recovery_timeout: "30s"
+  timeout: "5s"
+
+# 限流配置
+rate_limit:
+  enabled: true
+  global:
+    requests_per_second: 1000
+    burst: 200
+  per_service:
+    user-service:
+      requests_per_second: 100
+      burst: 50
+    resume-service:
+      requests_per_second: 50
+      burst: 25
+    ai-service:
+      requests_per_second: 20
+      burst: 10
+
+# 日志配置
+logging:
+  level: "info"  # debug, info, warn, error
+  format: "json"  # json, text
+  output: "stdout"  # stdout, stderr, file
+  file_path: "/app/logs/gateway.log"
+  max_size: 100  # MB
+  max_age: 30    # days
+  max_backups: 10
+
+# 监控配置
+monitoring:
+  metrics:
+    enabled: true
+    path: "/metrics"
+    port: "8001"
+  health_check:
+    enabled: true
+    path: "/health"
+    port: "8000"
+  tracing:
+    enabled: true
+    service_name: "jobfirst-gateway"
+
+# 安全配置
+security:
+  jwt:
+    secret: "jobfirst-jwt-secret-key"
+    expiration: "24h"
+    refresh_expiration: "168h"
+  cors:
+    enabled: true
+    allowed_origins: ["*"]
+    allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allowed_headers: ["*"]
+    allow_credentials: true
+  rate_limit:
+    enabled: true
+    whitelist: []  # IP白名单
+    blacklist: []  # IP黑名单
+
+# 缓存配置
+cache:
+  enabled: true
+  redis:
+    address: "redis:6379"
+    password: ""
+    db: 0
+    pool_size: 10
+  ttl: "300s"  # 5分钟
+
+# 重试配置
+retry:
+  enabled: true
+  max_attempts: 3
+  backoff:
+    initial: "100ms"
+    multiplier: 2.0
+    max: "1s"
+
+# 超时配置
+timeouts:
+  connect: "5s"
+  read: "10s"
+  write: "10s"
+  idle: "60s"
+
+# 服务发现配置
+service_discovery:
+  consul:
+    enabled: true
+    address: "http://consul:8500"
+    datacenter: "dc1"
+    service_prefix: "jobfirst-"
+    health_check_interval: "10s"
+    deregister_after: "30s"
+  static:
+    enabled: false
+    services:
+      user-service:
+        - address: "user:8001"
+          weight: 1
+      resume-service:
+        - address: "resume:8002"
+          weight: 1
+      ai-service:
+        - address: "ai:8206"
+          weight: 1

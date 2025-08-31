@@ -1,0 +1,83 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # JobFirst 共享基础设施
+  - job_name: 'jobfirst-shared-infrastructure'
+    static_configs:
+      - targets: ['shared-infrastructure:8210']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # JobFirst API网关
+  - job_name: 'jobfirst-gateway'
+    static_configs:
+      - targets: ['gateway:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # JobFirst 用户服务
+  - job_name: 'jobfirst-user-service'
+    static_configs:
+      - targets: ['user:8001']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # JobFirst 简历服务
+  - job_name: 'jobfirst-resume-service'
+    static_configs:
+      - targets: ['resume:8002']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # JobFirst AI服务
+  - job_name: 'jobfirst-ai-service'
+    static_configs:
+      - targets: ['ai:8206']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Consul 服务发现
+  - job_name: 'consul'
+    consul_sd_configs:
+      - server: 'consul:8500'
+        services: ['jobfirst-*']
+    relabel_configs:
+      - source_labels: [__meta_consul_service]
+        regex: 'jobfirst-.*'
+        action: keep
+      - source_labels: [__meta_consul_service]
+        target_label: job
+      - source_labels: [__meta_consul_service_address]
+        target_label: __address__
+      - source_labels: [__meta_consul_service_port]
+        target_label: __address__
+        regex: (.+)
+        replacement: ${1}:8210
+        action: replace
+
+  # 数据库监控
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql:3306']
+    scrape_interval: 30s
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 30s
+
+  - job_name: 'neo4j'
+    static_configs:
+      - targets: ['neo4j:7687']
+    scrape_interval: 30s
+
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgresql:5432']
+    scrape_interval: 30s

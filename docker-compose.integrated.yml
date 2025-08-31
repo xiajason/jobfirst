@@ -1,0 +1,411 @@
+version: '3.8'
+
+services:
+  # ==================== 基础设施服务 ====================
+  
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: jobfirst-mysql
+    ports:
+      - "8200:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: jobfirst123
+      MYSQL_DATABASE: jobfirst
+      MYSQL_USER: jobfirst
+      MYSQL_PASSWORD: jobfirst123
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Redis 缓存服务
+  redis:
+    image: redis:7-alpine
+    container_name: jobfirst-redis
+    ports:
+      - "8201:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 20s
+      retries: 10
+
+  # Consul 服务发现和配置中心
+  consul:
+    image: consul:1.15
+    container_name: jobfirst-consul
+    ports:
+      - "8202:8500"
+      - "8206:8600/udp"
+    volumes:
+      - consul_data:/consul/data
+    command: consul agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -data-dir=/consul/data
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      timeout: 20s
+      retries: 10
+
+  # Neo4j 图数据库
+  neo4j:
+    image: neo4j:5.15-community
+    container_name: jobfirst-neo4j
+    ports:
+      - "8203:7474"
+      - "8204:7687"
+    environment:
+      NEO4J_AUTH: neo4j/jobfirst123
+      NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "jobfirst123", "RETURN 1"]
+      timeout: 20s
+      retries: 10
+
+  # PostgreSQL 数据库 (可选)
+  postgresql:
+    image: postgres:15-alpine
+    container_name: jobfirst-postgresql
+    ports:
+      - "8205:5432"
+    environment:
+      POSTGRES_DB: jobfirst
+      POSTGRES_USER: jobfirst
+      POSTGRES_PASSWORD: jobfirst123
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobfirst"]
+      timeout: 20s
+      retries: 10
+
+  # ==================== 共享基础设施服务 ====================
+  
+  # 共享基础设施服务
+  shared-infrastructure:
+    build:
+      context: ./backend/shared/infrastructure
+      dockerfile: Dockerfile
+    container_name: jobfirst-shared-infrastructure
+    ports:
+      - "8210:8210"  # 健康检查端口
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+    environment:
+      # 数据库连接配置
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+      
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=jobfirst123
+      
+      - POSTGRESQL_HOST=postgresql
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_USER=jobfirst
+      - POSTGRESQL_PASSWORD=jobfirst123
+      - POSTGRESQL_DATABASE=jobfirst
+      
+      # Consul配置
+      - CONSUL_ADDRESS=consul:8500
+      - CONSUL_DATACENTER=dc1
+      
+      # 日志配置
+      - LOG_LEVEL=info
+      - LOG_OUTPUT=stdout
+      
+      # 配置文件路径
+      - CONFIG_FILE=/app/configs/app.yaml
+    volumes:
+      - ./configs:/app/configs
+      - ./logs:/app/logs
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8210/health"]
+      timeout: 20s
+      retries: 10
+
+  # ==================== API网关服务 ====================
+  
+  # 增强版API网关
+  gateway:
+    build:
+      context: ./backend/gateway
+      dockerfile: Dockerfile
+    container_name: jobfirst-gateway
+    ports:
+      - "8000:8000"  # 主网关端口
+      - "8001:8001"  # 管理端口
+    depends_on:
+      shared-infrastructure:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    environment:
+      # 网关配置
+      - GATEWAY_PORT=8000
+      - GATEWAY_HOST=0.0.0.0
+      
+      # 服务发现配置
+      - CONSUL_ADDRESS=consul:8500
+      - REDIS_ADDRESS=redis:6379
+      
+      # 共享基础设施配置
+      - SHARED_INFRASTRUCTURE_URL=http://shared-infrastructure:8210
+      
+      # 日志配置
+      - LOG_LEVEL=info
+      - LOG_OUTPUT=stdout
+    volumes:
+      - ./backend/gateway/gateway_config.yaml:/app/gateway_config.yaml
+      - ./logs:/app/logs
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      timeout: 20s
+      retries: 10
+
+  # ==================== 业务服务 ====================
+  
+  # User Service 用户服务
+  user:
+    build:
+      context: ./backend
+      dockerfile: user/Dockerfile
+    container_name: jobfirst-user
+    ports:
+      - "8001:8001"
+    depends_on:
+      shared-infrastructure:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+    environment:
+      # 服务配置
+      - SERVICE_PORT=8001
+      - SERVICE_NAME=user-service
+      
+      # 共享基础设施配置
+      - SHARED_INFRASTRUCTURE_URL=http://shared-infrastructure:8210
+      
+      # 网关配置
+      - GATEWAY_URL=http://gateway:8000
+      
+      # 数据库配置
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+      
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      
+      - CONSUL_ADDRESS=consul:8500
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      timeout: 20s
+      retries: 10
+
+  # Resume Service 简历服务
+  resume:
+    build:
+      context: ./backend
+      dockerfile: resume/Dockerfile
+    container_name: jobfirst-resume
+    ports:
+      - "8002:8002"
+    depends_on:
+      shared-infrastructure:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+    environment:
+      - SERVICE_PORT=8002
+      - SERVICE_NAME=resume-service
+      - SHARED_INFRASTRUCTURE_URL=http://shared-infrastructure:8210
+      - GATEWAY_URL=http://gateway:8000
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CONSUL_ADDRESS=consul:8500
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      timeout: 20s
+      retries: 10
+
+  # AI Service AI服务
+  ai:
+    build:
+      context: ./backend/ai-service
+      dockerfile: Dockerfile
+    container_name: jobfirst-ai
+    ports:
+      - "8206:8206"
+    depends_on:
+      shared-infrastructure:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+    environment:
+      - SERVICE_PORT=8206
+      - SERVICE_NAME=ai-service
+      - SHARED_INFRASTRUCTURE_URL=http://shared-infrastructure:8210
+      - GATEWAY_URL=http://gateway:8000
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CONSUL_ADDRESS=consul:8500
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8206/health"]
+      timeout: 20s
+      retries: 10
+
+  # ==================== 监控服务 ====================
+  
+  # Prometheus 监控
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: jobfirst-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      timeout: 20s
+      retries: 10
+
+  # Grafana 监控面板
+  grafana:
+    image: grafana/grafana:latest
+    container_name: jobfirst-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      timeout: 20s
+      retries: 10
+
+  # ==================== 前端服务 ====================
+  
+  # Frontend Web 前端Web应用
+  web:
+    build:
+      context: ./frontend/web
+      dockerfile: Dockerfile
+    container_name: jobfirst-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://gateway:8000
+      - NEXT_PUBLIC_GATEWAY_URL=http://localhost:8000
+    depends_on:
+      gateway:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      timeout: 20s
+      retries: 10
+
+# ==================== 数据卷 ====================
+volumes:
+  mysql_data:
+  redis_data:
+  consul_data:
+  neo4j_data:
+  neo4j_logs:
+  neo4j_import:
+  neo4j_plugins:
+  postgresql_data:
+  prometheus_data:
+  grafana_data:
+
+# ==================== 网络 ====================
+networks:
+  jobfirst-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

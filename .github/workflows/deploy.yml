@@ -15,16 +15,21 @@ jobs:
       with:
         go-version: '1.21'
         
-    - name: Build
-      run: go build -v ./...
+    - name: Build Gateway
+      working-directory: backend/gateway
+      run: go build -v -o gateway enhanced_gateway_simple.go
+      
+    - name: Build Shared Infrastructure
+      working-directory: backend/shared/infrastructure
+      run: go build -v -o shared-infrastructure .
       
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: go-binaries
         path: |
-          *.exe
-          *.bin
+          backend/gateway/gateway
+          backend/shared/infrastructure/shared-infrastructure
           
   deploy:
     needs: build
@@ -42,7 +47,7 @@ jobs:
         username: ${{ secrets.TENCENT_USER }}
         key: ${{ secrets.TENCENT_SSH_KEY }}
         port: 22
-        source: "*.exe,*.bin"
+        source: "gateway,shared-infrastructure"
         target: "/home/ubuntu/app"
         
     - name: Restart Service

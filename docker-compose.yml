@@ -66,8 +66,8 @@ services:
   # User Service 用户服务
   user:
     build:
-      context: ./backend
-      dockerfile: user/Dockerfile
+      context: ./backend/user
+      dockerfile: Dockerfile
     container_name: jobfirst-user
     ports:
       - "8081:8081"

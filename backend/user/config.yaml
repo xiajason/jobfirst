@@ -1,19 +1,19 @@
 server:
-  host: "localhost"
+  host: "0.0.0.0"
   port: 8081
 
 consul:
-  address: "localhost:8202"
+  address: "consul:8500"
   datacenter: "dc1"
 
 redis:
-  address: "localhost:8201"
+  address: "redis:6379"
   password: ""
   db: 0
 
 database:
-  host: "localhost"
-  port: 8200
+  host: "mysql"
+  port: 3306
   name: "jobfirst"
   user: "jobfirst"
   password: "jobfirst123"

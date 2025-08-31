@@ -22,6 +22,7 @@ package main
 import (
 	"context"
 	"fmt"
+
 	// 移除未使用的log导入
 	"net/http"
 	"os"
@@ -182,7 +183,7 @@ func loadConfig() error {
 }
 
 func initDatabase() error {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Local&time_zone='+08:00'",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Local",
 		viper.GetString("database.user"),
 		viper.GetString("database.password"),
 		viper.GetString("database.host"),

@@ -40,16 +40,19 @@ jobs:
       with:
         name: go-binaries
         
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.TENCENT_DEPLOY_SSH_KEY }}
+        known_hosts: ${{ secrets.TENCENT_KNOWN_HOSTS }}
+        
     - name: Deploy to Tencent Cloud
       run: |
-        echo "Deploying to Tencent Cloud..."
-        echo "Build artifacts:"
-        ls -la gateway shared-infrastructure || echo "Artifacts not found"
-        echo "Deployment completed successfully (simulated)"
-        echo "In production, this would deploy using SCP to Tencent Cloud"
+        scp -i ~/.ssh/tencent_deploy_key -o StrictHostKeyChecking=no \
+          gateway shared-infrastructure \
+          tencent_user@your_server_ip:/opt/your_app/
         
     - name: Restart Service
       run: |
-        echo "Restarting services..."
-        echo "Service restart completed successfully (simulated)"
-        echo "In production, this would restart services on Tencent Cloud"
+        ssh -i ~/.ssh/tencent_deploy_key -o StrictHostKeyChecking=no \
+          tencent_user@your_server_ip "sudo systemctl restart your_service"

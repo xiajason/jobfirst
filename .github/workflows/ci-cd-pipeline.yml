@@ -169,6 +169,24 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        
+    - name: Build Go binary
+      working-directory: ./backend/${{ matrix.service }}
+      run: |
+        if [ "${{ matrix.service }}" = "gateway" ]; then
+          go build -v -o gateway enhanced_gateway_simple.go
+        elif [ "${{ matrix.service }}" = "shared/infrastructure" ]; then
+          go build -v -o shared-infrastructure .
+        fi
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: go-binaries
+        path: |
+          backend/gateway/gateway
+          backend/shared/infrastructure/shared-infrastructure
+        retention-days: 7
 
   # ==================== 前端构建 ====================
   build-frontend:

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -13,10 +12,6 @@ import (
 	"github.com/hashicorp/consul/api"
 	"gopkg.in/yaml.v2"
 )
-
-// 使用共享类型定义，见types.go
-
-// 使用共享类型定义，见types.go
 
 // ConsulConfig Consul配置
 type ConsulConfig struct {
@@ -27,8 +22,6 @@ type ConsulConfig struct {
 	HealthCheckInterval string `yaml:"health_check_interval"`
 	DeregisterAfter     string `yaml:"deregister_after"`
 }
-
-// 使用共享类型定义，见types.go
 
 // GatewayConfig 网关配置
 type GatewayConfig struct {
@@ -69,8 +62,6 @@ type GatewayConfig struct {
 		Timeout             string `yaml:"timeout"`
 	} `yaml:"monitoring"`
 }
-
-// 使用共享类型定义，见types.go
 
 // CompleteGateway 完整网关
 type CompleteGateway struct {
@@ -138,32 +129,11 @@ func (g *CompleteGateway) corsMiddleware() gin.HandlerFunc {
 			c.Header("Access-Control-Allow-Origin", "*")
 		}
 
-		// 设置允许的方法
-		if len(g.config.CORS.AllowMethods) > 0 {
-			c.Header("Access-Control-Allow-Methods", strings.Join(g.config.CORS.AllowMethods, ", "))
-		}
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Max-Age", "86400")
 
-		// 设置允许的头部
-		if len(g.config.CORS.AllowHeaders) > 0 {
-			c.Header("Access-Control-Allow-Headers", strings.Join(g.config.CORS.AllowHeaders, ", "))
-		}
-
-		// 设置暴露的头部
-		if len(g.config.CORS.ExposeHeaders) > 0 {
-			c.Header("Access-Control-Expose-Headers", strings.Join(g.config.CORS.ExposeHeaders, ", "))
-		}
-
-		// 设置是否允许携带凭证
-		if g.config.CORS.AllowCredentials {
-			c.Header("Access-Control-Allow-Credentials", "true")
-		}
-
-		// 设置预检请求的缓存时间
-		if g.config.CORS.MaxAge > 0 {
-			c.Header("Access-Control-Max-Age", strconv.Itoa(g.config.CORS.MaxAge))
-		}
-
-		// 处理预检请求
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
 			return
@@ -173,22 +143,15 @@ func (g *CompleteGateway) corsMiddleware() gin.HandlerFunc {
 	}
 }
 
-// isOriginAllowed 检查来源是否被允许
+// isOriginAllowed 检查来源是否允许
 func (g *CompleteGateway) isOriginAllowed(origin string) bool {
 	if len(g.config.CORS.AllowOrigins) == 0 {
 		return true
 	}
 
-	for _, allowed := range g.config.CORS.AllowOrigins {
-		if allowed == "*" || allowed == origin {
+	for _, allowedOrigin := range g.config.CORS.AllowOrigins {
+		if allowedOrigin == "*" || allowedOrigin == origin {
 			return true
-		}
-		// 支持通配符匹配
-		if strings.HasSuffix(allowed, "*") {
-			prefix := strings.TrimSuffix(allowed, "*")
-			if strings.HasPrefix(origin, prefix) {
-				return true
-			}
 		}
 	}
 	return false
@@ -197,13 +160,15 @@ func (g *CompleteGateway) isOriginAllowed(origin string) bool {
 // loggingMiddleware 日志中间件
 func (g *CompleteGateway) loggingMiddleware() gin.HandlerFunc {
 	return gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-		return fmt.Sprintf("[GATEWAY] %v | %3d | %13v | %15s | %-7s %s\n%s",
-			param.TimeStamp.Format("2006/01/02 - 15:04:05"),
-			param.StatusCode,
-			param.Latency,
+		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
 			param.ClientIP,
+			param.TimeStamp.Format(time.RFC1123),
 			param.Method,
 			param.Path,
+			param.Request.Proto,
+			param.StatusCode,
+			param.Latency,
+			param.Request.UserAgent(),
 			param.ErrorMessage,
 		)
 	})
@@ -214,20 +179,46 @@ func (g *CompleteGateway) rateLimitMiddleware() gin.HandlerFunc {
 	// 简化的限流实现
 	return func(c *gin.Context) {
 		// 这里可以实现更复杂的限流逻辑
-		// 目前只是简单的通过
 		c.Next()
 	}
 }
 
 // setupRoutes 设置路由
 func (g *CompleteGateway) setupRoutes() {
-	// 健康检查端点
+	// 健康检查
 	g.router.GET("/health", g.healthHandler)
-	g.router.GET("/info", g.infoHandler)
-	g.router.GET("/metrics", g.metricsHandler)
 
-	// 设置API路由
-	g.setupAPIRoutes()
+	// 公开API
+	for _, route := range g.config.Services.Public {
+		g.router.Any(route.Path+"/*path", g.proxyHandler(route))
+	}
+
+	// V1 API (需要认证)
+	v1Group := g.router.Group("/api/v1")
+	v1Group.Use(g.authMiddleware())
+	{
+		for _, route := range g.config.Services.V1 {
+			v1Group.Any(route.Path+"/*path", g.proxyHandler(route))
+		}
+	}
+
+	// V2 API (需要认证)
+	v2Group := g.router.Group("/api/v2")
+	v2Group.Use(g.authMiddleware())
+	{
+		for _, route := range g.config.Services.V2 {
+			v2Group.Any(route.Path+"/*path", g.proxyHandler(route))
+		}
+	}
+
+	// Admin API (需要管理员权限)
+	adminGroup := g.router.Group("/api/admin")
+	adminGroup.Use(g.authMiddleware(), g.adminMiddleware())
+	{
+		for _, route := range g.config.Services.Admin {
+			adminGroup.Any(route.Path+"/*path", g.proxyHandler(route))
+		}
+	}
 }
 
 // healthHandler 健康检查处理器
@@ -236,122 +227,36 @@ func (g *CompleteGateway) healthHandler(c *gin.Context) {
 		"status":    "healthy",
 		"timestamp": time.Now().Unix(),
 		"service":   "jobfirst-gateway",
-		"version":   "2.0.0",
-		"features": []string{
-			"JWT Authentication",
-			"CORS Support",
-			"API Versioning",
-			"Service Discovery",
-			"Load Balancing",
-			"Rate Limiting",
-		},
+		"version":   "1.0.0",
 	})
-}
-
-// infoHandler 信息处理器
-func (g *CompleteGateway) infoHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"service":   "jobfirst-gateway",
-		"version":   "2.0.0",
-		"timestamp": time.Now().Unix(),
-		"features": []string{
-			"JWT Authentication",
-			"CORS Support",
-			"API Versioning",
-			"Service Discovery",
-			"Load Balancing",
-			"Rate Limiting",
-		},
-		"config": gin.H{
-			"cors_enabled":   len(g.config.CORS.AllowOrigins) > 0,
-			"jwt_enabled":    g.config.JWT.SecretKey != "",
-			"consul_enabled": g.config.Consul.Address != "",
-			"rate_limit":     g.config.RateLimit.RequestsPerSecond,
-		},
-	})
-}
-
-// metricsHandler 指标处理器
-func (g *CompleteGateway) metricsHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"gateway": gin.H{
-			"requests_total":    0,
-			"requests_active":   0,
-			"response_time_avg": 0,
-		},
-		"services": gin.H{
-			"registered": 0,
-			"healthy":    0,
-			"unhealthy":  0,
-		},
-	})
-}
-
-// setupAPIRoutes 设置API路由
-func (g *CompleteGateway) setupAPIRoutes() {
-	// 公开路由
-	for _, route := range g.config.Services.Public {
-		g.router.Any(route.Path+"/*path", g.proxyHandler(route))
-	}
-
-	// V1 API路由
-	v1Group := g.router.Group("/api/v1")
-	for _, route := range g.config.Services.V1 {
-		if route.Auth {
-			v1Group.Any(route.Path+"/*path", g.authMiddleware(), g.proxyHandler(route))
-		} else {
-			v1Group.Any(route.Path+"/*path", g.proxyHandler(route))
-		}
-	}
-
-	// V2 API路由
-	v2Group := g.router.Group("/api/v2")
-	for _, route := range g.config.Services.V2 {
-		if route.Auth {
-			v2Group.Any(route.Path+"/*path", g.authMiddleware(), g.proxyHandler(route))
-		} else {
-			v2Group.Any(route.Path+"/*path", g.proxyHandler(route))
-		}
-	}
-
-	// 管理员路由
-	adminGroup := g.router.Group("/admin")
-	for _, route := range g.config.Services.Admin {
-		adminGroup.Any(route.Path+"/*path", g.adminAuthMiddleware(), g.proxyHandler(route))
-	}
 }
 
 // authMiddleware 认证中间件
 func (g *CompleteGateway) authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
+		token := c.GetHeader("Authorization")
+		if token == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"error":   "Authorization required",
-				"code":    "AUTH_REQUIRED",
-				"message": "请提供有效的认证信息",
+				"error":   "Unauthorized",
+				"code":    "UNAUTHORIZED",
+				"message": "未授权访问",
 			})
 			c.Abort()
 			return
 		}
 
-		if !strings.HasPrefix(authHeader, "Bearer ") {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error":   "Invalid authorization format",
-				"code":    "INVALID_AUTH_FORMAT",
-				"message": "认证格式无效，请使用Bearer token",
-			})
-			c.Abort()
-			return
+		// 移除Bearer前缀
+		if len(token) > 7 && token[:7] == "Bearer " {
+			token = token[7:]
 		}
 
-		token := strings.TrimPrefix(authHeader, "Bearer ")
+		// 验证JWT token
 		claims, err := g.validateToken(token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error":   "Invalid token",
 				"code":    "INVALID_TOKEN",
-				"message": "认证token无效或已过期",
+				"message": "无效的访问令牌",
 			})
 			c.Abort()
 			return
@@ -362,63 +267,49 @@ func (g *CompleteGateway) authMiddleware() gin.HandlerFunc {
 		c.Set("username", claims.Username)
 		c.Set("email", claims.Email)
 		c.Set("roles", claims.Roles)
-		c.Set("metadata", claims.Metadata)
-		c.Set("claims", claims)
 
 		c.Next()
 	}
 }
 
-// adminAuthMiddleware 管理员认证中间件
-func (g *CompleteGateway) adminAuthMiddleware() gin.HandlerFunc {
+// adminMiddleware 管理员权限中间件
+func (g *CompleteGateway) adminMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error":   "Authorization required",
-				"code":    "AUTH_REQUIRED",
-				"message": "请提供有效的认证信息",
-			})
-			c.Abort()
-			return
-		}
-
-		token := strings.TrimPrefix(authHeader, "Bearer ")
-		claims, err := g.validateToken(token)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error":   "Invalid token",
-				"code":    "INVALID_TOKEN",
-				"message": "认证token无效或已过期",
-			})
-			c.Abort()
-			return
-		}
-
-		// 检查管理员权限
-		if !g.hasAdminRole(claims.Roles) {
+		roles, exists := c.Get("roles")
+		if !exists {
 			c.JSON(http.StatusForbidden, gin.H{
-				"error":   "Admin access required",
-				"code":    "ADMIN_REQUIRED",
+				"error":   "Forbidden",
+				"code":    "FORBIDDEN",
+				"message": "访问被拒绝",
+			})
+			c.Abort()
+			return
+		}
+
+		userRoles := roles.([]string)
+		hasAdminRole := false
+		for _, role := range userRoles {
+			if role == "admin" || role == "super_admin" {
+				hasAdminRole = true
+				break
+			}
+		}
+
+		if !hasAdminRole {
+			c.JSON(http.StatusForbidden, gin.H{
+				"error":   "Forbidden",
+				"code":    "FORBIDDEN",
 				"message": "需要管理员权限",
 			})
 			c.Abort()
 			return
 		}
 
-		// 将用户信息存储到上下文中
-		c.Set("user_id", claims.UserID)
-		c.Set("username", claims.Username)
-		c.Set("email", claims.Email)
-		c.Set("roles", claims.Roles)
-		c.Set("metadata", claims.Metadata)
-		c.Set("claims", claims)
-
 		c.Next()
 	}
 }
 
-// validateToken 验证token
+// validateToken 验证JWT token
 func (g *CompleteGateway) validateToken(tokenString string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -436,16 +327,6 @@ func (g *CompleteGateway) validateToken(tokenString string) (*Claims, error) {
 	}
 
 	return nil, fmt.Errorf("invalid token")
-}
-
-// hasAdminRole 检查是否有管理员角色
-func (g *CompleteGateway) hasAdminRole(roles []string) bool {
-	for _, role := range roles {
-		if role == "admin" || role == "super_admin" {
-			return true
-		}
-	}
-	return false
 }
 
 // getServiceURL 获取服务URL

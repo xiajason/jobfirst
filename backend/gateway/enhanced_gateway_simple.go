@@ -13,35 +13,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// JWTConfig JWT配置
-type JWTConfig struct {
-	SecretKey     string        `json:"secret_key"`
-	Issuer        string        `json:"issuer"`
-	Audience      string        `json:"audience"`
-	ExpireTime    time.Duration `json:"expire_time"`
-	RefreshTime   time.Duration `json:"refresh_time"`
-	RefreshSecret string        `json:"refresh_secret"`
-}
-
-// Claims JWT声明
-type Claims struct {
-	UserID   string            `json:"user_id"`
-	Username string            `json:"username"`
-	Email    string            `json:"email"`
-	Roles    []string          `json:"roles"`
-	Metadata map[string]string `json:"metadata,omitempty"`
-	jwt.RegisteredClaims
-}
-
-// ServiceRoute 服务路由配置
-type ServiceRoute struct {
-	Name        string `yaml:"name"`
-	Path        string `yaml:"path"`
-	Service     string `yaml:"service"`
-	StripPrefix bool   `yaml:"strip_prefix"`
-	Auth        bool   `yaml:"auth"`
-	CORS        bool   `yaml:"cors"`
-}
+// 使用共享类型定义，见types.go
 
 // EnhancedGatewayConfig 增强版网关配置
 type EnhancedGatewayConfig struct {

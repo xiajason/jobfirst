@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -16,25 +14,9 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// JWTConfig JWT配置
-type JWTConfig struct {
-	SecretKey     string        `yaml:"secret_key"`
-	Issuer        string        `yaml:"issuer"`
-	Audience      string        `yaml:"audience"`
-	ExpireTime    time.Duration `yaml:"expire_time"`
-	RefreshTime   time.Duration `yaml:"refresh_time"`
-	RefreshSecret string        `yaml:"refresh_secret"`
-}
+// 使用共享类型定义，见types.go
 
-// CORSConfig CORS配置
-type CORSConfig struct {
-	AllowOrigins     []string `yaml:"allow_origins"`
-	AllowMethods     []string `yaml:"allow_methods"`
-	AllowHeaders     []string `yaml:"allow_headers"`
-	ExposeHeaders    []string `yaml:"expose_headers"`
-	AllowCredentials bool     `yaml:"allow_credentials"`
-	MaxAge           int      `yaml:"max_age"`
-}
+// 使用共享类型定义，见types.go
 
 // ConsulConfig Consul配置
 type ConsulConfig struct {
@@ -46,15 +28,7 @@ type ConsulConfig struct {
 	DeregisterAfter     string `yaml:"deregister_after"`
 }
 
-// ServiceRoute 服务路由配置
-type ServiceRoute struct {
-	Name        string `yaml:"name"`
-	Path        string `yaml:"path"`
-	Service     string `yaml:"service"`
-	StripPrefix bool   `yaml:"strip_prefix"`
-	Auth        bool   `yaml:"auth"`
-	CORS        bool   `yaml:"cors"`
-}
+// 使用共享类型定义，见types.go
 
 // GatewayConfig 网关配置
 type GatewayConfig struct {
@@ -96,15 +70,7 @@ type GatewayConfig struct {
 	} `yaml:"monitoring"`
 }
 
-// Claims JWT声明
-type Claims struct {
-	UserID   string            `json:"user_id"`
-	Username string            `json:"username"`
-	Email    string            `json:"email"`
-	Roles    []string          `json:"roles"`
-	Metadata map[string]string `json:"metadata,omitempty"`
-	jwt.RegisteredClaims
-}
+// 使用共享类型定义，见types.go
 
 // CompleteGateway 完整网关
 type CompleteGateway struct {
@@ -487,12 +453,10 @@ func (g *CompleteGateway) getServiceURL(serviceName string) string {
 	// 从Consul获取服务地址
 	services, _, err := g.consul.Health().Service(serviceName, "", true, nil)
 	if err != nil {
-		log.Printf("Failed to get service %s from consul: %v", serviceName, err)
 		return ""
 	}
 
 	if len(services) == 0 {
-		log.Printf("No healthy service found for %s", serviceName)
 		return ""
 	}
 
@@ -638,34 +602,4 @@ func loadConfig(configPath string) (*GatewayConfig, error) {
 	return &config, nil
 }
 
-func main() {
-	// 加载配置
-	configPath := os.Getenv("CONFIG_PATH")
-	if configPath == "" {
-		configPath = "/root/config/config.yaml"
-	}
-
-	config, err := loadConfig(configPath)
-	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
-
-	// 创建网关
-	gateway, err := NewCompleteGateway(config)
-	if err != nil {
-		log.Fatalf("Failed to create gateway: %v", err)
-	}
-
-	// 启动服务器
-	port := config.Server.Port
-	if port == "" {
-		port = "8080"
-	}
-
-	log.Printf("Starting JobFirst Gateway on port %s", port)
-	log.Printf("Features: JWT Auth, CORS, API Versioning, Service Discovery")
-
-	if err := gateway.router.Run(":" + port); err != nil {
-		log.Fatalf("Failed to start gateway: %v", err)
-	}
-}
+// main函数已移至enhanced_gateway_simple.go

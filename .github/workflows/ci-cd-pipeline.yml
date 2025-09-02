@@ -258,20 +258,134 @@ jobs:
         echo "Building Docker images for staging..."
         
         # 构建AI服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }} ./backend/ai-service
-        docker push ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }}
+        echo "构建AI服务镜像..."
+        for i in {1..3}; do
+          if docker build -t ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }} ./backend/ai-service; then
+            echo "✅ AI服务镜像构建成功"
+            break
+          else
+            echo "❌ AI服务镜像构建失败，尝试 $i/3"
+            if [ $i -eq 3 ]; then
+              echo "⚠️ AI服务镜像构建失败，跳过..."
+              continue
+            fi
+            sleep 10
+          fi
+        done
         
         # 构建网关镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }} ./backend/gateway
-        docker push ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }}
+        echo "构建网关镜像..."
+        for i in {1..3}; do
+          if docker build -t ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }} ./backend/gateway; then
+            echo "✅ 网关镜像构建成功"
+            break
+          else
+            echo "❌ 网关镜像构建失败，尝试 $i/3"
+            if [ $i -eq 3 ]; then
+              echo "⚠️ 网关镜像构建失败，跳过..."
+              continue
+            fi
+            sleep 10
+          fi
+        done
         
         # 构建用户服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }} ./backend/user
-        docker push ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }}
+        echo "构建用户服务镜像..."
+        for i in {1..3}; do
+          if docker build -t ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }} ./backend/user; then
+            echo "✅ 用户服务镜像构建成功"
+            break
+          else
+            echo "❌ 用户服务镜像构建失败，尝试 $i/3"
+            if [ $i -eq 3 ]; then
+              echo "⚠️ 用户服务镜像构建失败，跳过..."
+              continue
+            fi
+            sleep 10
+          fi
+        done
         
         # 构建简历服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }} ./backend/resume
-        docker push ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }}
+        echo "构建简历服务镜像..."
+        for i in {1..3}; do
+          if docker build -t ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }} ./backend/resume; then
+            echo "✅ 简历服务镜像构建成功"
+            break
+          else
+            echo "❌ 简历服务镜像构建失败，尝试 $i/3"
+            if [ $i -eq 3 ]; then
+              echo "⚠️ 简历服务镜像构建失败，跳过..."
+              continue
+            fi
+            sleep 10
+          fi
+        done
+        
+        echo "=== 开始推送镜像 ==="
+        
+        # 推送AI服务镜像
+        echo "推送AI服务镜像..."
+        for i in {1..3}; do
+          if docker push ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }}; then
+            echo "✅ AI服务镜像推送成功"
+            break
+          else
+            echo "❌ AI服务镜像推送失败，尝试 $i/3"
+            if [ $i -eq 3 ]; then
+              echo "⚠️ AI服务镜像推送失败，跳过..."
+              continue
+            fi
+            sleep 10
+          fi
+        done
+        
+        # 推送网关镜像
+        echo "推送网关镜像..."
+        for i in {1..3}; do
+          if docker push ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }}; then
+            echo "✅ 网关镜像推送成功"
+            break
+          else
+            echo "❌ 网关镜像推送失败，尝试 $i/3"
+            if [ $i -eq 3 ]; then
+              echo "⚠️ 网关镜像推送失败，跳过..."
+              continue
+            fi
+            sleep 10
+          fi
+        done
+        
+        # 推送用户服务镜像
+        echo "推送用户服务镜像..."
+        for i in {1..3}; do
+          if docker push ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }}; then
+            echo "✅ 用户服务镜像推送成功"
+            break
+          else
+            echo "❌ 用户服务镜像推送失败，尝试 $i/3"
+            if [ $i -eq 3 ]; then
+              echo "⚠️ 用户服务镜像推送失败，跳过..."
+              continue
+            fi
+            sleep 10
+          fi
+        done
+        
+        # 推送简历服务镜像
+        echo "推送简历服务镜像..."
+        for i in {1..3}; do
+          if docker push ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }}; then
+            echo "✅ 简历服务镜像推送成功"
+            break
+          else
+            echo "❌ 简历服务镜像推送失败，尝试 $i/3"
+            if [ $i -eq 3 ]; then
+              echo "⚠️ 简历服务镜像推送失败，跳过..."
+              continue
+            fi
+            sleep 10
+          fi
+        done
         
         echo "Docker images built and pushed to GitHub Container Registry successfully!"
 

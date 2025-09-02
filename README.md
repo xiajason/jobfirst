@@ -45,6 +45,25 @@ docker-compose -f docker-compose.local-test.yml logs -f
 - 📊 Prometheus监控 (端口: 9090)
 - 📈 Grafana仪表板 (端口: 3001)
 
+### 环境分离说明
+
+**本地开发环境** (`docker-compose.local-test.yml`):
+- 用于本地开发和测试
+- 包含完整的微服务架构
+- 数据持久化，便于开发调试
+- 使用本地端口映射
+
+**CI/CD测试环境** (`docker-compose.ci.yml`):
+- 仅在GitHub Actions Runner中运行
+- 独立的网络和容器命名
+- 测试完成后自动清理
+- 不影响本地开发环境
+
+**生产环境**:
+- 使用GitHub Container Registry
+- 部署到生产服务器
+- 完整的监控和日志
+
 ### 开发环境
 
 ```bash

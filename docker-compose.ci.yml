@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  # ==================== 数据库服务 ====================
+  postgres-ci:
+    image: postgres:15-alpine
+    container_name: jobfirst-postgres-ci
+    environment:
+      POSTGRES_DB: jobfirst
+      POSTGRES_USER: jobfirst_user
+      POSTGRES_PASSWORD: jobfirst_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - jobfirst-ci-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobfirst_user -d jobfirst"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-ci:
+    image: redis:7-alpine
+    container_name: jobfirst-redis-ci
+    ports:
+      - "6379:6379"
+    networks:
+      - jobfirst-ci-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==================== 微服务 ====================
+  ai-service-ci:
+    build:
+      context: ./backend/ai-service
+      dockerfile: Dockerfile
+    container_name: jobfirst-ai-service-ci
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=ci
+      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres-ci:5432/jobfirst
+      - REDIS_URL=redis://redis-ci:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    depends_on:
+      postgres-ci:
+        condition: service_healthy
+      redis-ci:
+        condition: service_healthy
+    networks:
+      - jobfirst-ci-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  gateway-ci:
+    build:
+      context: ./backend/gateway
+      dockerfile: Dockerfile
+    container_name: jobfirst-gateway-ci
+    ports:
+      - "8080:8080"
+    environment:
+      - ENVIRONMENT=ci
+      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres-ci:5432/jobfirst
+      - REDIS_URL=redis://redis-ci:6379
+    depends_on:
+      postgres-ci:
+        condition: service_healthy
+      redis-ci:
+        condition: service_healthy
+    networks:
+      - jobfirst-ci-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  user-service-ci:
+    build:
+      context: ./backend/user
+      dockerfile: Dockerfile
+    container_name: jobfirst-user-service-ci
+    ports:
+      - "8081:8081"
+    environment:
+      - ENVIRONMENT=ci
+      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres-ci:5432/jobfirst
+      - REDIS_URL=redis://redis-ci:6379
+    depends_on:
+      postgres-ci:
+        condition: service_healthy
+      redis-ci:
+        condition: service_healthy
+    networks:
+      - jobfirst-ci-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  resume-service-ci:
+    build:
+      context: ./backend/resume
+      dockerfile: Dockerfile
+    container_name: jobfirst-resume-service-ci
+    ports:
+      - "8082:8082"
+    environment:
+      - ENVIRONMENT=ci
+      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres-ci:5432/jobfirst
+      - REDIS_URL=redis://redis-ci:6379
+    depends_on:
+      postgres-ci:
+        condition: service_healthy
+      redis-ci:
+        condition: service_healthy
+    networks:
+      - jobfirst-ci-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  jobfirst-ci-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

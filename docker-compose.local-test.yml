@@ -60,6 +60,131 @@ services:
       timeout: 10s
       retries: 3
 
+  ai-service:
+    build:
+      context: ./backend
+      dockerfile: ai-service/Dockerfile
+    container_name: jobfirst-ai-service-local
+    ports:
+      - "8001:8000"
+    environment:
+      - ENVIRONMENT=local
+      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres:5432/jobfirst
+      - REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-local-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  user-service:
+    build:
+      context: ./backend
+      dockerfile: user/Dockerfile
+    container_name: jobfirst-user-service-local
+    ports:
+      - "8081:8080"
+    environment:
+      - ENVIRONMENT=local
+      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres:5432/jobfirst
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=local-jwt-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-local-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  resume-service:
+    build:
+      context: ./backend
+      dockerfile: resume/Dockerfile
+    container_name: jobfirst-resume-service-local
+    ports:
+      - "8082:8080"
+    environment:
+      - ENVIRONMENT=local
+      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres:5432/jobfirst
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=local-jwt-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-local-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+
+
+  points-service:
+    build:
+      context: ./backend
+      dockerfile: points/Dockerfile
+    container_name: jobfirst-points-service-local
+    ports:
+      - "8005:8080"
+    environment:
+      - ENVIRONMENT=local
+      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres:5432/jobfirst
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=local-jwt-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-local-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  web-frontend:
+    build:
+      context: ./frontend/web
+      dockerfile: Dockerfile
+    container_name: jobfirst-web-frontend-local
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_MODE=basic
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      gateway:
+        condition: service_healthy
+    networks:
+      - jobfirst-local-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # ==================== 监控服务 ====================
   prometheus:
     image: prom/prometheus:latest

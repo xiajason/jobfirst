@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
     networks:
       - jobfirst-ci-network
     healthcheck:
@@ -41,7 +41,7 @@ services:
       dockerfile: Dockerfile
     container_name: jobfirst-ai-service-ci
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       - ENVIRONMENT=ci
       - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres-ci:5432/jobfirst
@@ -91,7 +91,7 @@ services:
       dockerfile: Dockerfile
     container_name: jobfirst-user-service-ci
     ports:
-      - "8081:8081"
+      - "8081:8080"
     environment:
       - ENVIRONMENT=ci
       - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres-ci:5432/jobfirst
@@ -104,7 +104,7 @@ services:
     networks:
       - jobfirst-ci-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -115,7 +115,7 @@ services:
       dockerfile: Dockerfile
     container_name: jobfirst-resume-service-ci
     ports:
-      - "8082:8082"
+      - "8082:8080"
     environment:
       - ENVIRONMENT=ci
       - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres-ci:5432/jobfirst
@@ -128,7 +128,7 @@ services:
     networks:
       - jobfirst-ci-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3

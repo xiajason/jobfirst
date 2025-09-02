@@ -313,7 +313,7 @@ jobs:
         fi
         
         # 检查AI服务
-        if curl -f http://localhost:8000/health || curl -f http://localhost:8000/api/v1/health; then
+        if curl -f http://localhost:8001/health || curl -f http://localhost:8001/api/v1/health; then
           echo "✅ AI服务健康检查通过"
         else
           echo "❌ AI服务健康检查失败"

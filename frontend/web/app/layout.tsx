@@ -1,33 +1,26 @@
 import type { Metadata } from 'next';
-import { Geist, Space_Grotesk } from 'next/font/google';
-import './(default)/css/globals.css';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { ModeProvider } from '@/components/common/ModeProvider';
 
-const spaceGrotesk = Space_Grotesk({
-  variable: '--font-space-grotesk',
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-const geist = Geist({
-  variable: '--font-geist',
-  subsets: ['latin'],
-  display: 'swap',
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  	title: 'Smart Job',
-	description: 'Build your resume with Smart Job',
-	applicationName: 'Smart Job',
-  keywords: ['resume', 'matcher', 'job', 'application'],
+  title: 'JobFirst - 智能求职平台',
+  description: '基于AI的智能求职平台，支持多模式部署',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en-US">
-      <body
-        className={`${geist.variable} ${spaceGrotesk.variable} antialiased bg-white text-gray-900`}
-      >
-        <div>{children}</div>
+    <html lang="zh-CN">
+      <body className={inter.className}>
+        <ModeProvider>
+          {children}
+        </ModeProvider>
       </body>
     </html>
   );

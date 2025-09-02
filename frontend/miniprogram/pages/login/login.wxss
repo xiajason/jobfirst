@@ -1,0 +1,220 @@
+/* login.wxss */
+.container {
+  padding: 40rpx;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 登录头部 */
+.login-header {
+  text-align: center;
+  margin-bottom: 80rpx;
+}
+
+.logo {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 20rpx;
+}
+
+.app-name {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 12rpx;
+}
+
+.app-slogan {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 登录表单 */
+.login-form {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 60rpx 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 24rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #667eea;
+}
+
+/* 验证码输入组 */
+.code-input-group {
+  display: flex;
+  gap: 20rpx;
+}
+
+.code-input {
+  flex: 1;
+}
+
+.code-btn {
+  padding: 0 32rpx;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+}
+
+.code-btn.disabled {
+  background: #ccc;
+  color: #999;
+}
+
+/* 登录选项 */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40rpx;
+}
+
+.option-item {
+  padding: 12rpx 0;
+}
+
+.option-text {
+  font-size: 26rpx;
+  color: #667eea;
+  text-decoration: underline;
+}
+
+/* 登录按钮 */
+.login-btn {
+  width: 100%;
+  padding: 28rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  margin-bottom: 40rpx;
+  transition: opacity 0.3s ease;
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+}
+
+/* 其他登录方式 */
+.other-login {
+  text-align: center;
+}
+
+.divider {
+  position: relative;
+  margin: 40rpx 0;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2rpx;
+  background: #e0e0e0;
+}
+
+.divider-text {
+  position: relative;
+  background: #fff;
+  padding: 0 20rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.login-methods {
+  display: flex;
+  justify-content: center;
+  gap: 60rpx;
+}
+
+.method-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  transition: background-color 0.3s ease;
+}
+
+.method-item:active {
+  background-color: #f0f0f0;
+}
+
+.method-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 12rpx;
+}
+
+.method-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 登录底部 */
+.login-footer {
+  text-align: center;
+  margin-top: 40rpx;
+  padding: 20rpx;
+}
+
+.footer-text {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-link {
+  font-size: 24rpx;
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* 响应式 */
+@media (max-width: 750rpx) {
+  .container {
+    padding: 20rpx;
+  }
+  
+  .login-form {
+    padding: 40rpx 30rpx;
+  }
+  
+  .login-methods {
+    gap: 40rpx;
+  }
+}

@@ -1,0 +1,26 @@
+
+<!-- components/MenuGrid/MenuGrid.wxml -->
+<view class="menu-grid-container" style="background-color: {{backgroundColor}};">
+  <view class="menu-grid-wrapper {{showBorder ? 'with-border' : ''}}">
+    <view 
+      class="menu-grid-item {{showBorder ? 'with-border' : ''}}" 
+      style="{{gridStyle}}"
+      wx:for="{{menuList}}" 
+      wx:key="index"
+      bindtap="onMenuItemTap"
+      data-index="{{index}}">
+      <view class="menu-item-content">
+        <image 
+          class="menu-item-icon" 
+          src="{{item.iconUrl}}" 
+          style="width: {{iconSize}}; height: {{iconSize}};"
+          wx:if="{{item.iconUrl}}"></image>
+        <view 
+          class="menu-item-text" 
+          style="color: {{textColor}}; font-size: {{textSize}};">
+          {{item.text}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

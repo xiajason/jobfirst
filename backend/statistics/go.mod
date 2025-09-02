@@ -14,7 +14,7 @@ require (
 	resume-centre/shared/infrastructure v0.0.0
 )
 
-replace resume-centre/shared/infrastructure => ../shared/infrastructure
+replace resume-centre/shared/infrastructure => ./shared/infrastructure
 
 require (
 	github.com/armon/go-metrics v0.4.1 // indirect

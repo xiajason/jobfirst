@@ -1,287 +1,351 @@
 // index.js
-const { PublicAPI, JobAPI, CompanyAPI } = require('../../utils/api.js')
-const { upgradeManager } = require('../../config/upgrade-config.js')
+const app = getApp()
+const { MOCK_DATA } = require('../../config/api.js')
 
 Page({
   data: {
+    mode: 'basic',
+    modeText: '基础版',
+    hasAnalytics: false,
+    hasAIChat: false,
+    hasEnterprise: false,
     banners: [],
-    hotJobs: [],
-    recommendCompanies: [],
-    loading: true,
-    upgradeStatus: {}
+    quickActions: [],
+    recommendJobs: [],
+    marketData: {},
+    enterpriseServices: [],
+    industries: []
   },
 
   onLoad() {
-    this.loadData()
-    this.checkUpgradeStatus()
+    this.initPage()
   },
 
   onShow() {
-    // 页面显示时刷新数据
     this.loadData()
   },
 
-  // 检查升级状态
-  checkUpgradeStatus() {
-    try {
-      const status = upgradeManager.getUpgradeStatus()
-      this.setData({
-        upgradeStatus: status
-      })
-      console.log('当前升级状态:', status)
-    } catch (error) {
-      console.error('获取升级状态失败:', error)
+  onPullDownRefresh() {
+    this.loadData()
+    wx.stopPullDownRefresh()
+  },
+
+  // 初始化页面
+  initPage() {
+    const mode = app.globalData.mode
+    this.setData({
+      mode,
+      modeText: this.getModeText(mode),
+      hasAnalytics: app.hasFeature('analytics'),
+      hasAIChat: app.hasFeature('aiChat'),
+      hasEnterprise: app.hasFeature('enterprise')
+    })
+  },
+
+  // 获取模式文本
+  getModeText(mode) {
+    const modeMap = {
+      'basic': '基础版',
+      'plus': '增强版',
+      'pro': '专业版'
     }
+    return modeMap[mode] || '基础版'
   },
 
   // 加载数据
   async loadData() {
-    this.setData({ loading: true })
-    
     try {
+      app.showLoading()
+      
       // 并行加载数据
-      const [banners, jobs, companies] = await Promise.all([
+      const [
+        banners,
+        quickActions,
+        recommendJobs,
+        marketData,
+        enterpriseServices,
+        industries
+      ] = await Promise.all([
         this.loadBanners(),
-        this.loadHotJobs(),
-        this.loadRecommendCompanies()
+        this.loadQuickActions(),
+        this.loadRecommendJobs(),
+        this.loadMarketData(),
+        this.loadEnterpriseServices(),
+        this.loadIndustries()
       ])
 
       this.setData({
         banners,
-        hotJobs: jobs,
-        recommendCompanies: companies,
-        loading: false
+        quickActions,
+        recommendJobs,
+        marketData,
+        enterpriseServices,
+        industries
       })
     } catch (error) {
       console.error('加载数据失败:', error)
-      this.setData({ loading: false })
-      
-      // 显示错误提示
-      wx.showToast({
-        title: '数据加载失败',
-        icon: 'none'
-      })
+      app.showToast('加载失败，请重试')
+    } finally {
+      app.hideLoading()
     }
   },
 
   // 加载轮播图
   async loadBanners() {
     try {
-      const response = await PublicAPI.getBanners()
-      console.log('轮播图数据:', response)
-      
-      if (response.code === 200 && response.data) {
-        // 检查数据结构
-        if (Array.isArray(response.data)) {
-          // v1格式
-          return response.data.map(item => ({
-            id: item.id,
-            image: item.image || item.image_url,
-            title: item.title,
-            link: item.link || item.link_url
-          }))
-        } else if (response.data.banners) {
-          // v2格式
-          return response.data.banners.map(item => ({
-            id: item.id,
-            image: item.image_url,
-            title: item.title,
-            link: item.link_url
-          }))
-        }
-      }
-      
-      // 返回默认数据
-      return [
-        {
-          id: 1,
-          image: '/images/banner1.jpg',
-          title: '春季招聘会',
-          link: '/pages/activity/spring'
-        },
-        {
-          id: 2,
-          image: '/images/banner2.jpg',
-          title: '名企直招',
-          link: '/pages/activity/companies'
-        },
-        {
-          id: 3,
-          image: '/images/banner3.jpg',
-          title: '应届生专场',
-          link: '/pages/activity/fresh'
-        }
-      ]
+      const res = await app.request({
+        url: '/banner/list',
+        method: 'GET'
+      })
+      return res.data || []
     } catch (error) {
       console.error('加载轮播图失败:', error)
-      return []
+      return this.getDefaultBanners()
     }
   },
 
-  // 加载热门职位
-  async loadHotJobs() {
+  // 加载快捷功能
+  async loadQuickActions() {
+    const actions = [
+      { id: 1, icon: '📝', text: '投递简历', action: 'resume' },
+      { id: 2, icon: '🔍', text: '职位搜索', action: 'search' },
+      { id: 3, icon: '💼', text: '我的申请', action: 'applications' },
+      { id: 4, icon: '⭐', text: '收藏职位', action: 'favorites' }
+    ]
+
+    // 根据模式添加额外功能
+    if (this.data.hasAIChat) {
+      actions.push({ id: 5, icon: '🤖', text: 'AI助手', action: 'aiChat' })
+    }
+
+    if (this.data.hasEnterprise) {
+      actions.push({ id: 6, icon: '🏢', text: '企业服务', action: 'enterprise' })
+    }
+
+    return actions
+  },
+
+  // 加载推荐职位
+  async loadRecommendJobs() {
     try {
-      const response = await JobAPI.getJobs({ limit: 6 })
-      console.log('热门职位数据:', response)
-      
-      if (response.code === 200 && response.data) {
-        // 检查数据结构
-        if (Array.isArray(response.data)) {
-          // v1格式
-          return response.data.map(item => ({
-            id: item.id,
-            title: item.title,
-            company: item.company,
-            salary: item.salary,
-            location: item.location || '未知'
-          }))
-        } else if (response.data.jobs) {
-          // v2格式
-          return response.data.jobs.map(item => ({
-            id: item.id,
-            title: item.title,
-            company: item.company_name,
-            salary: `${item.salary_min/1000}k-${item.salary_max/1000}k`,
-            location: item.location
-          }))
-        }
-      }
-      
-      // 返回默认数据
-      return [
-        {
-          id: 1,
-          title: '前端开发工程师',
-          company: '腾讯',
-          salary: '15k-25k',
-          location: '深圳'
-        },
-        {
-          id: 2,
-          title: '后端开发工程师',
-          company: '阿里巴巴',
-          salary: '20k-35k',
-          location: '杭州'
-        },
-        {
-          id: 3,
-          title: '产品经理',
-          company: '字节跳动',
-          salary: '25k-40k',
-          location: '北京'
-        }
-      ]
+      const res = await app.request({
+        url: '/job/recommend',
+        method: 'GET',
+        data: { limit: 5 }
+      })
+      return res.data || []
     } catch (error) {
-      console.error('加载热门职位失败:', error)
-      return []
+      console.error('加载推荐职位失败:', error)
+      return this.getDefaultJobs()
     }
   },
 
-  // 加载推荐企业
-  async loadRecommendCompanies() {
+  // 加载市场数据
+  async loadMarketData() {
+    if (!this.data.hasAnalytics) {
+      return {}
+    }
+
     try {
-      const response = await CompanyAPI.getRecommendCompanies()
-      console.log('推荐企业数据:', response)
-      
-      if (response.code === 200 && response.data) {
-        // 检查数据结构
-        if (Array.isArray(response.data)) {
-          // v1格式
-          return response.data.map(item => ({
-            id: item.id,
-            name: item.name,
-            logo: item.logo,
-            description: item.description || '知名企业'
-          }))
-        } else if (response.data.companies) {
-          // v2格式
-          return response.data.companies.map(item => ({
-            id: item.id,
-            name: item.short_name || item.name,
-            logo: item.logo_url,
-            description: item.description
-          }))
-        }
-      }
-      
-      // 返回默认数据
-      return [
-        {
-          id: 1,
-          name: '腾讯',
-          logo: '/images/company/tencent.png',
-          description: '互联网科技公司'
-        },
-        {
-          id: 2,
-          name: '阿里巴巴',
-          logo: '/images/company/alibaba.png',
-          description: '电商平台'
-        },
-        {
-          id: 3,
-          name: '字节跳动',
-          logo: '/images/company/bytedance.png',
-          description: '信息科技公司'
-        }
-      ]
+      const res = await app.request({
+        url: '/statistics/market',
+        method: 'GET'
+      })
+      return res.data || {}
     } catch (error) {
-      console.error('加载推荐企业失败:', error)
-      return []
+      console.error('加载市场数据失败:', error)
+      return MOCK_DATA.marketData || {
+        jobCount: '10,000+',
+        companyCount: '500+',
+        avgSalary: '15K'
+      }
     }
   },
 
-  // 轮播图点击
+  // 加载企业服务
+  async loadEnterpriseServices() {
+    if (!this.data.hasEnterprise) {
+      return []
+    }
+
+    return [
+      {
+        id: 1,
+        icon: '📊',
+        title: '招聘数据分析',
+        description: '深度分析招聘市场趋势'
+      },
+      {
+        id: 2,
+        icon: '🎯',
+        title: '精准人才匹配',
+        description: 'AI智能推荐合适人才'
+      },
+      {
+        id: 3,
+        icon: '📈',
+        title: '招聘效果评估',
+        description: '全面评估招聘ROI'
+      }
+    ]
+  },
+
+  // 加载热门行业
+  async loadIndustries() {
+    try {
+      const res = await app.request({
+        url: '/industry/hot',
+        method: 'GET'
+      })
+      return res.data || []
+    } catch (error) {
+      console.error('加载热门行业失败:', error)
+      return this.getDefaultIndustries()
+    }
+  },
+
+  // 获取默认轮播图
+  getDefaultBanners() {
+    return MOCK_DATA.banners || [
+      {
+        id: 1,
+        image: '/images/banner1.svg',
+        title: '春季招聘会',
+        link: '/pages/event/spring'
+      },
+      {
+        id: 2,
+        image: '/images/banner2.svg',
+        title: 'AI技术专场',
+        link: '/pages/event/ai'
+      }
+    ]
+  },
+
+  // 获取默认职位
+  getDefaultJobs() {
+    return MOCK_DATA.jobs || [
+      {
+        id: 1,
+        title: '前端开发工程师',
+        salary: '15K-25K',
+        company: '腾讯科技',
+        location: '深圳',
+        time: '2小时前',
+        tags: ['React', 'Vue', '3年+']
+      },
+      {
+        id: 2,
+        title: '产品经理',
+        salary: '20K-35K',
+        company: '阿里巴巴',
+        location: '杭州',
+        time: '4小时前',
+        tags: ['产品设计', '用户增长', '5年+']
+      }
+    ]
+  },
+
+  // 获取默认行业
+  getDefaultIndustries() {
+    return [
+      {
+        id: 1,
+        name: '互联网',
+        icon: '/images/industry/internet.svg',
+        jobCount: 5000
+      },
+      {
+        id: 2,
+        name: '金融',
+        icon: '/images/industry/finance.svg',
+        jobCount: 3000
+      },
+      {
+        id: 3,
+        name: '教育',
+        icon: '/images/industry/education.svg',
+        jobCount: 2000
+      }
+    ]
+  },
+
+  // 事件处理
+  goToSearch() {
+    wx.navigateTo({
+      url: '/pages/search/search'
+    })
+  },
+
   onBannerTap(e) {
-    const { link } = e.currentTarget.dataset
-    if (link) {
+    const item = e.currentTarget.dataset.item
+    if (item.link) {
       wx.navigateTo({
-        url: link
+        url: item.link
       })
     }
   },
 
-  // 职位点击
-  onJobTap(e) {
-    const { id } = e.currentTarget.dataset
+  onActionTap(e) {
+    const action = e.currentTarget.dataset.action
+    switch (action.action) {
+      case 'resume':
+        wx.navigateTo({ url: '/pages/resume/resume' })
+        break
+      case 'search':
+        wx.navigateTo({ url: '/pages/search/search' })
+        break
+      case 'applications':
+        wx.navigateTo({ url: '/pages/applications/applications' })
+        break
+      case 'favorites':
+        wx.navigateTo({ url: '/pages/favorites/favorites' })
+        break
+      case 'aiChat':
+        wx.navigateTo({ url: '/pages/chat/ai' })
+        break
+      case 'enterprise':
+        wx.navigateTo({ url: '/pages/enterprise/enterprise' })
+        break
+    }
+  },
+
+  goToJobs() {
+    wx.switchTab({
+      url: '/pages/jobs/jobs'
+    })
+  },
+
+  goToJobDetail(e) {
+    const id = e.currentTarget.dataset.id
     wx.navigateTo({
       url: `/pages/job/detail?id=${id}`
     })
   },
 
-  // 企业点击
-  onCompanyTap(e) {
-    const { id } = e.currentTarget.dataset
+  goToAIChat() {
     wx.navigateTo({
-      url: `/pages/company/detail?id=${id}`
+      url: '/pages/chat/ai'
     })
   },
 
-  // 查看更多职位
-  onMoreJobs() {
-    wx.switchTab({
-      url: '/pages/jobs/jobs'
-    })
-  },
-
-  // 查看更多企业
-  onMoreCompanies() {
+  goToEnterprise(e) {
+    const service = e.currentTarget.dataset.service
     wx.navigateTo({
-      url: '/pages/companies/companies'
+      url: `/pages/enterprise/service?id=${service.id}`
     })
   },
 
-  // 搜索职位
-  onSearch() {
-    wx.switchTab({
-      url: '/pages/jobs/jobs'
+  goToIndustry(e) {
+    const industry = e.currentTarget.dataset.industry
+    wx.navigateTo({
+      url: `/pages/industry/detail?id=${industry.id}`
     })
   },
 
-  // 下拉刷新
-  onPullDownRefresh() {
-    this.loadData().then(() => {
-      wx.stopPullDownRefresh()
+  goToUpgrade() {
+    wx.navigateTo({
+      url: '/pages/upgrade/upgrade'
     })
   }
 })

@@ -1,0 +1,28 @@
+name: Multi-mode CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [basic, plus, pro]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm install
+      - name: Build ${{ matrix.mode }}
+        run: npm run build:${{ matrix.mode }}
+        env:
+          MODE: ${{ matrix.mode }}
+      - name: Test Mode
+        run: npm run test:modes
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.mode }}-build
+          path: dist/

@@ -1,12 +1,12 @@
 {
-  "libVersion": "3.9.2",
-  "projectname": "jobfirst",
+  "libVersion": "3.9.3",
+  "projectname": "ADIRP%E6%95%B0%E6%99%BA%E6%8B%9B%E8%81%98",
   "condition": {},
   "setting": {
     "urlCheck": false,
     "coverView": true,
     "lazyloadPlaceholderEnable": false,
-    "skylineRenderEnable": true,
+    "skylineRenderEnable": false,
     "preloadBackgroundData": false,
     "autoAudits": false,
     "useApiHook": true,
@@ -19,6 +19,6 @@
     "checkInvalidKey": true,
     "ignoreDevUnusedFiles": true,
     "bigPackageSizeSupport": false,
-    "useIsolateContext": false
+    "useIsolateContext": true
   }
 }

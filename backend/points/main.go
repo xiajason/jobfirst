@@ -113,7 +113,7 @@ func loadConfig() error {
 	viper.SetDefault("redis.address", "localhost:8201")
 	viper.SetDefault("redis.db", 0)
 	viper.SetDefault("database.host", "localhost")
-	viper.SetDefault("database.port", 8200)
+	viper.SetDefault("database.port", 3306)
 	viper.SetDefault("database.name", "jobfirst")
 	viper.SetDefault("database.user", "jobfirst")
 	viper.SetDefault("database.password", "jobfirst123")
@@ -146,6 +146,9 @@ func loadConfig() error {
 	if mysqlDatabase := os.Getenv("MYSQL_DATABASE"); mysqlDatabase != "" {
 		viper.Set("database.name", mysqlDatabase)
 	}
+
+	// 设置数据库端口为3306（MySQL默认端口）
+	viper.Set("database.port", 3306)
 
 	return nil
 }

@@ -1,4 +1,4 @@
-package main
+package infrastructure
 
 import (
 	"context"
@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/redis/go-redis/v9"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -414,8 +414,8 @@ func (m *Manager) Close() error {
 func CreateDefaultDatabaseConfig() *DatabaseConfig {
 	return &DatabaseConfig{
 		MySQL: MySQLConfig{
-			Host:            "localhost",
-			Port:            8200,
+			Host:            "mysql",
+			Port:            3306,
 			Database:        "jobfirst",
 			Username:        "jobfirst",
 			Password:        "jobfirst123",
@@ -425,9 +425,9 @@ func CreateDefaultDatabaseConfig() *DatabaseConfig {
 			ConnMaxLifetime: time.Hour,
 		},
 		PostgreSQL: PostgreSQLConfig{
-			Host:            "localhost",
-			Port:            8203,
-			Database:        "jobfirst_advanced",
+			Host:            "postgresql",
+			Port:            5432,
+			Database:        "jobfirst",
 			Username:        "jobfirst",
 			Password:        "jobfirst123",
 			SSLMode:         "disable",
@@ -436,14 +436,14 @@ func CreateDefaultDatabaseConfig() *DatabaseConfig {
 			ConnMaxLifetime: time.Hour,
 		},
 		Neo4j: Neo4jConfig{
-			Host:     "localhost",
-			Port:     8205,
+			Host:     "neo4j",
+			Port:     7687,
 			Username: "neo4j",
 			Password: "jobfirst123",
 		},
 		Redis: RedisConfig{
-			Host:     "localhost",
-			Port:     8201,
+			Host:     "redis",
+			Port:     6379,
 			Password: "",
 			DB:       0,
 			PoolSize: 10,

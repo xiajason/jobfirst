@@ -1,5 +1,5 @@
 # 构建阶段
-FROM golang:1.21-alpine AS builder
+FROM golang:1.25-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -14,7 +14,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # 复制源代码
-COPY . .
+COPY enhanced_gateway_simple.go .
+COPY gateway_config.yaml .
 
 # 构建应用
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o gateway enhanced_gateway_simple.go

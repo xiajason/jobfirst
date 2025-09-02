@@ -1,0 +1,47 @@
+
+/* components/MenuGrid/MenuGrid.wxss */
+.menu-grid-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.menu-grid-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.menu-grid-wrapper.with-border {
+  border-top: 1rpx solid #eee;
+  border-left: 1rpx solid #eee;
+}
+
+.menu-grid-item {
+  box-sizing: border-box;
+  padding: 20rpx 10rpx;
+}
+
+.menu-grid-item.with-border {
+  border-right: 1rpx solid #eee;
+  border-bottom: 1rpx solid #eee;
+}
+
+.menu-item-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-item-icon {
+  margin-bottom: 10rpx;
+}
+
+.menu-item-text {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

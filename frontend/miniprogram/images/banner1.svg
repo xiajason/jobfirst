@@ -1,0 +1,9 @@
+<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="200" fill="#667eea"/>
+  <text x="200" y="100" text-anchor="middle" fill="white" font-size="24" font-family="Arial, sans-serif">
+    智能招聘，连接未来
+  </text>
+  <text x="200" y="130" text-anchor="middle" fill="white" font-size="16" font-family="Arial, sans-serif">
+    轮播图1
+  </text>
+</svg>

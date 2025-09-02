@@ -1,9 +1,10 @@
-package main
+package infrastructure
 
 import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/hashicorp/consul/api"
 )
@@ -135,6 +136,75 @@ func (infra *Infrastructure) initConfig() error {
 func (infra *Infrastructure) initDatabase() error {
 	// 从配置获取数据库配置
 	dbConfig := CreateDefaultDatabaseConfig()
+
+	// 优先使用环境变量
+	if host := os.Getenv("MYSQL_HOST"); host != "" {
+		dbConfig.MySQL.Host = host
+	}
+	if port := os.Getenv("MYSQL_PORT"); port != "" {
+		if p, err := strconv.Atoi(port); err == nil {
+			dbConfig.MySQL.Port = p
+		}
+	}
+	if database := os.Getenv("MYSQL_DATABASE"); database != "" {
+		dbConfig.MySQL.Database = database
+	}
+	if username := os.Getenv("MYSQL_USER"); username != "" {
+		dbConfig.MySQL.Username = username
+	}
+	if password := os.Getenv("MYSQL_PASSWORD"); password != "" {
+		dbConfig.MySQL.Password = password
+	}
+
+	if host := os.Getenv("POSTGRESQL_HOST"); host != "" {
+		dbConfig.PostgreSQL.Host = host
+	}
+	if port := os.Getenv("POSTGRESQL_PORT"); port != "" {
+		if p, err := strconv.Atoi(port); err == nil {
+			dbConfig.PostgreSQL.Port = p
+		}
+	}
+	if database := os.Getenv("POSTGRESQL_DATABASE"); database != "" {
+		dbConfig.PostgreSQL.Database = database
+	}
+	if username := os.Getenv("POSTGRESQL_USER"); username != "" {
+		dbConfig.PostgreSQL.Username = username
+	}
+	if password := os.Getenv("POSTGRESQL_PASSWORD"); password != "" {
+		dbConfig.PostgreSQL.Password = password
+	}
+
+	if host := os.Getenv("NEO4J_HOST"); host != "" {
+		dbConfig.Neo4j.Host = host
+	}
+	if port := os.Getenv("NEO4J_PORT"); port != "" {
+		if p, err := strconv.Atoi(port); err == nil {
+			dbConfig.Neo4j.Port = p
+		}
+	}
+	if username := os.Getenv("NEO4J_USER"); username != "" {
+		dbConfig.Neo4j.Username = username
+	}
+	if password := os.Getenv("NEO4J_PASSWORD"); password != "" {
+		dbConfig.Neo4j.Password = password
+	}
+
+	if host := os.Getenv("REDIS_HOST"); host != "" {
+		dbConfig.Redis.Host = host
+	}
+	if port := os.Getenv("REDIS_PORT"); port != "" {
+		if p, err := strconv.Atoi(port); err == nil {
+			dbConfig.Redis.Port = p
+		}
+	}
+	if password := os.Getenv("REDIS_PASSWORD"); password != "" {
+		dbConfig.Redis.Password = password
+	}
+	if db := os.Getenv("REDIS_DB"); db != "" {
+		if d, err := strconv.Atoi(db); err == nil {
+			dbConfig.Redis.DB = d
+		}
+	}
 
 	// 如果配置中有数据库配置，则使用配置中的值
 	if infra.Config != nil {

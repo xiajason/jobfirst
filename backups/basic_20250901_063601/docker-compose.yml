@@ -1,0 +1,202 @@
+services:
+  # Redis 缓存服务
+  redis:
+    image: redis:7-alpine
+    container_name: jobfirst-redis
+    ports:
+      - "8201:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - jobfirst-network
+
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: jobfirst-mysql
+    ports:
+      - "8200:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: jobfirst123
+      MYSQL_DATABASE: jobfirst
+      MYSQL_USER: jobfirst
+      MYSQL_PASSWORD: jobfirst123
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - jobfirst-network
+
+  # Consul 服务发现和配置中心
+  consul:
+    image: consul:1.15
+    container_name: jobfirst-consul
+    ports:
+      - "8202:8500"
+      - "8206:8600/udp"
+    volumes:
+      - consul_data:/consul/data
+    command: consul agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -data-dir=/consul/data
+    networks:
+      - jobfirst-network
+
+  # API Gateway 网关服务
+  gateway:
+    build:
+      context: ./backend/gateway
+      dockerfile: Dockerfile
+    container_name: jobfirst-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - consul
+      - mysql
+    environment:
+      - CONSUL_ADDRESS=consul:8500
+      - REDIS_ADDRESS=redis:6379
+      - MYSQL_ADDRESS=mysql:3306
+    volumes:
+      - ./backend/gateway/config.yaml:/root/config/config.yaml
+    networks:
+      - jobfirst-network
+
+  # User Service 用户服务
+  user:
+    build:
+      context: ./backend/user
+      dockerfile: Dockerfile
+    container_name: jobfirst-user
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+      - consul
+      - mysql
+    environment:
+      - CONSUL_ADDRESS=consul:8500
+      - REDIS_ADDRESS=redis:6379
+      - MYSQL_ADDRESS=mysql
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+    networks:
+      - jobfirst-network
+
+  # Resume Service 简历服务
+  resume:
+    build:
+      context: ./backend
+      dockerfile: resume/Dockerfile
+    container_name: jobfirst-resume
+    ports:
+      - "8087:8082"
+    depends_on:
+      - redis
+      - consul
+      - mysql
+    environment:
+      - CONSUL_ADDRESS=consul:8500
+      - REDIS_ADDRESS=redis:6379
+      - MYSQL_ADDRESS=mysql
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+    networks:
+      - jobfirst-network
+
+  # Statistics Service 统计服务
+  statistics:
+    build:
+      context: ./backend
+      dockerfile: statistics/Dockerfile
+    container_name: jobfirst-statistics
+    ports:
+      - "8097:8085"
+    depends_on:
+      - redis
+      - consul
+      - mysql
+    environment:
+      - CONSUL_ADDRESS=consul:8500
+      - REDIS_ADDRESS=redis:6379
+      - MYSQL_ADDRESS=mysql
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+    networks:
+      - jobfirst-network
+
+  # Storage Service 存储服务
+  storage:
+    build:
+      context: ./backend
+      dockerfile: storage/Dockerfile
+    container_name: jobfirst-storage
+    ports:
+      - "8088:8088"
+    depends_on:
+      - redis
+      - consul
+      - mysql
+    environment:
+      - CONSUL_ADDRESS=consul:8500
+      - REDIS_ADDRESS=redis:6379
+      - MYSQL_ADDRESS=mysql
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+    volumes:
+      - ./backend/storage/config.yaml:/root/config/config.yaml
+      - storage_data:/data/files
+    networks:
+      - jobfirst-network
+
+  # Points Service 积分服务
+  points:
+    build:
+      context: ./backend
+      dockerfile: points/Dockerfile
+    container_name: jobfirst-points
+    ports:
+      - "8086:8083"
+    depends_on:
+      - redis
+      - consul
+      - mysql
+    environment:
+      - CONSUL_ADDRESS=consul:8500
+      - REDIS_ADDRESS=redis:6379
+      - MYSQL_ADDRESS=mysql
+      - MYSQL_USER=jobfirst
+      - MYSQL_PASSWORD=jobfirst123
+      - MYSQL_DATABASE=jobfirst
+    networks:
+      - jobfirst-network
+
+  # Frontend Web 前端Web应用
+  web:
+    build:
+      context: ./frontend/web
+      dockerfile: Dockerfile
+    container_name: jobfirst-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://gateway:8080
+    depends_on:
+      - gateway
+    networks:
+      - jobfirst-network
+
+volumes:
+  redis_data:
+  consul_data:
+  mysql_data:
+  storage_data:
+
+networks:
+  jobfirst-network:
+    driver: bridge

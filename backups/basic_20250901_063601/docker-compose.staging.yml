@@ -1,0 +1,392 @@
+version: '3.8'
+
+services:
+  # ==================== 基础设施服务 ====================
+  mysql:
+    image: mysql:8.0
+    container_name: jobfirst-mysql-staging
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-jobfirst}
+      MYSQL_USER: ${MYSQL_USER:-jobfirst}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-jobfirst123}
+    ports:
+      - "8200:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: jobfirst-redis-staging
+    restart: unless-stopped
+    ports:
+      - "8201:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 20s
+      retries: 10
+
+  consul:
+    image: consul:1.15
+    container_name: jobfirst-consul-staging
+    restart: unless-stopped
+    ports:
+      - "8202:8500"
+      - "8206:8600/udp"
+    volumes:
+      - consul_data:/consul/data
+    networks:
+      - jobfirst-network
+    command: consul agent -server -bootstrap-expect=1 -ui -client=0.0.0.0
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      timeout: 20s
+      retries: 10
+
+  neo4j:
+    image: neo4j:5.11
+    container_name: jobfirst-neo4j-staging
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:-neo4j/password}
+      NEO4J_PLUGINS: '["apoc"]'
+    ports:
+      - "8203:7474"
+      - "8204:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7474/browser/"]
+      timeout: 20s
+      retries: 10
+
+  # ==================== 微服务 ====================
+  gateway:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/gateway:latest
+    container_name: jobfirst-gateway-staging
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      timeout: 20s
+      retries: 10
+
+  user:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/user:latest
+    container_name: jobfirst-user-staging
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=${MYSQL_USER:-jobfirst}
+      - DB_PASSWORD=${MYSQL_PASSWORD:-jobfirst123}
+      - DB_NAME=${MYSQL_DATABASE:-jobfirst}
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      timeout: 20s
+      retries: 10
+
+  resume:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/resume:latest
+    container_name: jobfirst-resume-staging
+    restart: unless-stopped
+    ports:
+      - "8087:8087"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8087/health"]
+      timeout: 20s
+      retries: 10
+
+  points:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/points:latest
+    container_name: jobfirst-points-staging
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      timeout: 20s
+      retries: 10
+
+  statistics:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/statistics:latest
+    container_name: jobfirst-statistics-staging
+    restart: unless-stopped
+    ports:
+      - "8097:8097"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8097/health"]
+      timeout: 20s
+      retries: 10
+
+  storage:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/storage:latest
+    container_name: jobfirst-storage-staging
+    restart: unless-stopped
+    ports:
+      - "8088:8088"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      timeout: 20s
+      retries: 10
+
+  admin:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/admin:latest
+    container_name: jobfirst-admin-staging
+    restart: unless-stopped
+    ports:
+      - "8003:8003"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      timeout: 20s
+      retries: 10
+
+  enterprise:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/enterprise:latest
+    container_name: jobfirst-enterprise-staging
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      timeout: 20s
+      retries: 10
+
+  personal:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/personal:latest
+    container_name: jobfirst-personal-staging
+    restart: unless-stopped
+    ports:
+      - "6001:6001"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6001/health"]
+      timeout: 20s
+      retries: 10
+
+  resource:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/resource:latest
+    container_name: jobfirst-resource-staging
+    restart: unless-stopped
+    ports:
+      - "9002:9002"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9002/health"]
+      timeout: 20s
+      retries: 10
+
+  open:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/jobfirst/open:latest
+    container_name: jobfirst-open-staging
+    restart: unless-stopped
+    ports:
+      - "9006:9006"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jobfirst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9006/health"]
+      timeout: 20s
+      retries: 10
+
+  # ==================== 监控服务 ====================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: jobfirst-prometheus-staging
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - jobfirst-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: jobfirst-grafana-staging
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - jobfirst-network
+    depends_on:
+      - prometheus
+
+# ==================== 网络和卷 ====================
+networks:
+  jobfirst-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
+  consul_data:
+  neo4j_data:
+  neo4j_logs:
+  neo4j_import:
+  neo4j_plugins:
+  prometheus_data:
+  grafana_data:

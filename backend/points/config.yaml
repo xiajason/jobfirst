@@ -1,6 +1,6 @@
 server:
   host: "localhost"
-  port: 8086
+  port: 8083
 
 consul:
   address: "localhost:8202"

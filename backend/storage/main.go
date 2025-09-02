@@ -147,6 +147,9 @@ func loadConfig() error {
 		viper.Set("database.name", mysqlDatabase)
 	}
 
+	// 设置数据库端口为3306（MySQL默认端口）
+	viper.Set("database.port", 3306)
+
 	return nil
 }
 

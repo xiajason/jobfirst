@@ -1,0 +1,30 @@
+/* pages/enterprise/enterprise.wxss */
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8f8;
+}
+
+.placeholder {
+  text-align: center;
+  padding: 60rpx;
+}
+
+.placeholder-icon {
+  font-size: 120rpx;
+  margin-bottom: 40rpx;
+}
+
+.placeholder-title {
+  font-size: 36rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+
+.placeholder-desc {
+  font-size: 28rpx;
+  color: #999;
+}

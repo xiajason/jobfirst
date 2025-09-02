@@ -1,0 +1,8 @@
+<!--pages/analytics/analytics.wxml-->
+<view class="container">
+  <view class="placeholder">
+    <view class="placeholder-icon">📊</view>
+    <view class="placeholder-title">数据分析</view>
+    <view class="placeholder-desc">数据分析功能开发中，敬请期待...</view>
+  </view>
+</view>

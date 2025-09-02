@@ -1,11 +1,19 @@
-/* profile.wxss */
+/* pages/profile/profile.wxss */
 
-/* 用户信息区域 */
-.user-section {
+.container {
+  min-height: 100vh;
+  background: #f8f8f8;
+  padding-bottom: 40rpx;
+}
+
+/* 用户信息卡片 */
+.user-card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40rpx 20rpx;
+  margin: 20rpx;
+  border-radius: 20rpx;
+  padding: 40rpx;
   color: #fff;
-  margin-bottom: 20rpx;
+  box-shadow: 0 10rpx 30rpx rgba(102, 126, 234, 0.3);
 }
 
 .user-info {
@@ -14,97 +22,74 @@
   margin-bottom: 40rpx;
 }
 
-.user-avatar {
-  margin-right: 24rpx;
-}
-
 .avatar {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
   border: 4rpx solid rgba(255, 255, 255, 0.3);
+  margin-right: 30rpx;
 }
 
 .user-details {
   flex: 1;
 }
 
-.user-name {
+.username {
   font-size: 36rpx;
-  font-weight: 600;
-  margin-bottom: 8rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
 }
 
-.user-desc {
+.user-type {
   font-size: 26rpx;
-  opacity: 0.8;
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  display: inline-block;
 }
 
-.user-arrow {
-  opacity: 0.6;
-}
-
-/* 数据统计 */
 .user-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20rpx;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.2);
+  padding-top: 30rpx;
 }
 
 .stat-item {
   text-align: center;
-  padding: 20rpx 10rpx;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12rpx;
-  backdrop-filter: blur(10rpx);
-  transition: all 0.3s ease;
-}
-
-.stat-item:active {
-  transform: scale(0.95);
-  background: rgba(255, 255, 255, 0.2);
 }
 
 .stat-number {
-  font-size: 32rpx;
-  font-weight: 600;
-  margin-bottom: 8rpx;
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
 }
 
 .stat-label {
-  font-size: 22rpx;
+  font-size: 24rpx;
   opacity: 0.8;
 }
 
 /* 菜单区域 */
 .menu-section {
-  margin-bottom: 20rpx;
+  margin: 20rpx;
 }
 
 .menu-group {
+  background: #fff;
+  border-radius: 16rpx;
   margin-bottom: 20rpx;
-}
-
-.menu-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
-  padding: 20rpx;
-  background: #fff;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.menu-list {
-  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 24rpx 20rpx;
-  border-bottom: 1rpx solid #f8f8f8;
-  transition: all 0.3s ease;
-  position: relative;
+  padding: 30rpx 40rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background-color 0.3s ease;
 }
 
 .menu-item:last-child {
@@ -112,12 +97,12 @@
 }
 
 .menu-item:active {
-  background: #f5f5f5;
+  background-color: #f8f8f8;
 }
 
 .menu-icon {
   font-size: 40rpx;
-  margin-right: 20rpx;
+  margin-right: 30rpx;
   width: 40rpx;
   text-align: center;
 }
@@ -126,10 +111,11 @@
   flex: 1;
 }
 
-.menu-name {
+.menu-title {
   font-size: 30rpx;
   color: #333;
-  margin-bottom: 6rpx;
+  margin-bottom: 8rpx;
+  font-weight: 500;
 }
 
 .menu-desc {
@@ -137,194 +123,74 @@
   color: #999;
 }
 
-.menu-badge {
-  margin-right: 12rpx;
-}
-
 .menu-arrow {
-  opacity: 0.3;
-}
-
-/* 退出登录 */
-.logout-section {
-  padding: 20rpx;
-}
-
-.logout-btn {
-  width: 100%;
-  padding: 24rpx;
-  font-size: 30rpx;
-  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: #ccc;
+  font-weight: bold;
 }
 
 /* 版本信息 */
 .version-info {
   text-align: center;
   padding: 40rpx 20rpx;
+  color: #999;
+  font-size: 24rpx;
 }
 
 .version-text {
-  font-size: 24rpx;
-  color: #999;
+  margin-bottom: 10rpx;
 }
 
-/* 徽章样式 */
-.badge {
-  display: inline-block;
-  min-width: 32rpx;
-  height: 32rpx;
-  line-height: 32rpx;
-  padding: 0 8rpx;
+.mode-text {
+  color: #667eea;
+  font-weight: 500;
+}
+
+/* 退出登录 */
+.logout-section {
+  margin: 20rpx;
+}
+
+.logout-btn {
+  width: 100%;
+  height: 88rpx;
+  background: #fff;
+  color: #ff4757;
+  border: 2rpx solid #ff4757;
   border-radius: 16rpx;
-  background: #ff4d4f;
-  color: #fff;
-  font-size: 20rpx;
-  text-align: center;
+  font-size: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
-/* 响应式设计 */
+.logout-btn:active {
+  background: #ff4757;
+  color: #fff;
+}
+
+/* 响应式调整 */
 @media (max-width: 750rpx) {
-  .user-section {
-    padding: 30rpx 16rpx;
-  }
-  
-  .avatar {
-    width: 100rpx;
-    height: 100rpx;
-  }
-  
-  .user-name {
-    font-size: 32rpx;
-  }
-  
-  .user-desc {
-    font-size: 24rpx;
-  }
-  
-  .user-stats {
-    gap: 16rpx;
-  }
-  
-  .stat-item {
-    padding: 16rpx 8rpx;
-  }
-  
-  .stat-number {
-    font-size: 28rpx;
-  }
-  
-  .stat-label {
-    font-size: 20rpx;
+  .user-card {
+    margin: 15rpx;
+    padding: 30rpx;
   }
   
   .menu-item {
-    padding: 20rpx 16rpx;
+    padding: 25rpx 30rpx;
   }
   
   .menu-icon {
     font-size: 36rpx;
-    margin-right: 16rpx;
+    margin-right: 25rpx;
   }
   
-  .menu-name {
+  .menu-title {
     font-size: 28rpx;
   }
   
   .menu-desc {
     font-size: 22rpx;
   }
-}
-
-/* 动画效果 */
-.user-info {
-  animation: slideInDown 0.5s ease-out;
-}
-
-.user-stats {
-  animation: slideInUp 0.5s ease-out 0.1s both;
-}
-
-.menu-group {
-  animation: fadeIn 0.5s ease-out 0.2s both;
-}
-
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* 毛玻璃效果 */
-.stat-item {
-  backdrop-filter: blur(10rpx);
-  -webkit-backdrop-filter: blur(10rpx);
-}
-
-/* 渐变背景 */
-.user-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.user-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-  opacity: 0.3;
-}
-
-/* 阴影效果 */
-.menu-group {
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
-  border-radius: 12rpx;
-  overflow: hidden;
-  margin: 0 20rpx 20rpx;
-}
-
-.menu-title {
-  border-radius: 12rpx 12rpx 0 0;
-}
-
-.menu-list {
-  border-radius: 0 0 12rpx 12rpx;
-}
-
-/* 按钮悬停效果 */
-.logout-btn {
-  transition: all 0.3s ease;
-}
-
-.logout-btn:active {
-  transform: scale(0.98);
-  box-shadow: 0 4rpx 12rpx rgba(255, 77, 79, 0.3);
 }

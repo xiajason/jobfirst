@@ -1,0 +1,208 @@
+# JobFirst 应用配置文件
+app:
+  name: "JobFirst"
+  version: "1.0.0"
+  environment: "development"
+  port: 8080
+  host: "0.0.0.0"
+
+# 日志配置
+logging:
+  level: "info"  # debug, info, warn, error, fatal
+  output: "stdout"  # stdout, stderr, file path
+  format: "json"  # json, text
+  max_size: 100  # MB
+  max_backups: 3
+  max_age: 28  # days
+  compress: true
+
+# 数据库配置
+database:
+  mysql:
+    host: "localhost"
+    port: 8200
+    database: "jobfirst"
+    username: "jobfirst"
+    password: "jobfirst123"
+    charset: "utf8mb4"
+    max_idle_conns: 10
+    max_open_conns: 100
+    conn_max_lifetime: "1h"
+  
+  postgresql:
+    host: "localhost"
+    port: 8203
+    database: "jobfirst_advanced"
+    username: "jobfirst"
+    password: "jobfirst123"
+    ssl_mode: "disable"
+    max_idle_conns: 10
+    max_open_conns: 100
+    conn_max_lifetime: "1h"
+  
+  neo4j:
+    host: "localhost"
+    port: 8205
+    username: "neo4j"
+    password: "jobfirst123"
+  
+  redis:
+    host: "localhost"
+    port: 8201
+    password: ""
+    db: 0
+    pool_size: 10
+    min_idle: 5
+    timeout: "5s"
+
+# 缓存配置
+cache:
+  redis:
+    default_ttl: "1h"
+    session_ttl: "24h"
+    rate_limit_ttl: "1m"
+
+# 安全配置
+security:
+  jwt:
+    secret: "your-secret-key"
+    expires_in: "24h"
+    refresh_expires_in: "7d"
+  
+  cors:
+    allowed_origins: ["*"]
+    allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allowed_headers: ["*"]
+    allow_credentials: true
+  
+  rate_limit:
+    enabled: true
+    requests_per_minute: 100
+    burst: 20
+
+# 监控配置
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+  
+  health_check:
+    enabled: true
+    port: 8081
+    path: "/health"
+
+# 服务配置
+services:
+  ai:
+    enabled: true
+    port: 8206
+    host: "0.0.0.0"
+    max_concurrent_requests: 100
+  
+  gateway:
+    enabled: true
+    port: 8000
+    host: "0.0.0.0"
+    timeout: "30s"
+  
+  user:
+    enabled: true
+    port: 8001
+    host: "0.0.0.0"
+  
+  resume:
+    enabled: true
+    port: 8002
+    host: "0.0.0.0"
+  
+  statistics:
+    enabled: true
+    port: 8003
+    host: "0.0.0.0"
+  
+  storage:
+    enabled: true
+    port: 8004
+    host: "0.0.0.0"
+  
+  points:
+    enabled: true
+    port: 8005
+    host: "0.0.0.0"
+
+# 文件存储配置
+storage:
+  local:
+    path: "./uploads"
+    max_file_size: "10MB"
+    allowed_extensions: [".jpg", ".jpeg", ".png", ".pdf", ".doc", ".docx"]
+  
+  s3:
+    enabled: false
+    bucket: "jobfirst-uploads"
+    region: "us-east-1"
+    access_key: ""
+    secret_key: ""
+
+# 邮件配置
+email:
+  smtp:
+    host: "smtp.gmail.com"
+    port: 587
+    username: ""
+    password: ""
+    from: "noreply@jobfirst.com"
+  
+  templates:
+    welcome: "templates/email/welcome.html"
+    reset_password: "templates/email/reset_password.html"
+    job_alert: "templates/email/job_alert.html"
+
+# 推荐系统配置
+recommendation:
+  algorithms:
+    content_based:
+      enabled: true
+      weight: 0.4
+    
+    collaborative_filtering:
+      enabled: true
+      weight: 0.3
+    
+    graph_based:
+      enabled: true
+      weight: 0.3
+  
+  cache:
+    enabled: true
+    ttl: "1h"
+    max_size: 1000
+  
+  similarity:
+    jaccard_threshold: 0.3
+    cosine_threshold: 0.5
+    euclidean_threshold: 0.7
+
+# 分布式追踪配置
+tracing:
+  enabled: true
+  service_name: "jobfirst"
+  service_version: "1.0.0"
+  environment: "development"
+  sample_rate: 1.0
+  jaeger:
+    endpoint: "http://localhost:14268/api/traces"
+    username: ""
+    password: ""
+
+# 消息队列配置
+messaging:
+  redis:
+    addr: "localhost:6379"
+    password: ""
+    db: 0
+  max_retries: 3
+  retry_delay: "5s"
+  batch_size: 10
+  consumer_group: "jobfirst-consumer-group"

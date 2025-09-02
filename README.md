@@ -33,16 +33,23 @@ npm run dev
 
 ## 📚 文档
 
-- [开发指南](docs/DEVELOPMENT.md)
+- [Web端开发指南](docs/DEVELOPMENT.md)
+- [小程序多模式架构](frontend/miniprogram/README.md)
+- [小程序部署方案](frontend/miniprogram/MULTI-MODE-DEPLOYMENT.md)
 - [API文档](docs/API.md)
 - [部署指南](docs/DEPLOYMENT.md)
 - [腾讯云配置](docs/TENCENT_CLOUD_SETUP.md)
+- [小程序云开发指南](docs/MINI_PROGRAM_CLOUD.md)
 
 ## 🏗️ 架构
 
 ```
 JobFirst
-├── 前端 (Next.js + TypeScript)
+├── Web前端 (Next.js + TypeScript)
+├── 小程序端 (多模式架构)
+│   ├── 基础模式 (轻量版)
+│   ├── 增强模式 (标准版)
+│   └── 专业模式 (企业版)
 ├── API网关 (Go + Gin)
 ├── 微服务
 │   ├── 用户服务
@@ -65,10 +72,21 @@ JobFirst
 - **容器化**: Docker, Kubernetes
 
 ### 前端
-- **框架**: Next.js 15.3.0
-- **语言**: TypeScript
-- **样式**: Tailwind CSS
-- **测试**: Jest, Playwright
+- **Web端**:
+  - 框架: Next.js 15.3.0
+  - 语言: TypeScript
+  - 样式: Tailwind CSS
+  - 测试: Jest, Playwright
+
+- **小程序端**:
+  - 架构: 多模式条件编译
+  - 核心库: Taro 3.6+
+  - 状态管理: Redux Toolkit
+  - 测试: Jest + 微信云测试
+  - 特色能力:
+    - 动态功能加载
+    - 企业级微信API集成
+    - 多环境配置管理
 
 ### 基础设施
 - **CI/CD**: GitHub Actions
@@ -78,10 +96,14 @@ JobFirst
 
 ## 📊 项目状态
 
-- ✅ **开发环境**: 100% 就绪
+- ✅ **Web端**: 生产就绪
+- ✅ **小程序基础模式**: 生产就绪
+- 🟡 **小程序增强模式**: 测试阶段
+- 🟡 **小程序专业模式**: 开发中
 - ✅ **CI/CD管道**: 100% 就绪
 - ✅ **测试框架**: 100% 就绪
-- ✅ **腾讯云部署**: 90% 就绪
+- ✅ **腾讯云部署**: Web端已上线
+- 🟡 **小程序云部署**: 配置中
 - ✅ **监控系统**: 100% 就绪
 
 ## 🤝 贡献

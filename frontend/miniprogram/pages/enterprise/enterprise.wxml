@@ -1,0 +1,8 @@
+<!--pages/enterprise/enterprise.wxml-->
+<view class="container">
+  <view class="placeholder">
+    <view class="placeholder-icon">🏢</view>
+    <view class="placeholder-title">企业服务</view>
+    <view class="placeholder-desc">企业服务功能开发中，敬请期待...</view>
+  </view>
+</view>

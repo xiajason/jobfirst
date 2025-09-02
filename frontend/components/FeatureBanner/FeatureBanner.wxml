@@ -1,0 +1,27 @@
+
+<!-- components/FeatureBanner/FeatureBanner.wxml -->
+<view class="feature-banner-container">
+  <swiper 
+    class="banner-swiper"
+    style="height: {{height}};"
+    indicator-dots="{{indicatorDots}}"
+    autoplay="{{autoplay}}"
+    interval="{{interval}}"
+    duration="{{duration}}"
+    indicator-color="{{indicatorColor}}"
+    indicator-active-color="{{indicatorActiveColor}}"
+    bindchange="onSwiperChange">
+    <block wx:for="{{bannerList}}" wx:key="index">
+      <swiper-item>
+        <view class="banner-item" bindtap="onBannerTap" data-index="{{index}}">
+          <image 
+            src="{{item.imageUrl}}" 
+            mode="aspectFill" 
+            class="banner-image"
+            lazy-load="true"/>
+          <view class="banner-title" wx:if="{{item.title}}">{{item.title}}</view>
+        </view>
+      </swiper-item>
+    </block>
+  </swiper>
+</view>

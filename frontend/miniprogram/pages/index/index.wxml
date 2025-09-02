@@ -1,39 +1,18 @@
 <!--index.wxml-->
 <view class="container">
-  <!-- 顶部搜索区域 -->
-  <view class="search-section">
-    <view class="search-box">
-      <view class="search-input-wrapper">
-        <icon type="search" size="16" color="#999"></icon>
-        <input 
-          class="search-input" 
-          placeholder="搜索职位、公司、技能" 
-          value="{{searchKeyword}}"
-          bindinput="onSearchInput"
-          bindconfirm="onSearch"
-        />
-      </view>
+  <!-- 顶部搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input" bindtap="goToSearch">
+      <text class="search-icon">🔍</text>
+      <text class="search-placeholder">搜索职位、公司、技能...</text>
     </view>
   </view>
 
   <!-- 轮播图 -->
-  <view class="banner-section" wx:if="{{banners.length > 0}}">
-    <swiper 
-      class="banner-swiper" 
-      indicator-dots="{{true}}" 
-      autoplay="{{true}}" 
-      interval="{{3000}}" 
-      duration="{{500}}"
-      circular="{{true}}"
-    >
+  <view class="banner-section">
+    <swiper class="banner-swiper" indicator-dots="{{true}}" autoplay="{{true}}" interval="{{3000}}" duration="{{500}}">
       <swiper-item wx:for="{{banners}}" wx:key="id">
-        <image 
-          class="banner-image" 
-          src="{{item.image}}" 
-          mode="aspectFill"
-          bindtap="onBannerTap"
-          data-item="{{item}}"
-        />
+        <image class="banner-image" src="{{item.image}}" mode="aspectFill" bindtap="onBannerTap" data-item="{{item}}"/>
       </swiper-item>
     </swiper>
   </view>
@@ -41,104 +20,105 @@
   <!-- 快捷功能 -->
   <view class="quick-actions">
     <view class="action-grid">
-      <view class="action-item" bindtap="navigateToJobs" data-type="recommend">
-        <view class="action-icon">💼</view>
-        <text class="action-text">推荐职位</text>
-      </view>
-      <view class="action-item" bindtap="navigateToJobs" data-type="nearby">
-        <view class="action-icon">📍</view>
-        <text class="action-text">附近职位</text>
-      </view>
-      <view class="action-item" bindtap="navigateToResume">
-        <view class="action-icon">📝</view>
-        <text class="action-text">我的简历</text>
-      </view>
-      <view class="action-item" bindtap="navigateToApply">
-        <view class="action-icon">📋</view>
-        <text class="action-text">投递记录</text>
+      <view class="action-item" wx:for="{{quickActions}}" wx:key="id" bindtap="onActionTap" data-action="{{item}}">
+        <view class="action-icon">{{item.icon}}</view>
+        <text class="action-text">{{item.text}}</text>
       </view>
     </view>
   </view>
 
-  <!-- 热门职位 -->
+  <!-- 推荐职位 -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title">热门职位</text>
-      <text class="section-more" bindtap="navigateToJobs">查看更多</text>
+      <text class="section-title">推荐职位</text>
+      <text class="section-more" bindtap="goToJobs">查看更多</text>
     </view>
     <view class="job-list">
-      <view 
-        class="job-item card" 
-        wx:for="{{hotJobs}}" 
-        wx:key="id"
-        bindtap="navigateToJobDetail"
-        data-job="{{item}}"
-      >
+      <view class="job-item" wx:for="{{recommendJobs}}" wx:key="id" bindtap="goToJobDetail" data-id="{{item.id}}">
         <view class="job-header">
-          <view class="job-title">{{item.title}}</view>
-          <view class="job-salary text-primary">{{item.salary}}</view>
+          <text class="job-title">{{item.title}}</text>
+          <text class="job-salary">{{item.salary}}</text>
         </view>
         <view class="job-company">{{item.company}}</view>
         <view class="job-tags">
           <text class="tag tag-primary" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
         </view>
-        <view class="job-meta">
-          <text class="job-location">📍 {{item.location}}</text>
-          <text class="job-experience">💼 {{item.experience}}</text>
+        <view class="job-footer">
+          <text class="job-location">{{item.location}}</text>
+          <text class="job-time">{{item.time}}</text>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- 推荐公司 -->
-  <view class="section">
+  <!-- 数据分析 (Plus/Pro模式) -->
+  <view class="section" wx:if="{{hasAnalytics}}">
     <view class="section-header">
-      <text class="section-title">推荐公司</text>
-      <text class="section-more" bindtap="navigateToCompanies">查看更多</text>
+      <text class="section-title">市场洞察</text>
     </view>
-    <view class="company-list">
-      <view 
-        class="company-item card" 
-        wx:for="{{recommendCompanies}}" 
-        wx:key="id"
-        bindtap="navigateToCompanyDetail"
-        data-company="{{item}}"
-      >
-        <view class="company-info">
-          <image class="company-logo" src="{{item.logo}}" mode="aspectFit"></image>
-          <view class="company-details">
-            <view class="company-name">{{item.name}}</view>
-            <view class="company-desc">{{item.description}}</view>
-            <view class="company-meta">
-              <text class="company-size">{{item.size}}</text>
-              <text class="company-industry">{{item.industry}}</text>
-            </view>
-          </view>
-        </view>
-        <view class="company-jobs">
-          <text class="job-count">{{item.jobCount}}个在招职位</text>
+    <view class="analytics-grid">
+      <view class="analytics-item">
+        <text class="analytics-number">{{marketData.jobCount}}</text>
+        <text class="analytics-label">在招职位</text>
+      </view>
+      <view class="analytics-item">
+        <text class="analytics-number">{{marketData.companyCount}}</text>
+        <text class="analytics-label">招聘企业</text>
+      </view>
+      <view class="analytics-item">
+        <text class="analytics-number">{{marketData.avgSalary}}</text>
+        <text class="analytics-label">平均薪资</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- AI助手 (Plus/Pro模式) -->
+  <view class="section" wx:if="{{hasAIChat}}">
+    <view class="section-header">
+      <text class="section-title">AI求职助手</text>
+    </view>
+    <view class="ai-chat-card" bindtap="goToAIChat">
+      <view class="ai-chat-content">
+        <text class="ai-chat-title">智能简历优化</text>
+        <text class="ai-chat-desc">让AI帮你优化简历，提升面试机会</text>
+      </view>
+      <view class="ai-chat-icon">🤖</view>
+    </view>
+  </view>
+
+  <!-- 企业服务 (Pro模式) -->
+  <view class="section" wx:if="{{hasEnterprise}}">
+    <view class="section-header">
+      <text class="section-title">企业服务</text>
+    </view>
+    <view class="enterprise-services">
+      <view class="service-item" wx:for="{{enterpriseServices}}" wx:key="id" bindtap="goToEnterprise" data-service="{{item}}">
+        <view class="service-icon">{{item.icon}}</view>
+        <view class="service-content">
+          <text class="service-title">{{item.title}}</text>
+          <text class="service-desc">{{item.description}}</text>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- 行业分类 -->
+  <!-- 热门行业 -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title">行业分类</text>
+      <text class="section-title">热门行业</text>
     </view>
     <view class="industry-grid">
-      <view 
-        class="industry-item" 
-        wx:for="{{industries}}" 
-        wx:key="id"
-        bindtap="navigateToIndustry"
-        data-industry="{{item}}"
-      >
-        <view class="industry-icon">{{item.icon}}</view>
+      <view class="industry-item" wx:for="{{industries}}" wx:key="id" bindtap="goToIndustry" data-industry="{{item}}">
+        <image class="industry-icon" src="{{item.icon}}" mode="aspectFit"/>
         <text class="industry-name">{{item.name}}</text>
         <text class="industry-count">{{item.jobCount}}个职位</text>
       </view>
     </view>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="footer-tip">
+    <text class="tip-text">当前模式：{{modeText}}</text>
+    <text class="tip-upgrade" wx:if="{{mode !== 'pro'}}" bindtap="goToUpgrade">升级体验更多功能</text>
   </view>
 </view>

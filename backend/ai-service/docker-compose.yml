@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  ai-service:
+    build: .
+    container_name: jobfirst-ai-service
+    ports:
+      - "8001:8001"
+    environment:
+      # 服务配置
+      - HOST=0.0.0.0
+      - PORT=8001
+      - DEBUG=false
+      - WORKERS=4
+      - ENV=production
+      
+      # 数据库配置
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-jobfirst}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_SSL_MODE=${DB_SSL_MODE:-disable}
+      - DB_POOL_SIZE=${DB_POOL_SIZE:-20}
+      
+      # Redis配置
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_DB=${REDIS_DB:-0}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_SSL=${REDIS_SSL:-false}
+      
+      # AI服务配置
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4}
+      - OPENAI_MAX_TOKENS=${OPENAI_MAX_TOKENS:-4000}
+      - OPENAI_TEMPERATURE=${OPENAI_TEMPERATURE:-0.7}
+      
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-claude-3-sonnet-20240229}
+      
+      - LOCAL_MODEL_PATH=${LOCAL_MODEL_PATH:-}
+      - LOCAL_MODEL_DEVICE=${LOCAL_MODEL_DEVICE:-cpu}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-text-embedding-ada-002}
+      - EMBEDDING_DIMENSIONS=${EMBEDDING_DIMENSIONS:-1536}
+      
+      # 向量数据库配置
+      - VECTOR_DB_TYPE=${VECTOR_DB_TYPE:-postgresql}
+      - VECTOR_INDEX_TYPE=${VECTOR_INDEX_TYPE:-ivfflat}
+      - VECTOR_METRIC=${VECTOR_METRIC:-cosine}
+      - VECTOR_DIMENSIONS=${VECTOR_DIMENSIONS:-1536}
+      - VECTOR_SIMILARITY_THRESHOLD=${VECTOR_SIMILARITY_THRESHOLD:-0.7}
+      - VECTOR_MAX_RESULTS=${VECTOR_MAX_RESULTS:-100}
+      
+      # 安全配置
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-here}
+      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+      - JWT_EXPIRE_MINUTES=${JWT_EXPIRE_MINUTES:-30}
+      
+      # 监控配置
+      - PROMETHEUS_ENABLED=${PROMETHEUS_ENABLED:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
+      - ENABLE_METRICS=${ENABLE_METRICS:-true}
+      
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      
+    depends_on:
+      - postgres
+      - redis
+      
+    networks:
+      - jobfirst-network
+      
+    restart: unless-stopped
+      
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+          cpus: '1.0'
+
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: jobfirst-ai-postgres
+    environment:
+      - POSTGRES_DB=${DB_NAME:-jobfirst}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - jobfirst-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: jobfirst-ai-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - jobfirst-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  jobfirst-network:
+    driver: bridge

@@ -1,0 +1,10 @@
+<view class="button">
+  <button 
+    class="btn btn-{{type}} btn-{{size}} {{block ? 'btn-block' : ''}} {{disabled ? 'btn-disabled' : ''}}"
+    disabled="{{disabled || loading}}"
+    bind:tap="handleClick"
+  >
+    <view wx:if="{{loading}}" class="loading-spinner"></view>
+    <text>{{text}}</text>
+  </button>
+</view>

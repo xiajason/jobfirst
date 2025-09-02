@@ -1,47 +1,44 @@
 // utils/util.js
 
-/**
- * 格式化时间
- * @param {Date|string|number} date 日期
- * @param {string} format 格式化字符串
- * @returns {string} 格式化后的时间
- */
-function formatTime(date, format = 'YYYY-MM-DD HH:mm:ss') {
+// 格式化时间
+const formatTime = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
+  if (!date) return ''
+  
   const d = new Date(date)
-  
   const year = d.getFullYear()
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  const hour = String(d.getHours()).padStart(2, '0')
-  const minute = String(d.getMinutes()).padStart(2, '0')
-  const second = String(d.getSeconds()).padStart(2, '0')
-  
+  const month = d.getMonth() + 1
+  const day = d.getDate()
+  const hour = d.getHours()
+  const minute = d.getMinutes()
+  const second = d.getSeconds()
+
+  const formatNumber = n => {
+    n = n.toString()
+    return n[1] ? n : `0${n}`
+  }
+
   return format
     .replace('YYYY', year)
-    .replace('MM', month)
-    .replace('DD', day)
-    .replace('HH', hour)
-    .replace('mm', minute)
-    .replace('ss', second)
+    .replace('MM', formatNumber(month))
+    .replace('DD', formatNumber(day))
+    .replace('HH', formatNumber(hour))
+    .replace('mm', formatNumber(minute))
+    .replace('ss', formatNumber(second))
 }
 
-/**
- * 获取相对时间
- * @param {Date|string|number} date 日期
- * @returns {string} 相对时间字符串
- */
-function getRelativeTime(date) {
+// 相对时间
+const formatRelativeTime = (date) => {
   const now = new Date()
   const target = new Date(date)
   const diff = now - target
-  
+
   const minute = 60 * 1000
   const hour = 60 * minute
   const day = 24 * hour
   const week = 7 * day
   const month = 30 * day
   const year = 365 * day
-  
+
   if (diff < minute) {
     return '刚刚'
   } else if (diff < hour) {
@@ -59,120 +56,27 @@ function getRelativeTime(date) {
   }
 }
 
-/**
- * 防抖函数
- * @param {Function} func 要防抖的函数
- * @param {number} wait 等待时间
- * @returns {Function} 防抖后的函数
- */
-function debounce(func, wait = 300) {
-  let timeout
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout)
-      func(...args)
-    }
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
-  }
-}
-
-/**
- * 节流函数
- * @param {Function} func 要节流的函数
- * @param {number} limit 限制时间
- * @returns {Function} 节流后的函数
- */
-function throttle(func, limit = 300) {
-  let inThrottle
-  return function executedFunction(...args) {
-    if (!inThrottle) {
-      func.apply(this, args)
-      inThrottle = true
-      setTimeout(() => inThrottle = false, limit)
-    }
-  }
-}
-
-/**
- * 深拷贝对象
- * @param {*} obj 要拷贝的对象
- * @returns {*} 拷贝后的对象
- */
-function deepClone(obj) {
-  if (obj === null || typeof obj !== 'object') {
-    return obj
+// 格式化薪资
+const formatSalary = (salary) => {
+  if (!salary) return '面议'
+  
+  if (typeof salary === 'string') {
+    return salary
   }
   
-  if (obj instanceof Date) {
-    return new Date(obj.getTime())
-  }
-  
-  if (obj instanceof Array) {
-    return obj.map(item => deepClone(item))
-  }
-  
-  if (typeof obj === 'object') {
-    const cloned = {}
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        cloned[key] = deepClone(obj[key])
-      }
+  if (typeof salary === 'number') {
+    if (salary >= 10000) {
+      return `${(salary / 10000).toFixed(1)}万`
+    } else {
+      return `${salary}K`
     }
-    return cloned
   }
+  
+  return '面议'
 }
 
-/**
- * 生成随机ID
- * @param {number} length ID长度
- * @returns {string} 随机ID
- */
-function generateId(length = 8) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return result
-}
-
-/**
- * 验证手机号
- * @param {string} phone 手机号
- * @returns {boolean} 是否有效
- */
-function validatePhone(phone) {
-  const reg = /^1[3-9]\d{9}$/
-  return reg.test(phone)
-}
-
-/**
- * 验证邮箱
- * @param {string} email 邮箱
- * @returns {boolean} 是否有效
- */
-function validateEmail(email) {
-  const reg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return reg.test(email)
-}
-
-/**
- * 验证身份证号
- * @param {string} idCard 身份证号
- * @returns {boolean} 是否有效
- */
-function validateIdCard(idCard) {
-  const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
-  return reg.test(idCard)
-}
-
-/**
- * 格式化文件大小
- * @param {number} bytes 字节数
- * @returns {string} 格式化后的文件大小
- */
-function formatFileSize(bytes) {
+// 格式化文件大小
+const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 B'
   
   const k = 1024
@@ -182,42 +86,223 @@ function formatFileSize(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-/**
- * 获取文件扩展名
- * @param {string} filename 文件名
- * @returns {string} 文件扩展名
- */
-function getFileExtension(filename) {
-  return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2)
+// 防抖函数
+const debounce = (func, wait, immediate) => {
+  let timeout
+  return function executedFunction(...args) {
+    const later = () => {
+      timeout = null
+      if (!immediate) func(...args)
+    }
+    const callNow = immediate && !timeout
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+    if (callNow) func(...args)
+  }
 }
 
-/**
- * 检查是否为图片文件
- * @param {string} filename 文件名
- * @returns {boolean} 是否为图片
- */
-function isImageFile(filename) {
-  const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']
-  const ext = getFileExtension(filename).toLowerCase()
-  return imageExts.includes(ext)
+// 节流函数
+const throttle = (func, limit) => {
+  let inThrottle
+  return function() {
+    const args = arguments
+    const context = this
+    if (!inThrottle) {
+      func.apply(context, args)
+      inThrottle = true
+      setTimeout(() => inThrottle = false, limit)
+    }
+  }
 }
 
-/**
- * 检查是否为视频文件
- * @param {string} filename 文件名
- * @returns {boolean} 是否为视频
- */
-function isVideoFile(filename) {
-  const videoExts = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm']
-  const ext = getFileExtension(filename).toLowerCase()
-  return videoExts.includes(ext)
+// 深拷贝
+const deepClone = (obj) => {
+  if (obj === null || typeof obj !== 'object') return obj
+  if (obj instanceof Date) return new Date(obj.getTime())
+  if (obj instanceof Array) return obj.map(item => deepClone(item))
+  if (typeof obj === 'object') {
+    const clonedObj = {}
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        clonedObj[key] = deepClone(obj[key])
+      }
+    }
+    return clonedObj
+  }
 }
 
-/**
- * 获取系统信息
- * @returns {Object} 系统信息
- */
-function getSystemInfo() {
+// 生成随机ID
+const generateId = (length = 8) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return result
+}
+
+// 验证手机号
+const validatePhone = (phone) => {
+  const phoneRegex = /^1[3-9]\d{9}$/
+  return phoneRegex.test(phone)
+}
+
+// 验证邮箱
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
+
+// 验证身份证
+const validateIdCard = (idCard) => {
+  const idCardRegex = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+  return idCardRegex.test(idCard)
+}
+
+// 获取URL参数
+const getUrlParams = (url) => {
+  const params = {}
+  const urlParts = url.split('?')
+  if (urlParts.length > 1) {
+    const queryString = urlParts[1]
+    const pairs = queryString.split('&')
+    pairs.forEach(pair => {
+      const [key, value] = pair.split('=')
+      params[decodeURIComponent(key)] = decodeURIComponent(value || '')
+    })
+  }
+  return params
+}
+
+// 设置URL参数
+const setUrlParams = (url, params) => {
+  const urlObj = new URL(url)
+  Object.keys(params).forEach(key => {
+    urlObj.searchParams.set(key, params[key])
+  })
+  return urlObj.toString()
+}
+
+// 本地存储
+const storage = {
+  set: (key, value) => {
+    try {
+      wx.setStorageSync(key, value)
+    } catch (error) {
+      console.error('存储失败:', error)
+    }
+  },
+  
+  get: (key, defaultValue = null) => {
+    try {
+      const value = wx.getStorageSync(key)
+      return value !== '' ? value : defaultValue
+    } catch (error) {
+      console.error('读取失败:', error)
+      return defaultValue
+    }
+  },
+  
+  remove: (key) => {
+    try {
+      wx.removeStorageSync(key)
+    } catch (error) {
+      console.error('删除失败:', error)
+    }
+  },
+  
+  clear: () => {
+    try {
+      wx.clearStorageSync()
+    } catch (error) {
+      console.error('清空失败:', error)
+    }
+  }
+}
+
+// 显示提示
+const showToast = (title, icon = 'none', duration = 2000) => {
+  wx.showToast({
+    title,
+    icon,
+    duration
+  })
+}
+
+// 显示加载
+const showLoading = (title = '加载中...', mask = true) => {
+  wx.showLoading({
+    title,
+    mask
+  })
+}
+
+// 隐藏加载
+const hideLoading = () => {
+  wx.hideLoading()
+}
+
+// 显示确认对话框
+const showModal = (title, content, showCancel = true) => {
+  return new Promise((resolve) => {
+    wx.showModal({
+      title,
+      content,
+      showCancel,
+      success: (res) => {
+        resolve(res.confirm)
+      }
+    })
+  })
+}
+
+// 显示操作菜单
+const showActionSheet = (itemList) => {
+  return new Promise((resolve, reject) => {
+    wx.showActionSheet({
+      itemList,
+      success: (res) => {
+        resolve(res.tapIndex)
+      },
+      fail: reject
+    })
+  })
+}
+
+// 选择图片
+const chooseImage = (count = 1, sizeType = ['original', 'compressed'], sourceType = ['album', 'camera']) => {
+  return new Promise((resolve, reject) => {
+    wx.chooseImage({
+      count,
+      sizeType,
+      sourceType,
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 预览图片
+const previewImage = (current, urls) => {
+  wx.previewImage({
+    current,
+    urls
+  })
+}
+
+// 保存图片到相册
+const saveImageToPhotosAlbum = (filePath) => {
+  return new Promise((resolve, reject) => {
+    wx.saveImageToPhotosAlbum({
+      filePath,
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 获取系统信息
+const getSystemInfo = () => {
   return new Promise((resolve, reject) => {
     wx.getSystemInfo({
       success: resolve,
@@ -226,66 +311,49 @@ function getSystemInfo() {
   })
 }
 
-/**
- * 显示加载提示
- * @param {string} title 提示文字
- */
-function showLoading(title = '加载中...') {
-  wx.showLoading({
-    title,
-    mask: true
+// 获取网络状态
+const getNetworkType = () => {
+  return new Promise((resolve, reject) => {
+    wx.getNetworkType({
+      success: resolve,
+      fail: reject
+    })
   })
 }
 
-/**
- * 隐藏加载提示
- */
-function hideLoading() {
-  wx.hideLoading()
-}
-
-/**
- * 显示成功提示
- * @param {string} title 提示文字
- * @param {number} duration 显示时长
- */
-function showSuccess(title, duration = 2000) {
-  wx.showToast({
-    title,
-    icon: 'success',
-    duration
+// 拨打电话
+const makePhoneCall = (phoneNumber) => {
+  wx.makePhoneCall({
+    phoneNumber
   })
 }
 
-/**
- * 显示错误提示
- * @param {string} title 提示文字
- * @param {number} duration 显示时长
- */
-function showError(title, duration = 2000) {
-  wx.showToast({
-    title,
-    icon: 'error',
-    duration
+// 复制到剪贴板
+const setClipboardData = (data) => {
+  return new Promise((resolve, reject) => {
+    wx.setClipboardData({
+      data,
+      success: resolve,
+      fail: reject
+    })
   })
 }
 
-/**
- * 显示警告提示
- * @param {string} title 提示文字
- * @param {number} duration 显示时长
- */
-function showWarning(title, duration = 2000) {
-  wx.showToast({
-    title,
-    icon: 'none',
-    duration
+// 获取剪贴板内容
+const getClipboardData = () => {
+  return new Promise((resolve, reject) => {
+    wx.getClipboardData({
+      success: resolve,
+      fail: reject
+    })
   })
 }
 
 module.exports = {
   formatTime,
-  getRelativeTime,
+  formatRelativeTime,
+  formatSalary,
+  formatFileSize,
   debounce,
   throttle,
   deepClone,
@@ -293,14 +361,20 @@ module.exports = {
   validatePhone,
   validateEmail,
   validateIdCard,
-  formatFileSize,
-  getFileExtension,
-  isImageFile,
-  isVideoFile,
-  getSystemInfo,
+  getUrlParams,
+  setUrlParams,
+  storage,
+  showToast,
   showLoading,
   hideLoading,
-  showSuccess,
-  showError,
-  showWarning
+  showModal,
+  showActionSheet,
+  chooseImage,
+  previewImage,
+  saveImageToPhotosAlbum,
+  getSystemInfo,
+  getNetworkType,
+  makePhoneCall,
+  setClipboardData,
+  getClipboardData
 }

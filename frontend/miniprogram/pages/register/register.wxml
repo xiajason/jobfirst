@@ -1,0 +1,146 @@
+<!--pages/register/register.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="logo">
+      <image src="/images/logo.png" mode="aspectFit"></image>
+    </view>
+    <view class="title">ADIRP数智招聘</view>
+    <view class="subtitle">智能招聘，连接未来</view>
+  </view>
+
+  <!-- 注册表单 -->
+  <view class="form">
+    <view class="form-group">
+      <view class="label">手机号</view>
+      <input 
+        class="input" 
+        type="number" 
+        placeholder="请输入手机号" 
+        value="{{phone}}"
+        bindinput="onPhoneInput"
+        maxlength="11"
+      />
+    </view>
+
+    <view class="form-group">
+      <view class="label">验证码</view>
+      <view class="code-group">
+        <input 
+          class="input code-input" 
+          type="number" 
+          placeholder="请输入验证码" 
+          value="{{code}}"
+          bindinput="onCodeInput"
+          maxlength="6"
+        />
+        <button 
+          class="code-btn {{codeBtnDisabled ? 'disabled' : ''}}" 
+          bindtap="sendCode"
+          disabled="{{codeBtnDisabled}}"
+        >
+          {{codeBtnText}}
+        </button>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <view class="label">密码</view>
+      <input 
+        class="input" 
+        type="{{showPassword ? 'text' : 'password'}}" 
+        placeholder="请设置密码（6-20位）" 
+        value="{{password}}"
+        bindinput="onPasswordInput"
+        maxlength="20"
+      />
+    </view>
+
+    <view class="form-group">
+      <view class="label">确认密码</view>
+      <input 
+        class="input" 
+        type="{{showPassword ? 'text' : 'password'}}" 
+        placeholder="请再次输入密码" 
+        value="{{confirmPassword}}"
+        bindinput="onConfirmPasswordInput"
+        maxlength="20"
+      />
+    </view>
+
+    <view class="form-group">
+      <view class="label">用户类型</view>
+      <view class="user-type">
+        <view 
+          class="type-item {{userType === 'jobseeker' ? 'active' : ''}}"
+          bindtap="selectUserType"
+          data-type="jobseeker"
+        >
+          <image src="/images/jobseeker.png" mode="aspectFit"></image>
+          <text>求职者</text>
+        </view>
+        <view 
+          class="type-item {{userType === 'employer' ? 'active' : ''}}"
+          bindtap="selectUserType"
+          data-type="employer"
+        >
+          <image src="/images/employer.png" mode="aspectFit"></image>
+          <text>招聘方</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <view class="agreement">
+        <checkbox-group bindchange="onAgreementChange">
+          <label class="checkbox-item">
+            <checkbox value="agree" checked="{{agreed}}" />
+            <text class="agreement-text">
+              我已阅读并同意
+              <text class="link" bindtap="showAgreement">《用户协议》</text>
+              和
+              <text class="link" bindtap="showPrivacy">《隐私政策》</text>
+            </text>
+          </label>
+        </checkbox-group>
+      </view>
+    </view>
+
+    <button 
+      class="register-btn {{registerBtnDisabled ? 'disabled' : ''}}" 
+      bindtap="register"
+      disabled="{{registerBtnDisabled}}"
+    >
+      {{registerBtnText}}
+    </button>
+
+    <view class="login-link">
+      已有账号？
+      <text class="link" bindtap="goToLogin">立即登录</text>
+    </view>
+  </view>
+
+  <!-- 其他注册方式 -->
+  <view class="other-login">
+    <view class="divider">
+      <text class="divider-text">其他注册方式</text>
+    </view>
+    <view class="login-methods">
+      <view class="method-item" bindtap="wechatRegister">
+        <image src="/images/wechat.png" mode="aspectFit"></image>
+        <text>微信注册</text>
+      </view>
+      <view class="method-item" bindtap="qqRegister">
+        <image src="/images/qq.png" mode="aspectFit"></image>
+        <text>QQ注册</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部链接 -->
+  <view class="footer">
+    <text class="link" bindtap="showAgreement">用户协议</text>
+    <text class="separator">|</text>
+    <text class="link" bindtap="showPrivacy">隐私政策</text>
+  </view>
+</view>

@@ -8,11 +8,11 @@ COPY points/go.mod points/go.sum ./
 # 复制shared目录
 COPY shared ./shared
 
-# 下载依赖
-RUN go mod download
-
 # 复制源代码
 COPY points/ .
+
+# 下载依赖
+RUN go mod download
 
 # 更新依赖
 RUN go mod tidy

@@ -1,0 +1,245 @@
+# JobFirst API网关完整配置
+# 支持JWT认证、CORS、API版本控制和服务发现
+
+server:
+  port: 8080
+  host: "0.0.0.0"
+  timeout: "30s"
+  read_timeout: "10s"
+  write_timeout: "10s"
+
+# JWT认证配置
+jwt:
+  secret_key: "jobfirst-super-secret-key-2025"
+  issuer: "jobfirst-gateway"
+  audience: "jobfirst-users"
+  expire_time: "24h"
+  refresh_time: "168h"  # 7天
+  refresh_secret: "jobfirst-refresh-secret-key-2025"
+
+# CORS配置
+cors:
+  allow_origins:
+    - "http://localhost:3000"
+    - "http://localhost:3001"
+    - "http://localhost:8080"
+    - "https://jobfirst.com"
+    - "https://*.jobfirst.com"
+  allow_methods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "DELETE"
+    - "PATCH"
+    - "OPTIONS"
+  allow_headers:
+    - "Origin"
+    - "Content-Type"
+    - "Accept"
+    - "Authorization"
+    - "X-Requested-With"
+    - "X-API-Key"
+    - "X-Client-Version"
+  expose_headers:
+    - "X-Total-Count"
+    - "X-Page-Count"
+    - "X-Current-Page"
+  allow_credentials: true
+  max_age: 86400  # 24小时
+
+# Consul服务发现配置
+consul:
+  address: "http://consul:8500"
+  datacenter: "dc1"
+  token: ""
+  service_prefix: "jobfirst-"
+  health_check_interval: "10s"
+  deregister_after: "30s"
+
+# 服务路由配置
+services:
+  # 公开API (无需认证)
+  public:
+    - name: "health"
+      path: "/health"
+      service: "gateway"
+      strip_prefix: false
+      auth: false
+      cors: true
+    - name: "info"
+      path: "/info"
+      service: "gateway"
+      strip_prefix: false
+      auth: false
+      cors: true
+    - name: "metrics"
+      path: "/metrics"
+      service: "gateway"
+      strip_prefix: false
+      auth: false
+      cors: true
+    - name: "auth"
+      path: "/api/auth"
+      service: "user-service"
+      strip_prefix: true
+      auth: false
+      cors: true
+    - name: "jobs"
+      path: "/api/jobs"
+      service: "user-service"
+      strip_prefix: true
+      auth: false
+      cors: true
+    - name: "companies"
+      path: "/api/companies"
+      service: "user-service"
+      strip_prefix: true
+      auth: false
+      cors: true
+    - name: "public-resume"
+      path: "/api/public/resume"
+      service: "resume-service"
+      strip_prefix: true
+      auth: false
+      cors: true
+
+  # V1 API (需要认证)
+  v1:
+    - name: "user"
+      path: "/api/v1/user"
+      service: "user-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "resume"
+      path: "/api/v1/resume"
+      service: "resume-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "personal"
+      path: "/api/v1/personal"
+      service: "personal-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "points"
+      path: "/api/v1/points"
+      service: "points-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "statistics"
+      path: "/api/v1/statistics"
+      service: "statistics-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "storage"
+      path: "/api/v1/storage"
+      service: "storage-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "resource"
+      path: "/api/v1/resource"
+      service: "resource-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "enterprise"
+      path: "/api/v1/enterprise"
+      service: "enterprise-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "open"
+      path: "/api/v1/open"
+      service: "open-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "ai"
+      path: "/api/v1/ai"
+      service: "ai-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "document"
+      path: "/api/v1/document"
+      service: "document-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "blockchain"
+      path: "/api/v1/blockchain"
+      service: "blockchain-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+
+  # V2 API (增强功能，需要认证)
+  v2:
+    - name: "user-v2"
+      path: "/api/v2/user"
+      service: "user-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "resume-v2"
+      path: "/api/v2/resume"
+      service: "resume-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "ai-v2"
+      path: "/api/v2/ai"
+      service: "ai-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "analytics"
+      path: "/api/v2/analytics"
+      service: "statistics-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+
+  # 管理员API (需要管理员权限)
+  admin:
+    - name: "admin-users"
+      path: "/admin/users"
+      service: "user-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "admin-system"
+      path: "/admin/system"
+      service: "admin-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+    - name: "admin-analytics"
+      path: "/admin/analytics"
+      service: "statistics-service"
+      strip_prefix: true
+      auth: true
+      cors: true
+
+# 限流配置
+rate_limit:
+  requests_per_second: 100
+  burst_size: 200
+  window_size: "1m"
+
+# 日志配置
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+# 监控配置
+monitoring:
+  metrics_enabled: true
+  health_check_interval: "30s"
+  timeout: "5s"

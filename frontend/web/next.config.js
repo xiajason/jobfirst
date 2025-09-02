@@ -3,12 +3,6 @@ const nextConfig = {
   // 启用standalone输出，用于Docker部署
   output: 'standalone',
   
-  // 实验性功能
-  experimental: {
-    // 启用App Router
-    appDir: true,
-  },
-  
   // 环境变量
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
@@ -43,9 +37,6 @@ const nextConfig = {
   
   // 压缩配置
   compress: true,
-  
-  // 生产环境优化
-  swcMinify: true,
   
   // 安全头配置
   async headers() {

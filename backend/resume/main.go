@@ -100,7 +100,7 @@ func loadConfig() error {
 	// 设置默认值
 	viper.SetDefault("server.port", "9003")
 	viper.SetDefault("database.host", "localhost")
-	viper.SetDefault("database.port", "8200")
+	viper.SetDefault("database.port", "3306")
 	viper.SetDefault("database.name", "jobfirst")
 	viper.SetDefault("database.user", "root")
 	viper.SetDefault("database.password", "jobfirst123")
@@ -114,6 +114,35 @@ func loadConfig() error {
 			return err
 		}
 	}
+
+	// 如果环境变量存在，则覆盖配置文件中的值
+	if consulAddr := os.Getenv("CONSUL_ADDRESS"); consulAddr != "" {
+		viper.Set("consul.address", consulAddr)
+		fmt.Printf("CONSUL_ADDRESS: %s\n", consulAddr)
+	}
+	if redisAddr := os.Getenv("REDIS_ADDRESS"); redisAddr != "" {
+		viper.Set("redis.address", redisAddr)
+		fmt.Printf("REDIS_ADDRESS: %s\n", redisAddr)
+	}
+	if mysqlAddr := os.Getenv("MYSQL_ADDRESS"); mysqlAddr != "" {
+		viper.Set("database.host", mysqlAddr)
+		fmt.Printf("MYSQL_ADDRESS: %s\n", mysqlAddr)
+	}
+	if mysqlUser := os.Getenv("MYSQL_USER"); mysqlUser != "" {
+		viper.Set("database.user", mysqlUser)
+		fmt.Printf("MYSQL_USER: %s\n", mysqlUser)
+	}
+	if mysqlPassword := os.Getenv("MYSQL_PASSWORD"); mysqlPassword != "" {
+		viper.Set("database.password", mysqlPassword)
+		fmt.Printf("MYSQL_PASSWORD: %s\n", mysqlPassword)
+	}
+	if mysqlDatabase := os.Getenv("MYSQL_DATABASE"); mysqlDatabase != "" {
+		viper.Set("database.name", mysqlDatabase)
+		fmt.Printf("MYSQL_DATABASE: %s\n", mysqlDatabase)
+	}
+
+	// 设置数据库端口为3306（MySQL默认端口）
+	viper.Set("database.port", "3306")
 
 	return nil
 }
@@ -144,7 +173,7 @@ func initDatabase() error {
 
 func initRedis() error {
 	redisClient = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", viper.GetString("redis.host"), viper.GetString("redis.port")),
+		Addr:     viper.GetString("redis.address"),
 		Password: viper.GetString("redis.password"),
 		DB:       0,
 	})
@@ -162,7 +191,7 @@ func initRedis() error {
 
 func initConsul() error {
 	config := api.DefaultConfig()
-	config.Address = fmt.Sprintf("%s:%s", viper.GetString("consul.host"), viper.GetString("consul.port"))
+	config.Address = viper.GetString("consul.address")
 
 	var err error
 	consulClient, err = api.NewClient(config)

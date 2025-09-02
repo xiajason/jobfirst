@@ -1,41 +1,24 @@
 // app.js
-const { AuthAPI, PublicAPI } = require('./utils/api.js')  // 使用正确的相对路径  // 使用相对路径 '../utils/api.js'
+const { API_CONFIG, USE_MOCK } = require('./config/api.js')
 
 App({
   globalData: {
     userInfo: null,
     token: null,
-    baseUrl: 'http://localhost:8080', // 后端API地址
-    version: '1.0.0'
+    mode: 'basic', // basic, plus, pro
+    apiBaseUrl: API_CONFIG.baseUrl,
+    useMock: USE_MOCK,
+    features: {
+      analytics: false,
+      enterprise: false,
+      aiChat: false,
+      advancedSearch: false
+    }
   },
 
   onLaunch() {
-    // 强制修正所有API请求地址
-    const originalRequest = wx.request
-    wx.request = function(options) {
-      // 检查是否有8081端口的请求
-      if (typeof options.url === 'string' && options.url.includes(':8081')) {
-        console.warn('⚠️ 检测到8081端口请求，正在修正为8080端口:', options.url)
-      }
-      
-      // 统一修正地址
-      if (typeof options.url === 'string') {
-        options.url = options.url
-          .replace('localhost:8081', 'localhost:8080')
-          .replace('127.0.0.1:8081', '127.0.0.1:8080')
-          .replace(/https?:\/\/[^/]+:8081/, 'http://localhost:8080')
-        
-        // 确保包含API版本
-        if (!options.url.includes('/api/')) {
-          options.url = options.url.replace(this.globalData.baseUrl, `${this.globalData.baseUrl}/api/v1`)
-        }
-      }
-      console.log('✅ 请求地址已修正:', options.url)
-      return originalRequest(options)
-    }
     console.log('小程序启动')
-    this.checkLogin()
-    this.getSystemInfo()
+    this.initApp()
   },
 
   onShow() {
@@ -46,86 +29,168 @@ App({
     console.log('小程序隐藏')
   },
 
+  // 初始化应用
+  initApp() {
+    // 获取系统信息
+    const systemInfo = wx.getSystemInfoSync()
+    this.globalData.systemInfo = systemInfo
+
+    // 检查登录状态
+    this.checkLoginStatus()
+
+    // 根据模式初始化功能
+    this.initFeatures()
+
+    // 检查更新
+    this.checkUpdate()
+  },
+
   // 检查登录状态
-  checkLogin() {
+  checkLoginStatus() {
     const token = wx.getStorageSync('token')
-    if (token) {
+    const userInfo = wx.getStorageSync('userInfo')
+    
+    if (token && userInfo) {
       this.globalData.token = token
-      this.getUserInfo()
+      this.globalData.userInfo = userInfo
+      this.validateToken()
     }
   },
 
-  // 获取用户信息
-  getUserInfo() {
-    if (!this.globalData.token) return
+  // 验证token有效性
+  validateToken() {
+    wx.request({
+      url: `${this.globalData.apiBaseUrl}/user/validate`,
+      method: 'POST',
+      header: {
+        'Authorization': `Bearer ${this.globalData.token}`
+      },
+      success: (res) => {
+        if (res.data.code !== 200) {
+          this.logout()
+        }
+      },
+      fail: () => {
+        this.logout()
+      }
+    })
+  },
+
+  // 初始化功能特性
+  initFeatures() {
+    const mode = this.globalData.mode
     
-    PublicAPI.getUserPhone()
-      .then((res) => {
-        if (res.code === 0) {
-          this.globalData.userInfo = res.data
+    switch (mode) {
+      case 'basic':
+        this.globalData.features = {
+          analytics: false,
+          enterprise: false,
+          aiChat: false,
+          advancedSearch: false
+        }
+        break
+      case 'plus':
+        this.globalData.features = {
+          analytics: true,
+          enterprise: false,
+          aiChat: true,
+          advancedSearch: true
+        }
+        break
+      case 'pro':
+        this.globalData.features = {
+          analytics: true,
+          enterprise: true,
+          aiChat: true,
+          advancedSearch: true
+        }
+        break
+    }
+  },
+
+  // 检查更新
+  checkUpdate() {
+    if (wx.canIUse('getUpdateManager')) {
+      const updateManager = wx.getUpdateManager()
+      
+      updateManager.onCheckForUpdate((res) => {
+        if (res.hasUpdate) {
+          updateManager.onUpdateReady(() => {
+            wx.showModal({
+              title: '更新提示',
+              content: '新版本已经准备好，是否重启应用？',
+              success: (res) => {
+                if (res.confirm) {
+                  updateManager.applyUpdate()
+                }
+              }
+            })
+          })
         }
       })
-      .catch((err) => {
-        console.error('获取用户信息失败:', err)
-      })
+    }
   },
 
-  // 获取系统信息
-  getSystemInfo() {
-    // 使用新的API替代废弃的wx.getSystemInfo
-    Promise.all([
-      wx.getAppBaseInfo(),
-      wx.getDeviceInfo(),
-      wx.getWindowInfo()
-    ]).then(([appBaseInfo, deviceInfo, windowInfo]) => {
-      const systemInfo = {
-        ...appBaseInfo,
-        ...deviceInfo,
-        ...windowInfo
-      }
-      console.log('系统信息:', systemInfo)
-      this.globalData.systemInfo = systemInfo
-    }).catch((err) => {
-      console.error('获取系统信息失败:', err)
-    })
+  // 登录
+  login(userInfo, token) {
+    this.globalData.userInfo = userInfo
+    this.globalData.token = token
+    
+    wx.setStorageSync('userInfo', userInfo)
+    wx.setStorageSync('token', token)
   },
 
-  // 登录方法
-  login() {
-    return new Promise((resolve, reject) => {
-      wx.login({
-        success: (res) => {
-          if (res.code) {
-            // 使用新的API接口进行登录
-            AuthAPI.wxLogin(res.code)
-              .then((loginRes) => {
-                if (loginRes.code === 0) {
-                  const { accessToken, userInfo } = loginRes.data
-                  this.globalData.token = accessToken
-                  this.globalData.userInfo = userInfo
-                  wx.setStorageSync('token', accessToken)
-                  resolve(loginRes)
-                } else {
-                  reject(new Error(loginRes.msg || '登录失败'))
-                }
-              })
-              .catch(reject)
-          } else {
-            reject(new Error('登录失败'))
-          }
-        },
-        fail: reject
-      })
-    })
-  },
-
-  // 退出登录
+  // 登出
   logout() {
-    this.globalData.token = null
     this.globalData.userInfo = null
+    this.globalData.token = null
+    
+    wx.removeStorageSync('userInfo')
     wx.removeStorageSync('token')
+    
     wx.reLaunch({
-      url: '/pages/index/index'
+      url: '/pages/login/login'
     })
+  },
+
+  // 切换模式
+  switchMode(mode) {
+    this.globalData.mode = mode
+    this.initFeatures()
+    wx.setStorageSync('mode', mode)
+  },
+
+  // 检查功能是否可用
+  hasFeature(feature) {
+    return this.globalData.features[feature] || false
+  },
+
+  // 全局请求方法
+  request(options) {
+    // 使用 utils/api.js 中的 request 函数
+    const { request } = require('./utils/api.js')
+    return request(options)
+  },
+
+  // 显示提示
+  showToast(title, icon = 'none') {
+    wx.showToast({
+      title,
+      icon,
+      duration: 2000
+    })
+  },
+
+  // 显示加载
+  showLoading(title = '加载中...') {
+    wx.showLoading({
+      title,
+      mask: true
+    })
+  },
+
+  // 隐藏加载
+  hideLoading() {
+    wx.hideLoading()
   }
 })

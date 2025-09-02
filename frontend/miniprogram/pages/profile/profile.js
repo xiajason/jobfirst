@@ -1,206 +1,185 @@
-// profile.js
+// pages/profile/profile.js
 const app = getApp()
-const { PublicAPI, PointsAPI, StatisticsAPI } = require('../../utils/api.js')
 
 Page({
   data: {
     userInfo: {},
-    stats: {
-      applyCount: 0,
-      interviewCount: 0,
-      favoriteCount: 0,
-      resumeCount: 0,
-      unreadInterview: 0
-    },
-    version: '1.0.0'
+    stats: {},
+    isLoggedIn: false,
+    version: '1.0.0',
+    modeText: '基础版'
   },
 
   onLoad() {
-    this.setData({
-      version: app.globalData.version
-    })
+    this.initPage()
   },
 
   onShow() {
     this.loadUserInfo()
-    this.loadUserStats()
+    this.loadStats()
+  },
+
+  // 初始化页面
+  initPage() {
+    const mode = app.globalData.mode
+    let modeText = '基础版'
+    
+    switch (mode) {
+      case 'plus':
+        modeText = '增强版'
+        break
+      case 'pro':
+        modeText = '专业版'
+        break
+    }
+    
+    this.setData({
+      modeText,
+      isLoggedIn: !!app.globalData.token
+    })
   },
 
   // 加载用户信息
   loadUserInfo() {
-    const userInfo = app.globalData.userInfo
-    if (userInfo) {
-      this.setData({ userInfo })
+    if (app.globalData.userInfo) {
+      this.setData({
+        userInfo: app.globalData.userInfo
+      })
     } else {
-      // 未登录状态
-      this.setData({
-        userInfo: {
-          name: '未登录',
-          title: '点击登录账号',
-          avatar: '/images/default-avatar.png'
-        }
-      })
+      // 如果没有用户信息但有token，尝试获取用户信息
+      if (app.globalData.token) {
+        this.fetchUserInfo()
+      }
     }
   },
 
-  // 加载用户统计数据
-  loadUserStats() {
-    if (!app.globalData.token) {
-      this.setData({
-        stats: {
-          applyCount: 0,
-          interviewCount: 0,
-          favoriteCount: 0,
-          resumeCount: 0,
-          unreadInterview: 0
-        }
+  // 获取用户信息
+  async fetchUserInfo() {
+    try {
+      const res = await app.request({
+        url: '/api/user/info',
+        method: 'GET'
       })
-      return
-    }
 
-    // 使用真实API请求获取统计数据
-    Promise.all([
-      PublicAPI.getResumeList(),
-      JobAPI.getApplications(),
-      JobAPI.getFavorites(),
-      PointsAPI.getBalance()
-    ])
-      .then(([resumeRes, applyRes, favoriteRes, pointsRes]) => {
-        const stats = {
-          applyCount: applyRes.code === 0 ? (applyRes.data?.length || 0) : 0,
-          interviewCount: 0, // 暂时设为0，需要后端提供面试邀请接口
-          favoriteCount: favoriteRes.code === 0 ? (favoriteRes.data?.length || 0) : 0,
-          resumeCount: resumeRes.code === 0 ? (resumeRes.data?.length || 0) : 0,
-          unreadInterview: 0 // 暂时设为0，需要后端提供未读面试邀请接口
-        }
-        
-        this.setData({ stats })
-      })
-      .catch(() => {
-        // 使用模拟数据作为备选
-        const mockStats = {
-          applyCount: Math.floor(Math.random() * 20) + 5,
-          interviewCount: Math.floor(Math.random() * 10) + 2,
-          favoriteCount: Math.floor(Math.random() * 30) + 8,
-          resumeCount: Math.floor(Math.random() * 3) + 1,
-          unreadInterview: Math.floor(Math.random() * 5)
-        }
-        
-        this.setData({ stats: mockStats })
-      })
+      if (res.success) {
+        app.globalData.userInfo = res.data
+        this.setData({
+          userInfo: res.data
+        })
+      }
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+    }
   },
 
-  // 导航到用户信息页面
-  navigateToUserInfo() {
-    if (!app.globalData.token) {
-      this.showLoginModal()
-      return
+  // 加载统计数据
+  async loadStats() {
+    if (!app.globalData.token) return
+
+    try {
+      const res = await app.request({
+        url: '/api/user/stats',
+        method: 'GET'
+      })
+
+      if (res.success) {
+        this.setData({
+          stats: res.data
+        })
+      }
+    } catch (error) {
+      console.error('获取统计数据失败:', error)
     }
+  },
+
+  // 跳转到投递记录
+  goToApplications() {
+    if (!this.checkLogin()) return
     
     wx.navigateTo({
-      url: '/pages/user-info/user-info'
+      url: '/pages/applications/applications'
     })
   },
 
-  // 导航到简历页面
-  navigateToResume() {
-    if (!app.globalData.token) {
-      this.showLoginModal()
-      return
-    }
+  // 跳转到收藏
+  goToFavorites() {
+    if (!this.checkLogin()) return
+    
+    wx.navigateTo({
+      url: '/pages/favorites/favorites'
+    })
+  },
+
+  // 跳转到简历
+  goToResume() {
+    if (!this.checkLogin()) return
     
     wx.navigateTo({
       url: '/pages/resume/resume'
     })
   },
 
-  // 导航到投递记录页面
-  navigateToApply() {
-    if (!app.globalData.token) {
-      this.showLoginModal()
-      return
-    }
+  // 跳转到数据分析
+  goToAnalytics() {
+    if (!this.checkLogin()) return
     
     wx.navigateTo({
-      url: '/pages/apply/apply'
+      url: '/pages/analytics/analytics'
     })
   },
 
-  // 导航到面试邀请页面
-  navigateToInterview() {
-    if (!app.globalData.token) {
-      this.showLoginModal()
-      return
-    }
+  // 跳转到企业服务
+  goToEnterprise() {
+    if (!this.checkLogin()) return
     
     wx.navigateTo({
-      url: '/pages/interview/interview'
+      url: '/pages/enterprise/enterprise'
     })
   },
 
-  // 导航到收藏职位页面
-  navigateToFavorite() {
-    if (!app.globalData.token) {
-      this.showLoginModal()
-      return
-    }
-    
-    wx.navigateTo({
-      url: '/pages/favorite/favorite'
-    })
-  },
-
-  // 导航到设置页面
-  navigateToSettings() {
+  // 跳转到设置
+  goToSettings() {
     wx.navigateTo({
       url: '/pages/settings/settings'
     })
   },
 
-  // 导航到反馈页面
-  navigateToFeedback() {
-    wx.navigateTo({
-      url: '/pages/feedback/feedback'
-    })
-  },
-
-  // 导航到关于页面
-  navigateToAbout() {
-    wx.navigateTo({
-      url: '/pages/about/about'
-    })
-  },
-
-  // 分享应用
-  shareApp() {
-    wx.showShareMenu({
-      withShareTicket: true,
-      menus: ['shareAppMessage', 'shareTimeline']
-    })
-  },
-
-  // 清除缓存
-  clearCache() {
+  // 显示反馈
+  showFeedback() {
     wx.showModal({
-      title: '确认清除',
-      content: '确定要清除应用缓存吗？',
-      success: (res) => {
-        if (res.confirm) {
-          wx.showLoading({
-            title: '清除中...'
-          })
-          
-          // 模拟清除缓存
-          setTimeout(() => {
-            wx.hideLoading()
-            wx.showToast({
-              title: '清除成功',
-              icon: 'success'
-            })
-          }, 1500)
-        }
-      }
+      title: '意见反馈',
+      content: '如有问题或建议，请联系客服：\n400-123-4567',
+      showCancel: false
     })
+  },
+
+  // 显示关于
+  showAbout() {
+    wx.showModal({
+      title: '关于我们',
+      content: `ADIRP数智招聘 v${this.data.version}\n\n智能招聘，连接未来\n\n客服电话：400-123-4567\n邮箱：support@adirp.com`,
+      showCancel: false
+    })
+  },
+
+  // 检查登录状态
+  checkLogin() {
+    if (!app.globalData.token) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login'
+            })
+          }
+        }
+      })
+      return false
+    }
+    return true
   },
 
   // 退出登录
@@ -211,48 +190,14 @@ Page({
       success: (res) => {
         if (res.confirm) {
           app.logout()
-          this.loadUserInfo()
-          this.loadUserStats()
-          
-          wx.showToast({
-            title: '已退出登录',
-            icon: 'success'
+          this.setData({
+            userInfo: {},
+            stats: {},
+            isLoggedIn: false
           })
+          app.showToast('已退出登录')
         }
       }
     })
-  },
-
-  // 显示登录弹窗
-  showLoginModal() {
-    wx.showModal({
-      title: '提示',
-      content: '请先登录后再使用此功能',
-      confirmText: '去登录',
-      success: (res) => {
-        if (res.confirm) {
-          wx.navigateTo({
-            url: '/pages/login/login'
-          })
-        }
-      }
-    })
-  },
-
-  // 分享给朋友
-  onShareAppMessage() {
-    return {
-      title: 'ADIRP数智招聘 - 智能求职平台',
-      path: '/pages/index/index',
-      imageUrl: '/images/share-cover.png'
-    }
-  },
-
-  // 分享到朋友圈
-  onShareTimeline() {
-    return {
-      title: 'ADIRP数智招聘 - 智能求职平台',
-      imageUrl: '/images/share-cover.png'
-    }
   }
 })

@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 
 # 构建应用
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o shared-infrastructure main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o shared-infrastructure ./cmd/main.go
 
 # 运行阶段
 FROM alpine:latest

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  # 基础服务
+  mysql:
+    image: mysql:8.0
+    <<: *db-config
+  
+  redis:
+    image: redis:6.2
+    <<: *cache-config
+
+  # 模式扩展点
+  {{#if enhanced}}
+  ai-service:
+    image: jobfirst/ai:latest
+    <<: *ai-config
+  {{/if}}
+
+  {{#if integrated}}
+  prometheus:
+    image: prom/prometheus
+    <<: *monitor-config
+  {{/if}}

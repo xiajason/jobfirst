@@ -1,0 +1,36 @@
+
+/* components/FeatureBanner/FeatureBanner.wxss */
+.feature-banner-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.banner-swiper {
+  width: 100%;
+}
+
+.banner-item {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  padding: 10rpx 20rpx;
+  font-size: 28rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

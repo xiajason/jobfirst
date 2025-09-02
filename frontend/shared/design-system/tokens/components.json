@@ -1,0 +1,160 @@
+{
+  "components": {
+    "Button": {
+      "description": "按钮组件",
+      "props": {
+        "text": {
+          "type": "string",
+          "required": true,
+          "description": "按钮文本"
+        },
+        "type": {
+          "type": "enum",
+          "values": ["primary", "secondary", "success", "warning", "danger"],
+          "default": "primary",
+          "description": "按钮类型"
+        },
+        "size": {
+          "type": "enum",
+          "values": ["small", "medium", "large"],
+          "default": "medium",
+          "description": "按钮大小"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否禁用"
+        },
+        "loading": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否显示加载状态"
+        },
+        "block": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否块级元素"
+        }
+      },
+      "events": ["click"],
+      "styles": {
+        "primary": {
+          "backgroundColor": "colors.primary.500",
+          "color": "white",
+          "borderColor": "colors.primary.500"
+        },
+        "secondary": {
+          "backgroundColor": "colors.gray.100",
+          "color": "colors.gray.700",
+          "borderColor": "colors.gray.300"
+        },
+        "success": {
+          "backgroundColor": "colors.success.500",
+          "color": "white",
+          "borderColor": "colors.success.500"
+        },
+        "warning": {
+          "backgroundColor": "colors.warning.500",
+          "color": "white",
+          "borderColor": "colors.warning.500"
+        },
+        "danger": {
+          "backgroundColor": "colors.danger.500",
+          "color": "white",
+          "borderColor": "colors.danger.500"
+        }
+      }
+    },
+    "Input": {
+      "description": "输入框组件",
+      "props": {
+        "value": {
+          "type": "string",
+          "required": true,
+          "description": "输入值"
+        },
+        "placeholder": {
+          "type": "string",
+          "description": "占位符文本"
+        },
+        "type": {
+          "type": "enum",
+          "values": ["text", "password", "email", "number", "tel"],
+          "default": "text",
+          "description": "输入类型"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否禁用"
+        },
+        "readonly": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否只读"
+        },
+        "clearable": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否可清空"
+        },
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "events": ["change", "focus", "blur", "clear"],
+      "styles": {
+        "default": {
+          "borderColor": "colors.gray.300",
+          "backgroundColor": "white"
+        },
+        "error": {
+          "borderColor": "colors.danger.500",
+          "backgroundColor": "white"
+        },
+        "disabled": {
+          "borderColor": "colors.gray.200",
+          "backgroundColor": "colors.gray.50"
+        }
+      }
+    },
+    "Card": {
+      "description": "卡片组件",
+      "props": {
+        "title": {
+          "type": "string",
+          "description": "卡片标题"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "卡片副标题"
+        },
+        "shadow": {
+          "type": "enum",
+          "values": ["none", "small", "medium", "large"],
+          "default": "medium",
+          "description": "阴影大小"
+        },
+        "bordered": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否显示边框"
+        },
+        "padding": {
+          "type": "enum",
+          "values": ["none", "small", "medium", "large"],
+          "default": "medium",
+          "description": "内边距大小"
+        }
+      },
+      "slots": ["header", "body", "footer"],
+      "styles": {
+        "default": {
+          "backgroundColor": "white",
+          "borderColor": "colors.gray.200"
+        }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ JobFirst AI服务配置管理
 
 import os
 from typing import Dict, Any
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 
 
 @dataclass
@@ -124,12 +124,12 @@ class Config:
     ENV: str = os.getenv("ENV", "development")
     
     # 子配置
-    database: DatabaseConfig = DatabaseConfig()
-    redis: RedisConfig = RedisConfig()
-    ai: AIConfig = AIConfig()
-    vector: VectorConfig = VectorConfig()
-    security: SecurityConfig = SecurityConfig()
-    monitoring: MonitoringConfig = MonitoringConfig()
+    database: DatabaseConfig = field(default_factory=DatabaseConfig)
+    redis: RedisConfig = field(default_factory=RedisConfig)
+    ai: AIConfig = field(default_factory=AIConfig)
+    vector: VectorConfig = field(default_factory=VectorConfig)
+    security: SecurityConfig = field(default_factory=SecurityConfig)
+    monitoring: MonitoringConfig = field(default_factory=MonitoringConfig)
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典格式"""

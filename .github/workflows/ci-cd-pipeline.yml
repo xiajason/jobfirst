@@ -87,13 +87,13 @@ jobs:
       
     - name: Build gateway
       working-directory: backend/gateway
-      run: go build -o gateway enhanced_gateway_simple.go
+      run: go build -o gateway .
       
     - name: Run basic tests
       working-directory: backend/gateway
       run: |
         # 基本编译测试
-        go build -o gateway enhanced_gateway_simple.go
+        go build -o gateway .
         echo "Gateway compiled successfully"
         
         # 运行简单的语法检查

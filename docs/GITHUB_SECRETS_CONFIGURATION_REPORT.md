@@ -75,41 +75,50 @@ gh secret set TENCENT_KNOWN_HOSTS --body "$(ssh-keyscan -H 101.33.251.158)"
 
 ## 🚀 **CI/CD配置更新**
 
-### 1. **SSH连接配置**
+### 1. **SSH连接配置（已弃用）**
 ```yaml
-- name: Test SSH Connection
-  uses: appleboy/ssh-action@master
-  continue-on-error: true
-  with:
-    host: ${{ secrets.TENCENT_STAGING_HOST }}
-    username: ${{ secrets.TENCENT_USER }}
-    key: ${{ secrets.TENCENT_DEPLOY_SSH_KEY }}
-    port: 22
+# 注意：这些配置已弃用，请使用新的配置方式
+# 旧的SSH action配置可能导致CI/CD失败
 ```
 
-### 2. **文件上传配置**
+### 2. **新的部署配置方式**
 ```yaml
-- name: Upload database initialization script
-  uses: appleboy/scp-action@master
+- name: Check SSH Configuration
+  run: |
+    if [ -z "${{ secrets.TENCENT_STAGING_HOST }}" ] || [ -z "${{ secrets.TENCENT_USER }}" ] || [ -z "${{ secrets.TENCENT_DEPLOY_SSH_KEY }}" ]; then
+      echo "跳过部署：SSH配置不完整"
+      echo "需要配置以下Secrets："
+      echo "- TENCENT_STAGING_HOST"
+      echo "- TENCENT_USER" 
+      echo "- TENCENT_DEPLOY_SSH_KEY"
+      exit 0
+    fi
+
+- name: Install SSH Key
+  uses: shimataro/ssh-key-action@v2
   with:
-    host: ${{ secrets.TENCENT_STAGING_HOST }}
-    username: ${{ secrets.TENCENT_USER }}
     key: ${{ secrets.TENCENT_DEPLOY_SSH_KEY }}
-    port: 22
-    source: "scripts/init_team_access_db.sql"
-    target: "/tmp/"
+    known_hosts: ${{ secrets.TENCENT_KNOWN_HOSTS }}
+
+- name: Deploy using SCP/SSH
+  run: |
+    scp -i ~/.ssh/tencent_deploy_key -o StrictHostKeyChecking=no \
+      gateway shared-infrastructure \
+      ${{ secrets.TENCENT_USER }}@${{ secrets.TENCENT_STAGING_HOST }}:/opt/jobfirst/
 ```
 
-### 3. **部署配置**
+### 3. **推荐的安全配置**
 ```yaml
-- name: Deploy to Tencent Cloud Staging
-  uses: appleboy/ssh-action@master
-  continue-on-error: true
-  with:
-    host: ${{ secrets.TENCENT_STAGING_HOST }}
-    username: ${{ secrets.TENCENT_USER }}
-    key: ${{ secrets.TENCENT_DEPLOY_SSH_KEY }}
-    port: 22
+# 使用条件部署，避免配置缺失导致的失败
+deploy:
+  needs: build
+  runs-on: ubuntu-latest
+  if: github.ref == 'refs/heads/main'  # 只在main分支部署
+  steps:
+    - name: Deploy to Production
+      run: |
+        echo "部署到生产环境"
+        # 部署逻辑
 ```
 
 ## 📋 **配置验证**

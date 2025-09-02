@@ -87,6 +87,7 @@ jobs:
       
     - name: Build gateway
       working-directory: backend/gateway
+      # 修复：使用包编译而不是单个文件编译，解决JWTConfig、ServiceRoute等类型未定义问题
       run: go build -o gateway .
       
     - name: Run basic tests

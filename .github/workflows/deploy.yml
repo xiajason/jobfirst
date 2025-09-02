@@ -40,6 +40,18 @@ jobs:
       with:
         name: go-binaries
         
+    - name: Check SSH Configuration
+      run: |
+        if [ -z "${{ secrets.TENCENT_STAGING_HOST }}" ] || [ -z "${{ secrets.TENCENT_USER }}" ] || [ -z "${{ secrets.TENCENT_DEPLOY_SSH_KEY }}" ]; then
+          echo "跳过部署：SSH配置不完整"
+          echo "需要配置以下Secrets："
+          echo "- TENCENT_STAGING_HOST"
+          echo "- TENCENT_USER" 
+          echo "- TENCENT_DEPLOY_SSH_KEY"
+          echo "- TENCENT_KNOWN_HOSTS (可选)"
+          exit 0
+        fi
+        
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
       with:

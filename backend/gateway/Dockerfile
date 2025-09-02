@@ -13,12 +13,12 @@ COPY go.mod go.sum ./
 # 下载依赖
 RUN go mod download
 
-# 复制源代码
-COPY enhanced_gateway_simple.go .
-COPY gateway_config.yaml .
+# 复制所有Go源文件
+COPY *.go ./
+COPY *.yaml ./
 
 # 构建应用
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o gateway enhanced_gateway_simple.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o gateway .
 
 # 运行阶段
 FROM alpine:latest

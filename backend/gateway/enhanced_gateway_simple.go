@@ -13,8 +13,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// 使用共享类型定义，见types.go
-
 // EnhancedGatewayConfig 增强版网关配置
 type EnhancedGatewayConfig struct {
 	Server struct {
@@ -27,7 +25,7 @@ type EnhancedGatewayConfig struct {
 	Services struct {
 		Public []ServiceRoute `yaml:"public"`
 		V1     []ServiceRoute `yaml:"v1"`
-		V2     []ServiceRoute `yaml:"v2"`
+		V2     []ServiceRoute `yaml:"admin"`
 		Admin  []ServiceRoute `yaml:"admin"`
 	} `yaml:"services"`
 
@@ -70,7 +68,7 @@ func NewEnhancedGateway(config *EnhancedGatewayConfig) (*EnhancedGateway, error)
 func (g *EnhancedGateway) setupMiddleware() {
 	// 使用gin的恢复中间件
 	g.router.Use(gin.Recovery())
-	
+
 	// 设置CORS中间件
 	g.router.Use(g.corsMiddleware())
 }
@@ -79,7 +77,7 @@ func (g *EnhancedGateway) setupMiddleware() {
 func (g *EnhancedGateway) corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.Request.Header.Get("Origin")
-		
+
 		// 检查是否允许该来源
 		if g.isOriginAllowed(origin) {
 			c.Header("Access-Control-Allow-Origin", origin)
@@ -352,7 +350,7 @@ func (g *EnhancedGateway) proxyHandler(route ServiceRoute) gin.HandlerFunc {
 			// 移除路径前缀
 			path = strings.TrimPrefix(c.Request.URL.Path, route.Path)
 		}
-		
+
 		fullURL := targetURL + path
 		if c.Request.URL.RawQuery != "" {
 			fullURL += "?" + c.Request.URL.RawQuery
@@ -412,10 +410,10 @@ func (g *EnhancedGateway) proxyHandler(route ServiceRoute) gin.HandlerFunc {
 func (g *EnhancedGateway) getServiceURL(serviceName string) string {
 	// 简化的服务发现，使用固定映射
 	serviceMap := map[string]string{
-		"user-service":        "http://localhost:8081",
-		"resume-service":      "http://localhost:8087",
-		"personal-service":    "http://localhost:6001",
-		"admin-service":       "http://localhost:8003",
+		"user-service":          "http://localhost:8081",
+		"resume-service":        "http://localhost:8087",
+		"personal-service":      "http://localhost:6001",
+		"admin-service":         "http://localhost:8003",
 		"shared-infrastructure": "http://localhost:8000",
 	}
 

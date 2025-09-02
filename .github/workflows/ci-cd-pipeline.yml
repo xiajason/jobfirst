@@ -258,154 +258,100 @@ jobs:
         echo "Building Docker images for staging..."
         
         # 构建AI服务镜像
-        echo "构建AI服务镜像..."
-        for i in {1..3}; do
-          if docker build -t ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }} ./backend/ai-service; then
-            echo "✅ AI服务镜像构建成功"
-            break
-          else
-            echo "❌ AI服务镜像构建失败，尝试 $i/3"
-            if [ $i -eq 3 ]; then
-              echo "⚠️ AI服务镜像构建失败，跳过..."
-              continue
-            fi
-            sleep 10
-          fi
-        done
+        docker build -t ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }} ./backend/ai-service
+        docker push ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }}
         
         # 构建网关镜像
-        echo "构建网关镜像..."
-        for i in {1..3}; do
-          if docker build -t ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }} ./backend/gateway; then
-            echo "✅ 网关镜像构建成功"
-            break
-          else
-            echo "❌ 网关镜像构建失败，尝试 $i/3"
-            if [ $i -eq 3 ]; then
-              echo "⚠️ 网关镜像构建失败，跳过..."
-              continue
-            fi
-            sleep 10
-          fi
-        done
+        docker build -t ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }} ./backend/gateway
+        docker push ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }}
         
         # 构建用户服务镜像
-        echo "构建用户服务镜像..."
-        for i in {1..3}; do
-          if docker build -t ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }} ./backend/user; then
-            echo "✅ 用户服务镜像构建成功"
-            break
-          else
-            echo "❌ 用户服务镜像构建失败，尝试 $i/3"
-            if [ $i -eq 3 ]; then
-              echo "⚠️ 用户服务镜像构建失败，跳过..."
-              continue
-            fi
-            sleep 10
-          fi
-        done
+        docker build -t ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }} ./backend/user
+        docker push ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }}
         
         # 构建简历服务镜像
-        echo "构建简历服务镜像..."
-        for i in {1..3}; do
-          if docker build -t ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }} ./backend/resume; then
-            echo "✅ 简历服务镜像构建成功"
-            break
-          else
-            echo "❌ 简历服务镜像构建失败，尝试 $i/3"
-            if [ $i -eq 3 ]; then
-              echo "⚠️ 简历服务镜像构建失败，跳过..."
-              continue
-            fi
-            sleep 10
-          fi
-        done
-        
-        echo "=== 开始推送镜像 ==="
-        
-        # 推送AI服务镜像
-        echo "推送AI服务镜像..."
-        for i in {1..3}; do
-          if docker push ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }}; then
-            echo "✅ AI服务镜像推送成功"
-            break
-          else
-            echo "❌ AI服务镜像推送失败，尝试 $i/3"
-            if [ $i -eq 3 ]; then
-              echo "⚠️ AI服务镜像推送失败，跳过..."
-              continue
-            fi
-            sleep 10
-          fi
-        done
-        
-        # 推送网关镜像
-        echo "推送网关镜像..."
-        for i in {1..3}; do
-          if docker push ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }}; then
-            echo "✅ 网关镜像推送成功"
-            break
-          else
-            echo "❌ 网关镜像推送失败，尝试 $i/3"
-            if [ $i -eq 3 ]; then
-              echo "⚠️ 网关镜像推送失败，跳过..."
-              continue
-            fi
-            sleep 10
-          fi
-        done
-        
-        # 推送用户服务镜像
-        echo "推送用户服务镜像..."
-        for i in {1..3}; do
-          if docker push ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }}; then
-            echo "✅ 用户服务镜像推送成功"
-            break
-          else
-            echo "❌ 用户服务镜像推送失败，尝试 $i/3"
-            if [ $i -eq 3 ]; then
-              echo "⚠️ 用户服务镜像推送失败，跳过..."
-              continue
-            fi
-            sleep 10
-          fi
-        done
-        
-        # 推送简历服务镜像
-        echo "推送简历服务镜像..."
-        for i in {1..3}; do
-          if docker push ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }}; then
-            echo "✅ 简历服务镜像推送成功"
-            break
-          else
-            echo "❌ 简历服务镜像推送失败，尝试 $i/3"
-            if [ $i -eq 3 ]; then
-              echo "⚠️ 简历服务镜像推送失败，跳过..."
-              continue
-            fi
-            sleep 10
-          fi
-        done
+        docker build -t ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }} ./backend/resume
+        docker push ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }}
         
         echo "Docker images built and pushed to GitHub Container Registry successfully!"
 
     - name: Deploy to staging environment
       run: |
-        echo "=== 部署到测试环境 ==="
+        echo "=== 部署到本地Docker测试环境 ==="
         echo "本次部署包含以下服务："
         echo "- AI服务 (Python Sanic)"
         echo "- API网关 (Golang)"
         echo "- 用户服务 (Golang)"
         echo "- 简历服务 (Golang)"
         echo ""
-        echo "部署完成！请访问测试环境验证功能。"
+        
+        # 检查Docker服务状态
+        echo "检查Docker服务状态..."
+        docker info
+        docker version
+        
+        # 停止并清理现有容器
+        echo "清理现有容器..."
+        docker-compose -f docker-compose.local-test.yml down --volumes --remove-orphans || true
+        docker system prune -f
+        
+        # 启动本地测试环境
+        echo "启动本地Docker测试环境..."
+        docker-compose -f docker-compose.local-test.yml up -d
+        
+        # 等待服务启动
+        echo "等待服务启动..."
+        sleep 30
+        
+        # 检查服务状态
+        echo "检查服务状态..."
+        docker-compose -f docker-compose.local-test.yml ps
+        
+        # 健康检查
+        echo "执行健康检查..."
+        
+        # 检查网关服务
+        if curl -f http://localhost:8080/health || curl -f http://localhost:8080/api/v1/health; then
+          echo "✅ 网关服务健康检查通过"
+        else
+          echo "❌ 网关服务健康检查失败"
+        fi
+        
+        # 检查AI服务
+        if curl -f http://localhost:8000/health || curl -f http://localhost:8000/api/v1/health; then
+          echo "✅ AI服务健康检查通过"
+        else
+          echo "❌ AI服务健康检查失败"
+        fi
+        
+        # 检查用户服务
+        if curl -f http://localhost:8081/health || curl -f http://localhost:8081/api/v1/health; then
+          echo "✅ 用户服务健康检查通过"
+        else
+          echo "❌ 用户服务健康检查失败"
+        fi
+        
+        # 检查简历服务
+        if curl -f http://localhost:8082/health || curl -f http://localhost:8082/api/v1/health; then
+          echo "✅ 简历服务健康检查通过"
+        else
+          echo "❌ 简历服务健康检查失败"
+        fi
+        
         echo ""
-        echo "注意：如需部署到腾讯云，请配置相应的Secrets："
-        echo "- TENCENT_STAGING_HOST"
-        echo "- TENCENT_USER"
-        echo "- TENCENT_DEPLOY_SSH_KEY"
-        echo "- TENCENT_CCR_USERNAME (可选)"
-        echo "- TENCENT_CCR_PASSWORD (可选)"
+        echo "=== 本地测试环境部署完成 ==="
+        echo "服务访问地址："
+        echo "- 网关服务: http://localhost:8080"
+        echo "- AI服务: http://localhost:8000"
+        echo "- 用户服务: http://localhost:8081"
+        echo "- 简历服务: http://localhost:8082"
+        echo ""
+        echo "管理命令："
+        echo "- 查看状态: docker-compose -f docker-compose.local-test.yml ps"
+        echo "- 查看日志: docker-compose -f docker-compose.local-test.yml logs -f"
+        echo "- 停止服务: docker-compose -f docker-compose.local-test.yml down"
+        echo ""
+        echo "注意：本地测试环境已启动，请访问上述地址验证功能。"
 
   # ==================== 部署到生产环境 ====================
   deploy-production:

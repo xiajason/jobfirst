@@ -13,7 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
     networks:
       - jobfirst-local-network
     healthcheck:
@@ -36,19 +36,17 @@ services:
       retries: 3
 
   # ==================== 微服务 ====================
-  ai-service:
+  gateway:
     build:
-      context: ./backend/ai-service
+      context: ./backend/gateway
       dockerfile: Dockerfile
-    container_name: jobfirst-ai-service-local
+    container_name: jobfirst-gateway-local
     ports:
       - "8000:8000"
     environment:
       - ENVIRONMENT=local
       - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres:5432/jobfirst
       - REDIS_URL=redis://redis:6379
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     depends_on:
       postgres:
         condition: service_healthy
@@ -58,100 +56,6 @@ services:
       - jobfirst-local-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  gateway:
-    build:
-      context: ./backend/gateway
-      dockerfile: Dockerfile
-    container_name: jobfirst-gateway-local
-    ports:
-      - "8080:8080"
-    environment:
-      - ENVIRONMENT=local
-      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres:5432/jobfirst
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - jobfirst-local-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  user-service:
-    build:
-      context: ./backend/user
-      dockerfile: Dockerfile
-    container_name: jobfirst-user-service-local
-    ports:
-      - "8081:8081"
-    environment:
-      - ENVIRONMENT=local
-      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres:5432/jobfirst
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - jobfirst-local-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  resume-service:
-    build:
-      context: ./backend/resume
-      dockerfile: Dockerfile
-    container_name: jobfirst-resume-service-local
-    ports:
-      - "8082:8082"
-    environment:
-      - ENVIRONMENT=local
-      - DATABASE_URL=postgresql://jobfirst_user:jobfirst_pass@postgres:5432/jobfirst
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - jobfirst-local-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # ==================== 前端服务 ====================
-  web-frontend:
-    build:
-      context: ./frontend/web
-      dockerfile: Dockerfile
-    container_name: jobfirst-web-frontend-local
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_MODE=pro
-      - NEXT_PUBLIC_API_URL=http://localhost:8080
-    depends_on:
-      gateway:
-        condition: service_healthy
-    networks:
-      - jobfirst-local-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3

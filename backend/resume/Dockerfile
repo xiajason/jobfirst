@@ -3,18 +3,13 @@ FROM golang:1.21-alpine AS builder
 WORKDIR /app
 
 # 复制go mod文件
-COPY resume/go.mod resume/go.sum ./
-
-# 复制shared目录
-COPY shared ./shared
-
-# 复制源代码
-COPY resume/ .
-
-
+COPY go.mod go.sum ./
 
 # 下载依赖
 RUN go mod download
+
+# 复制源代码
+COPY . .
 
 # 更新依赖
 RUN go mod tidy

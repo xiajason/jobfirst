@@ -306,7 +306,7 @@ jobs:
         echo "执行健康检查..."
         
         # 检查网关服务
-        if curl -f http://localhost:8080/health || curl -f http://localhost:8080/api/v1/health; then
+        if curl -f http://localhost:8000/health || curl -f http://localhost:8000/api/v1/health; then
           echo "✅ 网关服务健康检查通过"
         else
           echo "❌ 网关服务健康检查失败"
@@ -336,8 +336,8 @@ jobs:
         echo ""
         echo "=== CI/CD测试环境部署完成 ==="
         echo "服务访问地址："
-        echo "- 网关服务: http://localhost:8080"
-        echo "- AI服务: http://localhost:8000"
+        echo "- 网关服务: http://localhost:8000"
+        echo "- AI服务: http://localhost:8001"
         echo "- 用户服务: http://localhost:8081"
         echo "- 简历服务: http://localhost:8082"
         echo ""

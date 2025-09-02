@@ -37,8 +37,8 @@ docker-compose -f docker-compose.local-test.yml logs -f
 **本地测试环境包含：**
 - 🗄️ PostgreSQL数据库 (端口: 5432)
 - 🔴 Redis缓存 (端口: 6379)
-- 🤖 AI服务 (端口: 8000)
-- 🌐 API网关 (端口: 8080)
+- 🌐 API网关 (端口: 8000)
+- 🤖 AI服务 (端口: 8001)
 - 👤 用户服务 (端口: 8081)
 - 📄 简历服务 (端口: 8082)
 - 💻 Web前端 (端口: 3000)

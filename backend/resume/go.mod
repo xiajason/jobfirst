@@ -10,10 +10,12 @@ require (
 	github.com/spf13/viper v1.17.0
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gorm v1.25.5
-	resume-centre/shared/infrastructure v0.0.0
+	// 移除shared/infrastructure依赖，在Docker构建环境中不起作用
+	// resume-centre/shared/infrastructure v0.0.0
 )
 
-replace resume-centre/shared/infrastructure => ./shared/infrastructure
+// 移除replace指令，在Docker构建环境中不起作用
+// replace resume-centre/shared/infrastructure => ./shared/infrastructure
 
 require (
 	github.com/armon/go-metrics v0.4.1 // indirect

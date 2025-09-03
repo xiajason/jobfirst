@@ -263,20 +263,20 @@ jobs:
         echo "Building Docker images for staging..."
         
         # 构建AI服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }} ./backend/ai-service
-        docker push ghcr.io/${{ github.repository }}/jobfirst-ai-service:staging-${{ github.sha }}
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-ai-service:staging-${{ github.sha }} ./backend/ai-service
+        docker push ghcr.io/${{ github.actor }}/jobfirst-ai-service:staging-${{ github.sha }}
         
         # 构建网关镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }} ./backend/gateway
-        docker push ghcr.io/${{ github.repository }}/jobfirst-gateway:staging-${{ github.sha }}
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-gateway:staging-${{ github.sha }} ./backend/gateway
+        docker push ghcr.io/${{ github.actor }}/jobfirst-gateway:staging-${{ github.sha }}
         
         # 构建用户服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }} ./backend/user
-        docker push ghcr.io/${{ github.repository }}/jobfirst-user:staging-${{ github.sha }}
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-user:staging-${{ github.sha }} ./backend/user
+        docker push ghcr.io/${{ github.actor }}/jobfirst-user:staging-${{ github.sha }}
         
         # 构建简历服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }} ./backend/resume
-        docker push ghcr.io/${{ github.repository }}/jobfirst-resume:staging-${{ github.sha }}
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-resume:staging-${{ github.sha }} ./backend/resume
+        docker push ghcr.io/${{ github.actor }}/jobfirst-resume:staging-${{ github.sha }}
         
         echo "Docker images built and pushed to GitHub Container Registry successfully!"
 
@@ -374,10 +374,10 @@ jobs:
         echo "Building Docker images for production..."
         
         # 构建AI服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-ai-service:latest ./backend/ai-service
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-ai-service:v${{ github.run_number }} ./backend/ai-service
-        docker push ghcr.io/${{ github.repository }}/jobfirst-ai-service:latest
-        docker push ghcr.io/${{ github.repository }}/jobfirst-ai-service:v${{ github.run_number }}
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-ai-service:latest ./backend/ai-service
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-ai-service:v${{ github.run_number }} ./backend/ai-service
+        docker push ghcr.io/${{ github.actor }}/jobfirst-ai-service:latest
+        docker push ghcr.io/${{ github.actor }}/jobfirst-ai-service:v${{ github.run_number }}
         
         # 构建网关镜像
         docker build -t ghcr.io/${{ github.repository }}/jobfirst-gateway:latest ./backend/gateway
@@ -386,15 +386,15 @@ jobs:
         docker push ghcr.io/${{ github.repository }}/jobfirst-gateway:v${{ github.run_number }}
         
         # 构建用户服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-user:latest ./backend/user
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-user:v${{ github.run_number }} ./backend/user
-        docker push ghcr.io/${{ github.repository }}/jobfirst-user:latest
-        docker push ghcr.io/${{ github.repository }}/jobfirst-user:v${{ github.run_number }}
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-user:latest ./backend/user
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-user:v${{ github.run_number }} ./backend/user
+        docker push ghcr.io/${{ github.actor }}/jobfirst-user:latest
+        docker push ghcr.io/${{ github.actor }}/jobfirst-user:v${{ github.run_number }}
         
         # 构建简历服务镜像
-        docker build -t ghcr.io/${{ github.repository }}/jobfirst-resume:latest ./backend/resume
+        docker build -t ghcr.io/${{ github.actor }}/jobfirst-resume:latest ./backend/resume
         docker build -t ghcr.io/${{ github.repository }}/jobfirst-resume:v${{ github.run_number }} ./backend/resume
-        docker push ghcr.io/${{ github.repository }}/jobfirst-resume:latest
+        docker push ghcr.io/${{ github.actor }}/jobfirst-resume:latest
         docker push ghcr.io/${{ github.repository }}/jobfirst-resume:v${{ github.run_number }}
         
         echo "Production Docker images built and pushed successfully!"
@@ -407,10 +407,10 @@ jobs:
         echo "分支: ${{ github.ref_name }}"
         echo ""
         echo "部署的服务："
-        echo "- AI服务: ghcr.io/${{ github.repository }}/jobfirst-ai-service:v${{ github.run_number }}"
+        echo "- AI服务: ghcr.io/${{ github.actor }}/jobfirst-ai-service:v${{ github.run_number }}"
         echo "- 网关: ghcr.io/${{ github.repository }}/jobfirst-gateway:v${{ github.run_number }}"
-        echo "- 用户服务: ghcr.io/${{ github.repository }}/jobfirst-user:v${{ github.run_number }}"
-        echo "- 简历服务: ghcr.io/${{ github.repository }}/jobfirst-resume:v${{ github.run_number }}"
+        echo "- 用户服务: ghcr.io/${{ github.actor }}/jobfirst-user:v${{ github.run_number }}"
+        echo "- 简历服务: ghcr.io/${{ github.actor }}/jobfirst-resume:v${{ github.run_number }}"
         echo ""
         echo "请在生产环境中验证所有功能！"
 

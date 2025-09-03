@@ -259,27 +259,27 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Build and push Docker images
+    - name: Build Docker images locally
       run: |
-        echo "Building Docker images for staging..."
+        echo "Building Docker images for local testing..."
         
-        # 构建AI服务镜像
-        docker build -t ghcr.io/${{ github.actor }}/jobfirst-ai-service:staging-${{ github.sha }} ./backend/ai-service
-        docker push ghcr.io/${{ github.actor }}/jobfirst-ai-service:staging-${{ github.sha }}
+        # 构建AI服务镜像（本地标记）
+        docker build -t jobfirst-ai-service:staging ./backend/ai-service
+        echo "✅ AI服务镜像构建完成"
         
-        # 构建网关镜像
-        docker build -t ghcr.io/${{ github.actor }}/jobfirst-gateway:staging-${{ github.sha }} ./backend/gateway
-        docker push ghcr.io/${{ github.actor }}/jobfirst-gateway:staging-${{ github.sha }}
+        # 构建网关镜像（本地标记）
+        docker build -t jobfirst-gateway:staging ./backend/gateway
+        echo "✅ 网关镜像构建完成"
         
-        # 构建用户服务镜像
-        docker build -t ghcr.io/${{ github.actor }}/jobfirst-user:staging-${{ github.sha }} ./backend/user
-        docker push ghcr.io/${{ github.actor }}/jobfirst-user:staging-${{ github.sha }}
+        # 构建用户服务镜像（本地标记）
+        docker build -t jobfirst-user:staging ./backend/user
+        echo "✅ 用户服务镜像构建完成"
         
-        # 构建简历服务镜像
-        docker build -t ghcr.io/${{ github.actor }}/jobfirst-resume:staging-${{ github.sha }} ./backend/resume
-        docker push ghcr.io/${{ github.actor }}/jobfirst-resume:staging-${{ github.sha }}
+        # 构建简历服务镜像（本地标记）
+        docker build -t jobfirst-resume:staging ./backend/resume
+        echo "✅ 简历服务镜像构建完成"
         
-        echo "Docker images built and pushed to GitHub Container Registry successfully!"
+        echo "所有Docker镜像构建完成，使用本地镜像进行测试！"
 
     - name: Deploy to staging environment
       run: |

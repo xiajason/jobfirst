@@ -10,8 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	"resume-centre/shared/infrastructure"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"github.com/hashicorp/consul/api"
@@ -246,16 +244,27 @@ func setupRouter() *gin.Engine {
 
 	// 健康检查
 	router.GET("/health", func(c *gin.Context) {
-		infrastructure.SetServiceHealth(true)
 		c.JSON(http.StatusOK, gin.H{
 			"status": "healthy",
 			"time":   time.Now().Format(time.RFC3339),
 		})
 	})
 
-	// Metrics端点
-	router.GET("/metrics", infrastructure.GetMetricsHandler())
-	router.GET("/v1/.well-known/metrics", infrastructure.GetMetricsHandler())
+	// Metrics端点 - 简化实现
+	router.GET("/metrics", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"service": "resume-service",
+			"status":  "running",
+			"time":    time.Now().Format(time.RFC3339),
+		})
+	})
+	router.GET("/v1/.well-known/metrics", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"service": "resume-service",
+			"status":  "running",
+			"time":    time.Now().Format(time.RFC3339),
+		})
+	})
 
 	// Swagger API文档 - 白名单路由
 	router.GET("/v2/api-docs", func(c *gin.Context) {

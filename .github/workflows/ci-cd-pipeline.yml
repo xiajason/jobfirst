@@ -263,21 +263,42 @@ jobs:
       run: |
         echo "Building Docker images for local testing..."
         
-        # 构建AI服务镜像（本地标记）
-        docker build -t jobfirst-ai-service:staging ./backend/ai-service
+        # 清理Docker缓存和镜像
+        echo "清理Docker环境..."
+        docker system prune -f
+        docker builder prune -f
+        
+        # 构建AI服务镜像（本地标记，使用多阶段构建优化）
+        echo "构建AI服务镜像..."
+        docker build --no-cache --progress=plain -t jobfirst-ai-service:staging ./backend/ai-service
         echo "✅ AI服务镜像构建完成"
         
+        # 清理中间层
+        docker system prune -f
+        
         # 构建网关镜像（本地标记）
-        docker build -t jobfirst-gateway:staging ./backend/gateway
+        echo "构建网关镜像..."
+        docker build --no-cache --progress=plain -t jobfirst-gateway:staging ./backend/gateway
         echo "✅ 网关镜像构建完成"
         
+        # 清理中间层
+        docker system prune -f
+        
         # 构建用户服务镜像（本地标记）
-        docker build -t jobfirst-user:staging ./backend/user
+        echo "构建用户服务镜像..."
+        docker build --no-cache --progress=plain -t jobfirst-user:staging ./backend/user
         echo "✅ 用户服务镜像构建完成"
         
+        # 清理中间层
+        docker system prune -f
+        
         # 构建简历服务镜像（本地标记）
-        docker build -t jobfirst-resume:staging ./backend/resume
+        echo "构建简历服务镜像..."
+        docker build --no-cache --progress=plain -t jobfirst-resume:staging ./backend/resume
         echo "✅ 简历服务镜像构建完成"
+        
+        # 最终清理
+        docker system prune -f
         
         echo "所有Docker镜像构建完成，使用本地镜像进行测试！"
 
@@ -291,10 +312,20 @@ jobs:
         echo "- 简历服务 (Golang)"
         echo ""
         
+        # 检查系统资源
+        echo "检查系统资源..."
+        df -h
+        free -h
+        
         # 检查Docker服务状态
         echo "检查Docker服务状态..."
         docker info
         docker version
+        
+        # 清理Docker资源
+        echo "清理Docker资源..."
+        docker system prune -f
+        docker volume prune -f
         
         # 启动CI/CD测试环境
         echo "启动CI/CD测试环境..."

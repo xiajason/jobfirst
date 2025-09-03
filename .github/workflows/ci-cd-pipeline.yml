@@ -1,6 +1,7 @@
 # JobFirst CI/CD Pipeline
 # 自动构建、测试和部署流程
 # 更新: 修复所有微服务Docker构建路径问题 - 强制刷新缓存
+# 修复GitHub Container Registry权限问题 - 使用github.actor - 强制刷新v2
 
 name: JobFirst CI/CD Pipeline
 

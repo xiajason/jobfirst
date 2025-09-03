@@ -298,7 +298,7 @@ jobs:
         
         # 启动CI/CD测试环境
         echo "启动CI/CD测试环境..."
-        docker-compose -f docker-compose.ci.yml up -d --build
+        docker compose -f docker-compose.ci.yml up -d --build
         
         # 等待服务启动
         echo "等待服务启动..."
